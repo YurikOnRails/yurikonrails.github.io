@@ -1,0 +1,4 @@
+baseURL = "https://yurikonrails.github.io/"
+languageCode = "en-us"
+title = "Yurik's Blog"
+theme = "blowfish"
