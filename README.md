@@ -2,10 +2,10 @@
 ---
 
 <p align="left">
-    <a href="https://t.me/yurikonrails"><img src="https://img.shields.io/badge/tg-etosamoe-26A5E4?logo=telegram" /></a>
-    <a href="https://t.me/yurikonrails"><img src="https://img.shields.io/badge/tg-etogeek-26A5E4?logo=telegram" /></a>
-    <a href="https://yurik.org"><img src="https://img.shields.io/badge/blog-etogeek.dev-FFC300?logo=readthedocs" /></a>
-    <a href="http://www.youtube.com/@yurikonrails"><img src="https://img.shields.io/badge/etogeek-FF0000?logo=youtube" /></a>
+    <a href="https://t.me/yurikonrails"><img src="https://img.shields.io/badge/tg-yurikonrails-26A5E4?logo=telegram" /></a>
+    <a href="https://t.me/yurikonrails"><img src="https://img.shields.io/badge/tg-yurikonrails-26A5E4?logo=telegram" /></a>
+    <a href="https://yurik.org"><img src="https://img.shields.io/badge/blog-yurik.org-FFC300?logo=readthedocs" /></a>
+    <a href="http://www.youtube.com/@yurikonrails"><img src="https://img.shields.io/badge/yurikonrails-FF0000?logo=youtube" /></a>
 </p>
 
 ## 🙋‍♂️ About me
