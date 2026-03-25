@@ -1,22 +1,18 @@
 ---
-import { getCollection } from 'astro:content'
 import Base from '../../../layouts/Base.astro'
 import PostCard from '../../../components/PostCard.astro'
 import Icon from '../../../components/Icon.astro'
+import { getPublishedEssays } from '../../../lib/content'
 
 export async function getStaticPaths() {
-  const allEssays = await getCollection('essays')
-  const essays = allEssays.filter((e) => !import.meta.env.PROD || e.data.status === 'published')
-
+  const essays = await getPublishedEssays()
   const tags = [...new Set(essays.flatMap((e) => e.data.tags))]
 
   return tags.map((tag) => ({
     params: { tag },
     props: {
       tag,
-      essays: essays
-        .filter((e) => e.data.tags.includes(tag))
-        .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()),
+      essays: essays.filter((e) => e.data.tags.includes(tag)),
     },
   }))
 }

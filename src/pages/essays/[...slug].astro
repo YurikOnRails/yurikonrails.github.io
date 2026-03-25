@@ -1,8 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content'
-import { Font } from 'astro:assets'
 import Base from '../../layouts/Base.astro'
 import Icon from '../../components/Icon.astro'
+import { formatDate } from '../../lib/utils'
 
 export async function getStaticPaths() {
   const essays = await getCollection('essays')
@@ -16,11 +16,7 @@ const { entry } = Astro.props
 const { Content } = await render(entry)
 const { title, excerpt, publishedAt, cover, location, tags } = entry.data
 
-const dateStr = publishedAt.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-})
+const dateStr = formatDate(publishedAt)
 ---
 
 <Base
@@ -30,8 +26,6 @@ const dateStr = publishedAt.toLocaleDateString('en-US', {
   type="article"
   publishedAt={publishedAt.toISOString()}
 >
-  <Font cssVariable="--font-body" slot="head" />
-
   <article class="mx-auto max-w-[var(--container-prose)] px-5 pt-8 pb-24">
     {/* Back link */}
     <a href="/essays" class="inline-flex items-center gap-1 text-sm text-secondary hover:text-accent transition-colors mb-8">
@@ -84,110 +78,3 @@ const dateStr = publishedAt.toLocaleDateString('en-US', {
     </div>
   </article>
 </Base>
-
-<style>
-  .prose {
-    font-family: var(--font-body);
-    font-size: 1.125rem;
-    line-height: 1.8;
-    color: var(--color-primary);
-  }
-
-  .prose :global(h2) {
-    font-family: var(--font-heading);
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .prose :global(h3) {
-    font-family: var(--font-heading);
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .prose :global(p) {
-    margin-bottom: 1.5rem;
-  }
-
-  .prose :global(a) {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.2s;
-  }
-
-  .prose :global(a:hover) {
-    color: var(--color-primary);
-  }
-
-  .prose :global(strong) {
-    font-weight: 600;
-  }
-
-  .prose :global(em) {
-    font-style: italic;
-  }
-
-  .prose :global(ol) {
-    list-style-type: decimal;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .prose :global(ul) {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .prose :global(li) {
-    margin-bottom: 0.5rem;
-  }
-
-  .prose :global(blockquote) {
-    border-left: 2px solid var(--color-accent);
-    padding-left: 1.25rem;
-    margin: 2rem 0;
-    color: var(--color-secondary);
-    font-style: italic;
-  }
-
-  .prose :global(code) {
-    font-family: var(--font-mono);
-    font-size: 0.875em;
-    background: var(--color-surface);
-    padding: 0.2em 0.4em;
-    border-radius: 0.25rem;
-  }
-
-  .prose :global(pre) {
-    background: var(--color-surface);
-    border: 1px solid var(--color-subtle);
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    overflow-x: auto;
-    margin: 2rem 0;
-  }
-
-  .prose :global(pre code) {
-    background: none;
-    padding: 0;
-    font-size: 0.875rem;
-    line-height: 1.6;
-  }
-
-  .prose :global(img) {
-    border-radius: 1rem;
-    margin: 2rem 0;
-  }
-
-  .prose :global(hr) {
-    border: none;
-    border-top: 1px solid var(--color-subtle);
-    margin: 3rem 0;
-  }
-</style>

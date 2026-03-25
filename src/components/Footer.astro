@@ -1,20 +1,14 @@
 ---
 import Icon from './Icon.astro'
 import { profile } from '../data/profile'
-
-const navLinks = [
-  { href: '/essays', label: 'Essays' },
-  { href: '/builds', label: 'Builds' },
-  { href: '/books', label: 'Books' },
-  { href: '/field', label: 'Field' },
-  { href: '/now', label: 'Now' },
-]
+import { navLinks } from '../data/navigation'
+import { SITE_NAME } from '../data/config'
 
 const socialLinks = [
-  { href: profile.social.github!, label: 'GitHub', icon: 'github' },
-  { href: profile.social.telegram!, label: 'Telegram', icon: 'telegram' },
+  profile.social.github && { href: profile.social.github, label: 'GitHub', icon: 'github' },
+  profile.social.telegram && { href: profile.social.telegram, label: 'Telegram', icon: 'telegram' },
   { href: '/rss.xml', label: 'RSS', icon: 'rss' },
-]
+].filter(Boolean) as { href: string; label: string; icon: string }[]
 
 const year = new Date().getFullYear()
 ---
@@ -28,7 +22,7 @@ const year = new Date().getFullYear()
       {/* Brand column */}
       <div class="md:col-span-5">
         <a href="/" class="inline-block font-[family-name:var(--font-heading)] text-2xl text-primary hover:text-accent transition-colors">
-          Fieldnotes
+          {SITE_NAME}
         </a>
         <p class="mt-4 max-w-sm text-sm leading-relaxed text-secondary">
           {profile.bio}

@@ -1,13 +1,9 @@
 ---
-import { getCollection } from 'astro:content'
 import Base from '../../layouts/Base.astro'
 import PostCard from '../../components/PostCard.astro'
+import { getPublishedEssays } from '../../lib/content'
 
-const allEssays = await getCollection('essays')
-
-const essays = allEssays
-  .filter((e) => !import.meta.env.PROD || e.data.status === 'published')
-  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+const essays = await getPublishedEssays()
 
 const allTags = [...new Set(essays.flatMap((e) => e.data.tags))]
 ---

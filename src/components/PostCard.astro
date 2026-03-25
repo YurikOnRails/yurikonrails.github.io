@@ -1,4 +1,6 @@
 ---
+import { formatDate } from '../lib/utils'
+
 interface Props {
   id: string
   title: string
@@ -10,11 +12,7 @@ interface Props {
 
 const { id, title, excerpt, publishedAt, cover, tags = [] } = Astro.props
 
-const dateStr = publishedAt.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-})
+const dateStr = formatDate(publishedAt)
 ---
 
 <article class="card group">

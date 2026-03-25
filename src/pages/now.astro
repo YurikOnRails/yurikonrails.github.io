@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content'
-import { Font } from 'astro:assets'
 import Base from '../layouts/Base.astro'
+import { formatDate } from '../lib/utils'
 
 const nowEntries = await getCollection('now')
 const entry = nowEntries[0]
@@ -11,19 +11,13 @@ if (!entry) throw new Error('No now/current.md found')
 const { Content } = await render(entry)
 const { updatedAt } = entry.data
 
-const dateStr = updatedAt.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-})
+const dateStr = formatDate(updatedAt)
 ---
 
 <Base
   title="Now"
   description="What I'm doing right now."
 >
-  <Font cssVariable="--font-body" slot="head" />
-
   <section class="mx-auto max-w-[var(--container-prose)] px-5 pt-12 pb-24">
     <h1 class="text-3xl md:text-5xl mb-4">Now</h1>
     <p class="text-sm text-secondary mb-10">
@@ -35,44 +29,3 @@ const dateStr = updatedAt.toLocaleDateString('en-US', {
     </div>
   </section>
 </Base>
-
-<style>
-  .prose {
-    font-family: var(--font-body);
-    font-size: 1.125rem;
-    line-height: 1.8;
-    color: var(--color-primary);
-  }
-
-  .prose :global(h2) {
-    font-family: var(--font-heading);
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .prose :global(p) {
-    margin-bottom: 1.5rem;
-  }
-
-  .prose :global(a) {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .prose :global(strong) {
-    font-weight: 600;
-  }
-
-  .prose :global(ul) {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .prose :global(li) {
-    margin-bottom: 0.5rem;
-  }
-</style>

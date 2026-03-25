@@ -1,15 +1,13 @@
 import rss from '@astrojs/rss'
-import { getCollection } from 'astro:content'
 import type { APIContext } from 'astro'
+import { getPublishedEssays } from '../lib/content'
+import { SITE_NAME } from '../data/config'
 
 export async function GET(context: APIContext) {
-  const allEssays = await getCollection('essays')
-  const essays = allEssays
-    .filter((e) => e.data.status === 'published')
-    .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  const essays = await getPublishedEssays()
 
   return rss({
-    title: 'Fieldnotes',
+    title: SITE_NAME,
     description: 'Essays on tech, travel, and ideas.',
     site: context.site!,
     items: essays.map((essay) => ({

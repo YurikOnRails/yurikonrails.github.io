@@ -3,6 +3,7 @@ import { Font } from 'astro:assets'
 import { ClientRouter } from 'astro:transitions'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
+import { SITE_NAME } from '../data/config'
 import '../styles/global.css'
 
 interface Props {
@@ -41,7 +42,7 @@ const structuredData = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} — Fieldnotes</title>
+    <title>{title} — {SITE_NAME}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl || Astro.url.href} />
 
@@ -62,6 +63,7 @@ const structuredData = {
 
     <Font cssVariable="--font-heading" />
     <Font cssVariable="--font-ui" />
+    <Font cssVariable="--font-body" />
 
     <slot name="head" />
 

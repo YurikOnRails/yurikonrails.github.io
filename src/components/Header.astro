@@ -1,13 +1,7 @@
 ---
 import Icon from './Icon.astro'
-
-const navLinks = [
-  { href: '/essays', label: 'Essays' },
-  { href: '/builds', label: 'Builds' },
-  { href: '/books', label: 'Books' },
-  { href: '/field', label: 'Field' },
-  { href: '/now', label: 'Now' },
-]
+import { navLinks } from '../data/navigation'
+import { SITE_NAME } from '../data/config'
 
 const currentPath = Astro.url.pathname
 ---
@@ -15,7 +9,7 @@ const currentPath = Astro.url.pathname
 <header class="fixed top-0 left-0 right-0 z-50 bg-base/80 backdrop-blur-md border-b border-subtle">
   <nav class="mx-auto flex max-w-[var(--container-grid)] items-center justify-between px-5 py-4" aria-label="Main navigation">
     <a href="/" class="font-[family-name:var(--font-heading)] text-lg text-primary hover:text-accent transition-colors">
-      Fieldnotes
+      {SITE_NAME}
     </a>
 
     {/* Desktop nav */}
@@ -53,7 +47,7 @@ const currentPath = Astro.url.pathname
   >
     <div class="flex items-center justify-between px-5 py-4 border-b border-subtle">
       <a href="/" class="font-[family-name:var(--font-heading)] text-lg text-primary">
-        Fieldnotes
+        {SITE_NAME}
       </a>
       <button
         id="menu-close"
