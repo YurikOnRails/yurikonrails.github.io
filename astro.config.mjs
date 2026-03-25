@@ -14,9 +14,9 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Prata',
+      name: 'Cormorant Garamond',
       cssVariable: '--font-heading',
-      weights: [400],
+      weights: [400, 600],
       subsets: ['latin', 'cyrillic'],
       display: 'swap',
     },
