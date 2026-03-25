@@ -93,7 +93,7 @@ const tocItems = headings.filter((h) => h.depth === 2)
     {/* TOC */}
     {tocItems.length > 1 && (
       <nav class="essay-fade mb-10 mx-auto max-w-[var(--container-prose)] px-5" style="animation-delay: 120ms">
-        <details class="bg-surface border border-subtle p-5">
+        <details class="rounded-sm bg-surface border border-subtle p-5">
           <summary class="text-xs font-[family-name:var(--font-mono)] text-secondary uppercase tracking-wider cursor-pointer select-none">Contents</summary>
           <ul class="space-y-2 mt-3">
             {tocItems.map((item) => (
