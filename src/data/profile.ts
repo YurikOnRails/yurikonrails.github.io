@@ -15,7 +15,7 @@ export const profile: Profile = {
   name: 'Yuri Konrails',
   bio: 'Building software, writing essays, photographing the world. Interested in systems, craft, and the spaces between.',
   avatar: '/avatar.avif',
-  location: 'Moscow, Russia',
+  location: '',
   social: {
     github: 'https://github.com/yurikonrails',
     telegram: 'https://t.me/yurikonrails',

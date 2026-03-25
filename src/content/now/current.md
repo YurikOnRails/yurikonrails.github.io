@@ -13,7 +13,3 @@ Working through "Seeing Like a State" by James C. Scott. Fascinating exploration
 ## Photography
 
 Processing photos from a recent trip to the Altai mountains. Learning AVIF workflows and color grading for web.
-
-## Location
-
-Moscow, Russia

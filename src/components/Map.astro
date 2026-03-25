@@ -25,8 +25,12 @@ const { lat, lng, title, photos = [] } = Astro.props
 >
   <div id="map" class="h-full w-full"></div>
 
-  {/* Gradient fade edges */}
-  <div class="pointer-events-none absolute inset-0 rounded-2xl" style="box-shadow: inset 0 0 40px 20px var(--color-base);"></div>
+  {/* Zoom controls */}
+  <div class="absolute bottom-3 right-3 flex flex-col gap-1 z-10">
+    <button id="map-zoom-in" class="map-zoom-btn" aria-label="Zoom in">+</button>
+    <button id="map-zoom-out" class="map-zoom-btn" aria-label="Zoom out">&minus;</button>
+  </div>
+
 </div>
 
 <script>
@@ -52,7 +56,7 @@ const { lat, lng, title, photos = [] } = Astro.props
       container: 'map',
       style: {
         version: 8,
-        name: 'Fieldnotes Ember',
+        name: 'Fieldnotes Ink',
         sources: {
           'openfree': {
             type: 'vector',
@@ -61,73 +65,136 @@ const { lat, lng, title, photos = [] } = Astro.props
         },
         glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
         layers: [
+          // Background = land
           {
             id: 'background',
             type: 'background',
-            paint: { 'background-color': '#0a0908' },
+            paint: { 'background-color': '#1e2028' },
           },
+          // Landcover (forest, grass, sand)
           {
-            id: 'water',
+            id: 'landcover',
             type: 'fill',
             source: 'openfree',
-            'source-layer': 'water',
-            paint: { 'fill-color': '#0c0a08' },
+            'source-layer': 'landcover',
+            paint: { 'fill-color': '#242630', 'fill-opacity': 0.3 },
           },
-          {
-            id: 'earth',
-            type: 'fill',
-            source: 'openfree',
-            'source-layer': 'earth',
-            paint: { 'fill-color': '#13100e' },
-          },
+          // Landuse (residential, industrial, etc)
           {
             id: 'landuse',
             type: 'fill',
             source: 'openfree',
             'source-layer': 'landuse',
-            paint: { 'fill-color': '#181412', 'fill-opacity': 0.6 },
+            paint: { 'fill-color': '#242630', 'fill-opacity': 0.3 },
           },
+          // Water (oceans, lakes)
           {
-            id: 'roads',
+            id: 'water',
+            type: 'fill',
+            source: 'openfree',
+            'source-layer': 'water',
+            paint: { 'fill-color': '#12161c' },
+          },
+          // Rivers, streams
+          {
+            id: 'waterway',
             type: 'line',
             source: 'openfree',
-            'source-layer': 'roads',
-            filter: ['in', 'kind', 'highway', 'major_road'],
+            'source-layer': 'waterway',
             paint: {
-              'line-color': '#2a211c',
-              'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.3, 12, 1.5],
-              'line-opacity': 0.5,
+              'line-color': '#12161c',
+              'line-width': ['interpolate', ['linear'], ['zoom'], 3, 0.5, 12, 2],
+            },
+          },
+          // Roads
+          {
+            id: 'transportation',
+            type: 'line',
+            source: 'openfree',
+            'source-layer': 'transportation',
+            paint: {
+              'line-color': '#2e303a',
+              'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.3, 12, 1.2],
+            },
+          },
+          // Country & state borders
+          {
+            id: 'boundary-country',
+            type: 'line',
+            source: 'openfree',
+            'source-layer': 'boundary',
+            filter: ['==', 'admin_level', 2],
+            paint: {
+              'line-color': '#52546a',
+              'line-width': 1.2,
             },
           },
           {
-            id: 'boundaries',
+            id: 'boundary-state',
             type: 'line',
             source: 'openfree',
-            'source-layer': 'boundaries',
+            'source-layer': 'boundary',
+            filter: ['==', 'admin_level', 4],
             paint: {
-              'line-color': '#2a211c',
-              'line-width': 0.5,
-              'line-dasharray': [4, 4],
-              'line-opacity': 0.4,
+              'line-color': '#3a3c4e',
+              'line-width': 0.6,
+              'line-dasharray': [6, 3],
             },
           },
+          // Water labels
           {
-            id: 'places',
+            id: 'water-name',
             type: 'symbol',
             source: 'openfree',
-            'source-layer': 'places',
-            filter: ['in', 'kind', 'country', 'state', 'city'],
+            'source-layer': 'water_name',
+            layout: {
+              'text-field': ['get', 'name'],
+              'text-font': ['Noto Sans Italic'],
+              'text-size': ['interpolate', ['linear'], ['zoom'], 3, 10, 8, 14],
+              'text-letter-spacing': 0.15,
+            },
+            paint: {
+              'text-color': '#3a4050',
+              'text-halo-color': '#12161c',
+              'text-halo-width': 1.5,
+            },
+          },
+          // Place labels
+          {
+            id: 'place-country',
+            type: 'symbol',
+            source: 'openfree',
+            'source-layer': 'place',
+            filter: ['==', 'class', 'country'],
             layout: {
               'text-field': ['get', 'name'],
               'text-font': ['Noto Sans Regular'],
-              'text-size': ['interpolate', ['linear'], ['zoom'], 3, 10, 8, 13],
+              'text-size': ['interpolate', ['linear'], ['zoom'], 2, 10, 6, 16],
               'text-transform': 'uppercase',
-              'text-letter-spacing': 0.1,
+              'text-letter-spacing': 0.2,
             },
             paint: {
-              'text-color': '#4a3d35',
-              'text-halo-color': '#0a0908',
-              'text-halo-width': 1.5,
+              'text-color': '#71717a',
+              'text-halo-color': '#1e2028',
+              'text-halo-width': 2,
+            },
+          },
+          {
+            id: 'place-city',
+            type: 'symbol',
+            source: 'openfree',
+            'source-layer': 'place',
+            filter: ['in', 'class', 'city', 'town'],
+            layout: {
+              'text-field': ['get', 'name'],
+              'text-font': ['Noto Sans Regular'],
+              'text-size': ['interpolate', ['linear'], ['zoom'], 5, 10, 12, 14],
+              'text-letter-spacing': 0.05,
+            },
+            paint: {
+              'text-color': '#5a5c68',
+              'text-halo-color': '#1e2028',
+              'text-halo-width': 2,
             },
           },
         ],
@@ -145,17 +212,16 @@ const { lat, lng, title, photos = [] } = Astro.props
       el.className = 'map-marker-main'
       el.innerHTML = `
         <div style="
-          width: 16px; height: 16px;
-          background: #c45d3e;
+          width: 12px; height: 12px;
+          background: #e8622c;
           border-radius: 50%;
-          box-shadow: 0 0 12px 4px rgba(196,93,62,0.4), 0 0 24px 8px rgba(196,93,62,0.15);
+          border: 2px solid #1e2028;
           position: relative;
         ">
           <div style="
-            position: absolute; inset: -8px;
-            border: 1.5px solid rgba(196,93,62,0.3);
+            position: absolute; inset: -6px;
+            border: 1.5px solid rgba(232,98,44,0.35);
             border-radius: 50%;
-            animation: map-pulse 2.5s ease-out infinite;
           "></div>
         </div>
       `
@@ -167,7 +233,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             offset: 16,
             closeButton: false,
             className: 'fieldnotes-popup',
-          }).setHTML(`<span style="font-size:13px;color:#e5ddd3;">${title}</span>`)
+          }).setHTML(`<span style="font-size:13px;color:#fafafa;">${title}</span>`)
         )
         .addTo(map)
 
@@ -180,20 +246,19 @@ const { lat, lng, title, photos = [] } = Astro.props
 
           const photoEl = document.createElement('div')
           photoEl.style.cssText = `
-            width: 8px; height: 8px;
-            background: rgba(196,93,62,0.6);
+            width: 7px; height: 7px;
+            background: #e8622c;
             border-radius: 50%;
-            border: 1px solid rgba(196,93,62,0.3);
+            border: 1.5px solid #1e2028;
             cursor: pointer;
-            transition: all 0.2s;
+            opacity: 0.6;
+            transition: opacity 0.15s;
           `
           photoEl.addEventListener('mouseenter', () => {
-            photoEl.style.transform = 'scale(1.8)'
-            photoEl.style.background = '#c45d3e'
+            photoEl.style.opacity = '1'
           })
           photoEl.addEventListener('mouseleave', () => {
-            photoEl.style.transform = 'scale(1)'
-            photoEl.style.background = 'rgba(196,93,62,0.6)'
+            photoEl.style.opacity = '0.6'
           })
           photoEl.addEventListener('click', () => {
             const photoEls = document.querySelectorAll('figure')
@@ -207,6 +272,11 @@ const { lat, lng, title, photos = [] } = Astro.props
             .addTo(map)
         })
       }
+
+      const zoomIn = document.getElementById('map-zoom-in')
+      const zoomOut = document.getElementById('map-zoom-out')
+      zoomIn?.addEventListener('click', () => map.zoomIn({ duration: 300 }))
+      zoomOut?.addEventListener('click', () => map.zoomOut({ duration: 300 }))
 
       map.flyTo({
         center: [lng, lat],
@@ -229,24 +299,40 @@ const { lat, lng, title, photos = [] } = Astro.props
 </script>
 
 <style is:global>
-  @keyframes map-pulse {
-    0% { transform: scale(1); opacity: 0.6; }
-    100% { transform: scale(3); opacity: 0; }
-  }
-
   .maplibregl-popup-content {
-    background: #1a1614 !important;
-    border: 1px solid rgba(196,93,62,0.08) !important;
-    border-radius: 0.75rem !important;
-    padding: 8px 12px !important;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+    background: #1e2028 !important;
+    border: 1px solid #3a3c48 !important;
+    border-radius: 0.5rem !important;
+    padding: 6px 10px !important;
+    box-shadow: none !important;
   }
 
   .maplibregl-popup-tip {
-    border-top-color: #1a1614 !important;
+    border-top-color: #1e2028 !important;
   }
 
   .maplibregl-ctrl-attrib {
     display: none !important;
+  }
+
+  .map-zoom-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #3a3c48;
+    background: #1e2028;
+    color: #6b6e7a;
+    font-size: 15px;
+    font-family: var(--font-mono);
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .map-zoom-btn:hover {
+    color: #fafafa;
   }
 </style>

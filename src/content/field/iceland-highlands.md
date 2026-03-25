@@ -10,13 +10,13 @@ tags:
   - landscape
   - iceland
   - summer
-cover: https://placehold.co/1280x854/13100e/6b5f56?text=Iceland+Highlands
+cover: https://placehold.co/1280x854/18181b/a1a1aa?text=Iceland+Highlands
 photos:
-  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Landmannalaugar+01
+  - src: https://placehold.co/1280x854/18181b/a1a1aa?text=Landmannalaugar+01
     caption: Rhyolite mountains at golden hour
-  - src: https://placehold.co/1280x854/13100e/6b5f56?text=River+Crossing
+  - src: https://placehold.co/1280x854/18181b/a1a1aa?text=River+Crossing
     caption: F-road river crossing
-  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Moss+Lava
+  - src: https://placehold.co/1280x854/18181b/a1a1aa?text=Moss+Lava
     caption: Moss-covered lava fields
 ---
 

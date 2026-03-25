@@ -17,26 +17,22 @@ const year = new Date().getFullYear()
   <div class="mx-auto max-w-[var(--container-grid)] px-5">
 
     {/* Main footer grid */}
-    <div class="grid grid-cols-1 gap-12 py-16 md:grid-cols-12 md:gap-8">
+    <div class="grid grid-cols-1 gap-8 py-10 md:grid-cols-12 md:gap-8">
 
       {/* Brand column */}
       <div class="md:col-span-5">
-        <a href="/" class="inline-block font-[family-name:var(--font-heading)] text-2xl text-primary hover:text-accent transition-colors">
+        <a href="/" class="inline-block font-[family-name:var(--font-heading)] text-xl text-primary hover:text-accent transition-colors">
           {SITE_NAME}
         </a>
-        <p class="mt-4 max-w-sm text-sm leading-relaxed text-secondary">
+        <p class="mt-3 max-w-sm text-sm leading-relaxed text-secondary">
           {profile.bio}
         </p>
-        <div class="mt-5 flex items-center gap-1.5 text-xs text-secondary">
-          <Icon name="map-pin" size={14} />
-          <span>{profile.location}</span>
-        </div>
       </div>
 
       {/* Navigation column */}
       <div class="md:col-span-3 md:col-start-7">
-        <h3 class="text-xs font-medium uppercase tracking-widest text-secondary mb-5">Navigate</h3>
-        <ul class="space-y-3">
+        <h3 class="text-xs font-medium uppercase tracking-widest text-secondary mb-4">Navigate</h3>
+        <ul class="space-y-2">
           {navLinks.map(({ href, label }) => (
             <li>
               <a
@@ -52,8 +48,8 @@ const year = new Date().getFullYear()
 
       {/* Connect column */}
       <div class="md:col-span-3">
-        <h3 class="text-xs font-medium uppercase tracking-widest text-secondary mb-5">Connect</h3>
-        <ul class="space-y-3">
+        <h3 class="text-xs font-medium uppercase tracking-widest text-secondary mb-4">Connect</h3>
+        <ul class="space-y-2">
           {socialLinks.map(({ href, label, icon }) => (
             <li>
               <a
@@ -71,16 +67,13 @@ const year = new Date().getFullYear()
       </div>
     </div>
 
-    {/* Divider */}
-    <div class="border-t border-subtle"></div>
-
     {/* Bottom bar */}
-    <div class="flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
+    <div class="border-t border-subtle flex flex-col items-center justify-between gap-3 py-6 md:flex-row">
       <p class="text-xs text-secondary">
-        &copy; {year} {profile.name}
+        &copy; {year} {profile.name}. Planet Earth.
       </p>
-      <p class="text-xs text-secondary/50">
-        Crafted with precision and dark roast coffee.
+      <p class="text-xs text-secondary/50 inline-flex items-center gap-1">
+        Built with <Icon name="heart" size={12} class="text-accent" /> curiosity and bad WiFi
       </p>
     </div>
 

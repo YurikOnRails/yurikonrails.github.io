@@ -10,13 +10,13 @@ tags:
   - mountains
   - autumn
   - russia
-cover: https://placehold.co/1280x854/13100e/6b5f56?text=Altai+Mountains
+cover: https://placehold.co/1280x854/18181b/a1a1aa?text=Altai+Mountains
 photos:
-  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Altai+01
+  - src: https://placehold.co/1280x854/18181b/a1a1aa?text=Altai+01
     caption: Dawn over Chulyshman valley
-  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Altai+02
+  - src: https://placehold.co/1280x854/18181b/a1a1aa?text=Altai+02
     caption: Golden larches at 2400m
-  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Altai+03
+  - src: https://placehold.co/1280x854/18181b/a1a1aa?text=Altai+03
     caption: Granite peaks in evening light
 ---
 
