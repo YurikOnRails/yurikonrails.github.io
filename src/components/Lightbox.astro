@@ -1,0 +1,131 @@
+---
+interface Props {
+  selector?: string
+}
+
+const { selector = 'img[class*="zoom-in"], img[style*="zoom-in"]' } = Astro.props
+---
+
+<div id="lightbox-overlay"></div>
+<img id="lightbox-ghost" />
+
+<style>
+  #lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0);
+    pointer-events: none;
+    transition: background 0.35s cubic-bezier(0.2, 0, 0, 1);
+  }
+  #lightbox-overlay.active {
+    background: rgba(0, 0, 0, 0.92);
+    pointer-events: auto;
+    cursor: zoom-out;
+  }
+  #lightbox-ghost {
+    position: fixed;
+    z-index: 101;
+    pointer-events: none;
+    visibility: hidden;
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0, 0, 1),
+      border-radius 0.35s cubic-bezier(0.2, 0, 0, 1);
+    transform-origin: center center;
+    max-width: none;
+  }
+  #lightbox-ghost.active {
+    visibility: visible;
+    pointer-events: auto;
+    cursor: zoom-out;
+  }
+</style>
+
+<script define:vars={{ selector }}>
+  function initLightbox() {
+    const overlay = document.getElementById('lightbox-overlay')
+    const ghost = document.getElementById('lightbox-ghost')
+    if (!overlay || !ghost) return
+
+    let sourceImg = null
+    let isOpen = false
+
+    function openLightbox(img) {
+      if (isOpen) return
+      isOpen = true
+      sourceImg = img
+
+      const rect = img.getBoundingClientRect()
+
+      ghost.src = img.src
+      ghost.style.left = rect.left + 'px'
+      ghost.style.top = rect.top + 'px'
+      ghost.style.width = rect.width + 'px'
+      ghost.style.height = rect.height + 'px'
+      ghost.style.transform = 'none'
+      ghost.style.borderRadius = getComputedStyle(img).borderRadius
+
+      ghost.offsetHeight
+
+      ghost.classList.add('active')
+      img.style.visibility = 'hidden'
+      overlay.classList.add('active')
+
+      const vw = window.innerWidth
+      const vh = window.innerHeight
+      const padding = 16
+      const maxW = vw - padding * 2
+      const maxH = vh - padding * 2
+
+      const natW = img.naturalWidth || rect.width
+      const natH = img.naturalHeight || rect.height
+      const scale = Math.min(maxW / natW, maxH / natH, 1)
+      const targetW = natW * scale
+      const targetH = natH * scale
+
+      const targetLeft = (vw - targetW) / 2
+      const targetTop = (vh - targetH) / 2
+
+      const tx = targetLeft - rect.left + (targetW - rect.width) / 2
+      const ty = targetTop - rect.top + (targetH - rect.height) / 2
+      const sx = targetW / rect.width
+      const sy = targetH / rect.height
+
+      requestAnimationFrame(() => {
+        ghost.style.transform = `translate(${tx}px, ${ty}px) scale(${sx}, ${sy})`
+        ghost.style.borderRadius = '0px'
+      })
+    }
+
+    function closeLightbox() {
+      if (!isOpen) return
+      isOpen = false
+
+      overlay.classList.remove('active')
+      ghost.style.transform = 'none'
+      ghost.style.borderRadius = sourceImg ? getComputedStyle(sourceImg).borderRadius : '0'
+
+      const onEnd = () => {
+        ghost.classList.remove('active')
+        if (sourceImg) sourceImg.style.visibility = ''
+        sourceImg = null
+        ghost.removeEventListener('transitionend', onEnd)
+      }
+      ghost.addEventListener('transitionend', onEnd)
+    }
+
+    document.querySelectorAll(selector).forEach((img) => {
+      img.style.cursor = 'zoom-in'
+      img.addEventListener('click', () => openLightbox(img))
+    })
+
+    overlay.addEventListener('click', closeLightbox)
+    ghost.addEventListener('click', closeLightbox)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox()
+    })
+  }
+
+  initLightbox()
+  document.addEventListener('astro:after-swap', initLightbox)
+</script>

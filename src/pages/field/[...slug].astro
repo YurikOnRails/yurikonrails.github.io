@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content'
 import Base from '../../layouts/Base.astro'
 import Icon from '../../components/Icon.astro'
 import Map from '../../components/Map.astro'
+import Lightbox from '../../components/Lightbox.astro'
 import { formatDate } from '../../lib/utils'
 
 export async function getStaticPaths() {
@@ -52,27 +53,25 @@ const photoMarkers = (photos || []).map((p, i) => ({
     </header>
 
     {/* MapLibre map */}
-    <div class="mb-12">
+    <div class="mb-12 mx-auto w-full max-w-[1400px] px-4">
       <Map lat={lat} lng={lng} title={title} photos={photoMarkers} />
     </div>
 
     {/* Photo grid */}
     {photos && photos.length > 0 && (
-      <div class="space-y-6 mb-12">
+      <div class="space-y-10 mb-12">
         {photos.map((photo, i) => (
-          <figure id={`photo-${i}`}>
-            <div class="overflow-hidden rounded-2xl">
-              <img
-                src={photo.src}
-                alt={photo.caption || title}
-                loading="lazy"
-                decoding="async"
-                class="w-full"
-              />
-            </div>
-            <div class="mt-2 flex items-center justify-center gap-3">
+          <figure id={`photo-${i}`} class="flex flex-col items-center">
+            <img
+              src={photo.src}
+              alt={photo.caption || title}
+              loading="lazy"
+              decoding="async"
+              class="w-[calc(100vw-2rem)] max-w-[1400px] cursor-zoom-in"
+            />
+            <div class="mt-3 flex items-center justify-center gap-3">
               {photo.caption && (
-                <figcaption class="text-sm text-secondary">
+                <figcaption class="photo-caption">
                   {photo.caption}
                 </figcaption>
               )}
@@ -146,4 +145,6 @@ const photoMarkers = (photos || []).map((p, i) => ({
     initCoordLinks()
     document.addEventListener('astro:after-swap', initCoordLinks)
   </script>
+
+  <Lightbox selector="figure img" />
 </Base>

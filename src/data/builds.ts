@@ -38,6 +38,16 @@ export const builds: Build[] = [
     startedOn: '2026-03-01',
   },
   {
+    title: 'Iron Concept',
+    description: 'Concept landing page for an industrial equipment brand. Clean, modern design built with HTML, CSS, and JavaScript.',
+    url: 'https://github.com/YurikOnRails/iron-concept',
+    icon: 'arrow-right',
+    status: 'active',
+    kind: 'oss',
+    progress: 7,
+    position: 3,
+  },
+  {
     title: 'Pathlog',
     description: 'GPS trail recorder with offline maps and auto-generated photo journals. Designed for backcountry trips without cell service.',
     icon: 'map-pin',

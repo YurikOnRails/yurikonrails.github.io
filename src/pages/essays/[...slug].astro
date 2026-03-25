@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content'
 import Base from '../../layouts/Base.astro'
 import Icon from '../../components/Icon.astro'
+import Lightbox from '../../components/Lightbox.astro'
 import { formatDate } from '../../lib/utils'
 import { getPublishedEssays } from '../../lib/content'
 
@@ -160,4 +161,5 @@ const tocItems = headings.filter((h) => h.depth === 2)
     }
   </style>
 
+  <Lightbox selector="#article-body img" />
 </Base>

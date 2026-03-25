@@ -16,7 +16,7 @@ I noticed this most acutely when switching from a traditional note-taking app to
 
 Consider what spreadsheets did to business thinking. Before spreadsheets, a financial projection was a narrative argument. After spreadsheets, it became a grid of interdependent cells. The spreadsheet didn't just make calculations faster — it made certain kinds of thinking easier and other kinds nearly impossible.
 
-![A valley where tools and landscape shape each other](/essays/tools-shape-thinking/valley-landscape.jpeg "wide")
+![A valley where tools and landscape shape each other](/essays/tools-shape-thinking/valley-landscape.jpeg)
 *A valley where tools and landscape shape each other*
 
 Try expressing a nuanced competitive analysis in a spreadsheet. Try capturing the emotional tone of a customer interview in rows and columns. The tool resists. And because the tool resists, we stop trying. We start asking only the questions our tools can answer.
@@ -73,7 +73,7 @@ The goal is not to escape influence. That's impossible. The goal is to know whic
 
 Tool choices compound. A team that uses Jira thinks about work differently than a team that uses linear text documents. Not because Jira is worse (or better), but because Jira's structure — epics, stories, points, sprints — becomes the team's ontology. They begin to see all work as stories with points in sprints. Work that doesn't fit the structure becomes invisible.
 
-![The landscape shapes thinking over time](/essays/tools-shape-thinking/valley-landscape.jpeg "wide")
+![The landscape shapes thinking over time](/essays/tools-shape-thinking/valley-landscape.jpeg)
 *The landscape shapes thinking over time*
 
 This compounding effect means that tool choices made early in a project's life have outsized influence on its trajectory. The database schema chosen in week one shapes the product's capabilities in year five:

@@ -17,23 +17,23 @@ Place images in `public/essays/<slug>/`. Reference them in markdown as `/essays/
 
 ### Two image modes
 
-**Normal width** -- for diagrams, screenshots, schemas. Stays within the text column with a small bleed:
+**Wide (default)** -- all images are displayed wide (up to 1400px, centered). No extra markup needed:
 
 ```markdown
-![Database schema diagram](/essays/my-post/schema.png)
+![Sunset over the mountains](/essays/my-post/sunset.jpeg)
 ```
 
-**Full width** -- for high-resolution travel photography, cinematic shots. Stretches edge-to-edge across the entire viewport. Add `"wide"` after the URL:
+**Narrow** -- for diagrams, screenshots, schemas. Stays within the text column. Add `"narrow"` after the URL:
 
 ```markdown
-![Sunset over the mountains](/essays/my-post/sunset.jpeg "wide")
+![Database schema diagram](/essays/my-post/schema.png "narrow")
 ```
 
 ### Guidelines
 
-- Use `"wide"` for landscape photography, travel shots, cinematic images
-- Keep diagrams, code screenshots, and schemas at normal width
-- Recommended resolution: 2000px+ wide for `"wide"` images, 1200px+ for normal
+- Photos are wide by default — no extra markup needed
+- Use `"narrow"` for diagrams, code screenshots, and schemas
+- Recommended resolution: 2000px+ wide for photos, 1200px+ for narrow
 - Formats: JPEG for photos, PNG for diagrams, AVIF/WebP for optimized delivery
 
 ## Images in field

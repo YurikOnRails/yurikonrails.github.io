@@ -7,7 +7,6 @@ import { SITE_NAME } from '../data/config'
 const socialLinks = [
   profile.social.github && { href: profile.social.github, label: 'GitHub', icon: 'github' },
   profile.social.telegram && { href: profile.social.telegram, label: 'Telegram', icon: 'telegram' },
-  { href: '/rss.xml', label: 'RSS', icon: 'rss' },
 ].filter(Boolean) as { href: string; label: string; icon: string }[]
 
 const year = new Date().getFullYear()
