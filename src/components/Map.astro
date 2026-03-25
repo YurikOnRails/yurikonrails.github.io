@@ -69,7 +69,7 @@ const { lat, lng, title, photos = [] } = Astro.props
           {
             id: 'background',
             type: 'background',
-            paint: { 'background-color': '#1e2028' },
+            paint: { 'background-color': '#18181b' },
           },
           // Landcover (forest, grass, sand)
           {
@@ -77,7 +77,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             type: 'fill',
             source: 'openfree',
             'source-layer': 'landcover',
-            paint: { 'fill-color': '#242630', 'fill-opacity': 0.3 },
+            paint: { 'fill-color': '#1f1f23', 'fill-opacity': 0.3 },
           },
           // Landuse (residential, industrial, etc)
           {
@@ -85,7 +85,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             type: 'fill',
             source: 'openfree',
             'source-layer': 'landuse',
-            paint: { 'fill-color': '#242630', 'fill-opacity': 0.3 },
+            paint: { 'fill-color': '#1f1f23', 'fill-opacity': 0.3 },
           },
           // Water (oceans, lakes)
           {
@@ -93,7 +93,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             type: 'fill',
             source: 'openfree',
             'source-layer': 'water',
-            paint: { 'fill-color': '#12161c' },
+            paint: { 'fill-color': '#09090b' },
           },
           // Rivers, streams
           {
@@ -102,7 +102,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             source: 'openfree',
             'source-layer': 'waterway',
             paint: {
-              'line-color': '#12161c',
+              'line-color': '#09090b',
               'line-width': ['interpolate', ['linear'], ['zoom'], 3, 0.5, 12, 2],
             },
           },
@@ -113,7 +113,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             source: 'openfree',
             'source-layer': 'transportation',
             paint: {
-              'line-color': '#2e303a',
+              'line-color': '#27272a',
               'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.3, 12, 1.2],
             },
           },
@@ -125,7 +125,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             'source-layer': 'boundary',
             filter: ['==', 'admin_level', 2],
             paint: {
-              'line-color': '#52546a',
+              'line-color': '#3f3f46',
               'line-width': 1.2,
             },
           },
@@ -136,7 +136,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             'source-layer': 'boundary',
             filter: ['==', 'admin_level', 4],
             paint: {
-              'line-color': '#3a3c4e',
+              'line-color': '#2e2e35',
               'line-width': 0.6,
               'line-dasharray': [6, 3],
             },
@@ -154,8 +154,8 @@ const { lat, lng, title, photos = [] } = Astro.props
               'text-letter-spacing': 0.15,
             },
             paint: {
-              'text-color': '#3a4050',
-              'text-halo-color': '#12161c',
+              'text-color': '#27272e',
+              'text-halo-color': '#09090b',
               'text-halo-width': 1.5,
             },
           },
@@ -175,7 +175,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             },
             paint: {
               'text-color': '#71717a',
-              'text-halo-color': '#1e2028',
+              'text-halo-color': '#18181b',
               'text-halo-width': 2,
             },
           },
@@ -192,8 +192,8 @@ const { lat, lng, title, photos = [] } = Astro.props
               'text-letter-spacing': 0.05,
             },
             paint: {
-              'text-color': '#5a5c68',
-              'text-halo-color': '#1e2028',
+              'text-color': '#52525b',
+              'text-halo-color': '#18181b',
               'text-halo-width': 2,
             },
           },
@@ -203,9 +203,8 @@ const { lat, lng, title, photos = [] } = Astro.props
       zoom: 7,
       attributionControl: false,
       pitchWithRotate: false,
+      cooperativeGestures: true,
     })
-
-    map.scrollZoom.disable()
 
     map.on('load', () => {
       const el = document.createElement('div')
@@ -215,7 +214,7 @@ const { lat, lng, title, photos = [] } = Astro.props
           width: 12px; height: 12px;
           background: #e8622c;
           border-radius: 50%;
-          border: 2px solid #1e2028;
+          border: 2px solid #18181b;
           position: relative;
         ">
           <div style="
@@ -249,7 +248,7 @@ const { lat, lng, title, photos = [] } = Astro.props
             width: 7px; height: 7px;
             background: #e8622c;
             border-radius: 50%;
-            border: 1.5px solid #1e2028;
+            border: 1.5px solid #18181b;
             cursor: pointer;
             opacity: 0.6;
             transition: opacity 0.15s;
@@ -300,7 +299,7 @@ const { lat, lng, title, photos = [] } = Astro.props
 
 <style is:global>
   .maplibregl-popup-content {
-    background: #1e2028 !important;
+    background: #18181b !important;
     border: 1px solid #3a3c48 !important;
     border-radius: 0.5rem !important;
     padding: 6px 10px !important;
@@ -308,7 +307,7 @@ const { lat, lng, title, photos = [] } = Astro.props
   }
 
   .maplibregl-popup-tip {
-    border-top-color: #1e2028 !important;
+    border-top-color: #18181b !important;
   }
 
   .maplibregl-ctrl-attrib {
@@ -323,8 +322,8 @@ const { lat, lng, title, photos = [] } = Astro.props
     justify-content: center;
     border-radius: 6px;
     border: 1px solid #3a3c48;
-    background: #1e2028;
-    color: #6b6e7a;
+    background: #18181b;
+    color: #71717a;
     font-size: 15px;
     font-family: var(--font-mono);
     line-height: 1;
