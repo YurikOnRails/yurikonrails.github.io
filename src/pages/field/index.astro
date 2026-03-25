@@ -16,7 +16,10 @@ const locations = series.map((s) => ({
   year: s.data.takenOn.getFullYear(),
 }))
 
-const years = [...new Set(series.map((s) => s.data.takenOn.getFullYear()))].sort((a, b) => b - a)
+const years = [...new Set(series.map((s) => s.data.takenOn.getFullYear()))].sort((a, b) => a - b)
+const tripsByYear = Object.fromEntries(
+  years.map((y) => [y, series.filter((s) => s.data.takenOn.getFullYear() === y).length])
+)
 ---
 
 <Base
@@ -36,21 +39,14 @@ const years = [...new Set(series.map((s) => s.data.takenOn.getFullYear()))].sort
 
     {/* Year filter */}
     {years.length > 0 && (
-      <div class="flex items-center gap-1 mb-8 overflow-x-auto scrollbar-none" id="year-filter">
-        <button
-          class="field-year-btn active"
-          data-year="all"
-        >
-          All
-        </button>
+      <div class="year-filter mb-10" id="year-filter">
         {years.map((year) => (
-          <button
-            class="field-year-btn"
-            data-year={year}
-          >
-            {year}
+          <button class="year-btn" data-year={year}>
+            {year}<sup>{tripsByYear[year]}</sup>
           </button>
         ))}
+        <span class="year-sep">·</span>
+        <button class="year-btn active" data-year="all">All</button>
       </div>
     )}
 
@@ -98,7 +94,7 @@ const years = [...new Set(series.map((s) => s.data.takenOn.getFullYear()))].sort
 
   <script>
     function initYearFilter() {
-      const buttons = document.querySelectorAll('.field-year-btn')
+      const buttons = document.querySelectorAll('.year-btn')
       const cards = document.querySelectorAll('.field-card')
       const globeContainer = document.getElementById('globe-container')
 
@@ -106,18 +102,29 @@ const years = [...new Set(series.map((s) => s.data.takenOn.getFullYear()))].sort
         btn.addEventListener('click', () => {
           const year = (btn as HTMLElement).dataset.year
 
-          // Update active button
           buttons.forEach((b) => b.classList.remove('active'))
           btn.classList.add('active')
 
-          // Filter cards
           cards.forEach((card) => {
-            const cardYear = (card as HTMLElement).dataset.year
+            const el = card as HTMLElement
+            const cardYear = el.dataset.year
             const show = year === 'all' || cardYear === year
-            ;(card as HTMLElement).style.display = show ? '' : 'none'
+
+            if (show) {
+              el.style.display = ''
+              requestAnimationFrame(() => {
+                el.classList.remove('field-card--hidden')
+              })
+            } else {
+              el.classList.add('field-card--hidden')
+              setTimeout(() => {
+                if (el.classList.contains('field-card--hidden')) {
+                  el.style.display = 'none'
+                }
+              }, 300)
+            }
           })
 
-          // Filter map markers
           if (globeContainer) {
             globeContainer.dispatchEvent(
               new CustomEvent('filter-year', { detail: { year } })
@@ -132,37 +139,60 @@ const years = [...new Set(series.map((s) => s.data.takenOn.getFullYear()))].sort
   </script>
 
   <style is:global>
-    .field-year-btn {
-      padding: 6px 16px;
-      font-size: 13px;
+    .year-filter {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 24px;
       font-family: var(--font-mono);
-      letter-spacing: 0.02em;
-      color: #52525b;
-      border-radius: 100px;
-      border: 1px solid transparent;
-      background: transparent;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-      white-space: nowrap;
-      line-height: 1;
     }
 
-    .field-year-btn:hover {
+    .year-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      color: #52525b;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .year-btn:hover {
       color: #a1a1aa;
     }
 
-    .field-year-btn.active {
+    .year-btn.active {
       color: #e8622c;
-      border-color: rgba(232, 98, 44, 0.25);
     }
 
-    .scrollbar-none {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    .year-btn sup {
+      font-size: 10px;
+      color: #3f3f46;
+      margin-left: 1px;
+      vertical-align: super;
+      transition: color 0.2s;
     }
 
-    .scrollbar-none::-webkit-scrollbar {
-      display: none;
+    .year-btn.active sup {
+      color: rgba(232, 98, 44, 0.5);
+    }
+
+    .year-sep {
+      color: #27272a;
+      font-size: 14px;
+      user-select: none;
+    }
+
+    /* Card transitions */
+    .field-card {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .field-card--hidden {
+      opacity: 0;
+      transform: translateY(8px);
     }
   </style>
 </Base>

@@ -1,0 +1,116 @@
+---
+import { getCollection, render } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+import Icon from '../../components/Icon.astro'
+
+export async function getStaticPaths() {
+  const books = await getCollection('books')
+  return books.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }))
+}
+
+const { entry } = Astro.props
+const { Content } = await render(entry)
+const { title, author, cover, status, rating, yearRead, keyIdea, tags } = entry.data
+
+const ratingColor: Record<string, string> = {
+  essential: 'text-accent bg-accent-dim',
+  good: 'text-secondary bg-subtle',
+  skip: 'text-[#3f3f46] bg-subtle',
+}
+---
+
+<Base
+  title={`${title} by ${author}`}
+  description={keyIdea}
+>
+  <article class="mx-auto max-w-[var(--container-grid)] px-5 pt-8 pb-24">
+    {/* Back link */}
+    <a href="/books" class="inline-flex items-center gap-1 text-sm text-secondary hover:text-accent transition-colors mb-8">
+      <Icon name="arrow-left" size={16} />
+      <span>All books</span>
+    </a>
+
+    {/* Cover */}
+    <div class="book-fade flex justify-center mb-10" style="animation-delay: 0ms">
+      <img
+        src={cover}
+        alt={`${title} by ${author}`}
+        class="w-56 md:w-72 rounded object-cover"
+        style="aspect-ratio: 2/3"
+      />
+    </div>
+
+    {/* Header */}
+    <header class="book-fade mb-10 max-w-[var(--container-prose)] mx-auto" style="animation-delay: 80ms">
+      <h1 class="text-3xl md:text-5xl leading-tight mb-3 text-center">{title}</h1>
+      <div class="flex flex-wrap items-center justify-center gap-3 text-sm text-secondary mb-4">
+        <span>{author}</span>
+        <span class="text-[#3f3f46]">·</span>
+        <span class="font-[family-name:var(--font-mono)]">{yearRead}</span>
+        {rating && (
+          <>
+            <span class="text-[#3f3f46]">·</span>
+            <span class:list={[
+              'font-[family-name:var(--font-mono)] text-xs px-1.5 py-0.5 rounded',
+              ratingColor[rating],
+            ]}>
+              {rating}
+            </span>
+          </>
+        )}
+        {status === 'reading' && (
+          <>
+            <span class="text-[#3f3f46]">·</span>
+            <span class="font-[family-name:var(--font-mono)] text-xs text-accent">reading</span>
+          </>
+        )}
+        {status === 'dropped' && (
+          <>
+            <span class="text-[#3f3f46]">·</span>
+            <span class="font-[family-name:var(--font-mono)] text-xs text-[#52525b]">dropped</span>
+          </>
+        )}
+      </div>
+
+      {tags && tags.length > 0 && (
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+          {tags.map((tag) => (
+            <span class="text-xs font-[family-name:var(--font-mono)] text-[#52525b] bg-subtle px-2 py-0.5 rounded">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Key idea as pull quote */}
+      <blockquote class="border-l-2 border-accent pl-4 text-lg italic text-secondary leading-relaxed">
+        {keyIdea}
+      </blockquote>
+    </header>
+
+    {/* Body */}
+    <div class="book-fade prose mx-auto max-w-[var(--container-prose)]" style="animation-delay: 160ms">
+      <Content />
+    </div>
+  </article>
+
+  <style>
+    @keyframes book-fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .book-fade {
+      animation: book-fade-in 0.5s ease both;
+    }
+  </style>
+</Base>
