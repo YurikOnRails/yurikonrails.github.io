@@ -14,7 +14,7 @@ export interface Profile {
 export const profile: Profile = {
   name: 'Yuri Konrails',
   bio: 'Building software, writing essays, photographing the world. Interested in systems, craft, and the spaces between.',
-  avatar: '/avatar.avif',
+  avatar: '/avatar.svg',
   location: '',
   social: {
     github: 'https://github.com/yurikonrails',

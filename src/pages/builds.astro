@@ -33,30 +33,31 @@ const heroSince = hero?.startedOn
           href={hero.url}
           target="_blank"
           rel="noopener noreferrer"
-          class="hero-build group block relative rounded-sm overflow-hidden transition-all duration-500 hover:shadow-[0_0_60px_rgba(232,98,44,0.08)]"
+          class="group block relative rounded-sm overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_60px_rgba(232,98,44,0.06)]"
         >
           {/* Cover image */}
-          <div class="relative aspect-[21/9] md:aspect-[2.4/1] overflow-hidden">
+          <div class="aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-base">
             <img
               src={hero.cover}
               alt={hero.title}
               loading="eager"
               decoding="async"
-              class="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+              class="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
             />
-            {/* Gradient overlay */}
-            <div class="absolute inset-0 bg-gradient-to-t from-base from-20% via-base/85 via-60% to-base/30" />
           </div>
 
-          {/* Content overlay — positioned over the image */}
-          <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
+          {/* Gradient — fully opaque bottom half, clean fade to transparent */}
+          <div class="absolute inset-0 hero-gradient" />
+
+          {/* Content — positioned at bottom over the opaque part of gradient */}
+          <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10">
             {/* Kind + Status */}
             <div class="flex items-center gap-3 mb-3">
-              <span class="font-[family-name:var(--font-mono)] text-[11px] text-secondary tracking-wider uppercase">
+              <span class="font-[family-name:var(--font-mono)] text-[11px] text-[#71717a] tracking-wider uppercase">
                 {kindLabel[hero.kind]}
               </span>
-              <span class="text-secondary/30">·</span>
-              <span class="font-[family-name:var(--font-mono)] text-xs text-secondary">
+              <span class="text-[#3f3f46]">·</span>
+              <span class="font-[family-name:var(--font-mono)] text-[11px] text-[#71717a]">
                 {hero.status}
               </span>
             </div>
@@ -71,12 +72,12 @@ const heroSince = hero?.startedOn
               {hero.description}
             </p>
 
-            {/* Stack + meta row */}
+            {/* Stack + Since */}
             <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
               {hero.stack && hero.stack.length > 0 && (
                 <div class="flex flex-wrap gap-1.5">
                   {hero.stack.map((tech) => (
-                    <span class="font-[family-name:var(--font-mono)] text-[11px] text-secondary/70 bg-white/[0.08] px-2 py-0.5 rounded">
+                    <span class="font-[family-name:var(--font-mono)] text-[11px] text-[#71717a] bg-white/[0.06] px-2 py-0.5 rounded">
                       {tech}
                     </span>
                   ))}
@@ -84,18 +85,18 @@ const heroSince = hero?.startedOn
               )}
               {heroSince && (
                 <>
-                  <span class="text-secondary/30 hidden md:inline">·</span>
-                  <span class="font-[family-name:var(--font-mono)] text-[11px] text-secondary/50">
+                  <span class="text-[#3f3f46] hidden md:inline">·</span>
+                  <span class="font-[family-name:var(--font-mono)] text-[11px] text-[#52525b]">
                     Since {heroSince}
                   </span>
                 </>
               )}
             </div>
+          </div>
 
-            {/* CTA arrow */}
-            <div class="absolute top-5 right-5 md:top-8 md:right-8 text-secondary/40 group-hover:text-accent transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-              <Icon name="arrow-up-right" size={20} />
-            </div>
+          {/* Arrow */}
+          <div class="absolute top-5 right-5 md:top-8 md:right-8 text-[#3f3f46] group-hover:text-accent transition-colors duration-300">
+            <Icon name="arrow-up-right" size={20} />
           </div>
         </a>
       </div>
@@ -163,6 +164,18 @@ const heroSince = hero?.startedOn
 
     .build-fade {
       animation: build-fade-in 0.6s ease both;
+    }
+
+    .hero-gradient {
+      background: linear-gradient(
+        to top,
+        #09090b 0%,
+        #09090b 25%,
+        rgba(9, 9, 11, 0.95) 35%,
+        rgba(9, 9, 11, 0.7) 50%,
+        rgba(9, 9, 11, 0.3) 65%,
+        transparent 80%
+      );
     }
   </style>
 </Base>

@@ -2,52 +2,434 @@
 import Base from '../layouts/Base.astro'
 import Icon from '../components/Icon.astro'
 import { profile } from '../data/profile'
+import { getPublishedEssays } from '../lib/content'
+import { getCollection } from 'astro:content'
+import { builds } from '../data/builds'
 
-const sections = [
-  { href: '/essays', title: 'Essays', description: 'Long-form writing on tech, travel, and ideas' },
-  { href: '/builds', title: 'Builds', description: 'Projects, tools, and communities' },
-  { href: '/books', title: 'Books', description: 'Reading log with ratings and takeaways' },
-  { href: '/field', title: 'Field', description: 'Travel photography with maps and stories' },
-  { href: '/now', title: 'Now', description: 'What I am doing right now' },
-]
+// Live content
+const essays = await getPublishedEssays()
+const latestEssay = essays[0]
+
+const allField = await getCollection('field')
+const fieldSorted = allField.sort((a, b) => b.data.takenOn.getTime() - a.data.takenOn.getTime())
+const latestField = fieldSorted[0]
+
+const allBooks = await getCollection('books')
+const currentlyReading = allBooks.find((b) => b.data.status === 'reading')
+const booksRead = allBooks.filter((b) => b.data.status === 'finished').length
+
+const activeBuilds = builds.filter((b) => b.status === 'active').length
+
+const nowEntries = await getCollection('now')
+const nowEntry = nowEntries[0]
+const nowDate = nowEntry?.data.updatedAt
+const daysSinceNow = nowDate ? Math.floor((Date.now() - nowDate.getTime()) / 86400000) : null
+const nowLabel = daysSinceNow === 0 ? 'today' : daysSinceNow === 1 ? 'yesterday' : daysSinceNow != null ? `${daysSinceNow}d ago` : ''
+const nowFresh = daysSinceNow != null && daysSinceNow < 14
 ---
 
 <Base
   title={profile.name}
   description={profile.bio}
 >
-  {/* Hero */}
-  <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-16 pb-20 md:pt-24 md:pb-28">
-    <div class="max-w-2xl">
-      <h1 class="text-4xl md:text-6xl leading-tight mb-6">
-        {profile.name}
-      </h1>
-      <p class="text-lg md:text-xl text-secondary leading-relaxed mb-4">
-        {profile.bio}
-      </p>
-    </div>
-  </section>
+  {/* Animated gradient mesh background */}
+  <div class="gradient-mesh" aria-hidden="true">
+    <div class="mesh-orb mesh-orb-1" />
+    <div class="mesh-orb mesh-orb-2" />
+    <div class="mesh-orb mesh-orb-3" />
+  </div>
 
-  {/* Section tiles */}
-  <section class="mx-auto max-w-[var(--container-grid)] px-5 pb-24">
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {sections.map(({ href, title, description }) => (
-        <a
-          href={href}
-          class="group rounded-sm border border-subtle bg-card p-6 md:p-8 transition-colors hover:bg-surface"
-        >
-          <h2 class="text-xl md:text-2xl font-[family-name:var(--font-heading)] mb-3 group-hover:text-accent transition-colors">
-            {title}
-          </h2>
-          <p class="text-sm text-secondary leading-relaxed">
-            {description}
-          </p>
-          <div class="mt-4 flex items-center gap-1 text-sm text-accent opacity-0 group-hover:opacity-100 transition-opacity">
-            <span>Explore</span>
-            <Icon name="arrow-right" size={16} />
+  {/* Single-screen layout */}
+  <section class="home-layout">
+    <div class="home-grid">
+
+      {/* ── Hero tile — identity ── */}
+      <div class="tile tile-hero hero-el" style="--delay: 0ms">
+        <div class="flex flex-col h-full justify-center">
+          {/* Avatar */}
+          <div class="relative w-20 h-20 md:w-24 md:h-24 mb-6 rounded-full overflow-hidden ring-1 ring-white/[0.08]">
+            <img
+              src={profile.avatar}
+              alt={profile.name}
+              class="h-full w-full object-cover"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+            />
+            <div class="hidden h-full w-full items-center justify-center bg-surface text-[#3f3f46] text-2xl font-[family-name:var(--font-heading)]">
+              {profile.name.split(' ').map((n) => n[0]).join('')}
+            </div>
           </div>
-        </a>
-      ))}
+
+          {/* Name */}
+          <h1 class="home-name mb-4">{profile.name}</h1>
+
+          {/* Bio */}
+          <p class="text-sm md:text-base leading-relaxed max-w-sm" style="color: #71717a">
+            {profile.bio}
+          </p>
+
+          {/* Social */}
+          <div class="flex items-center gap-4 mt-6">
+            {profile.social.github && (
+              <a href={profile.social.github} target="_blank" rel="noopener noreferrer" class="text-[#3f3f46] hover:text-primary transition-colors">
+                <Icon name="github" size={18} />
+              </a>
+            )}
+            {profile.social.telegram && (
+              <a href={profile.social.telegram} target="_blank" rel="noopener noreferrer" class="text-[#3f3f46] hover:text-primary transition-colors">
+                <Icon name="telegram" size={18} />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Field — photo tile ── */}
+      <a href="/field" class="tile tile-field group hero-el" style="--delay: 80ms">
+        {latestField?.data.cover && (
+          <img
+            src={latestField.data.cover}
+            alt={latestField.data.title}
+            loading="eager"
+            decoding="async"
+            class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          />
+        )}
+        <div class="absolute inset-0 field-gradient" />
+        <div class="relative h-full flex flex-col justify-end p-5 md:p-7">
+          <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase mb-1.5" style="color: #71717a">Field</span>
+          <span class="text-lg md:text-xl font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors leading-tight">
+            {latestField ? latestField.data.title : 'Travel photography'}
+          </span>
+          {latestField && (
+            <span class="mt-1 text-xs" style="color: #52525b">{latestField.data.location}</span>
+          )}
+          <span class="mt-1 font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">
+            {fieldSorted.length} series · {fieldSorted.reduce((sum, s) => sum + (s.data.photos?.length || 0), 0)} photos
+          </span>
+        </div>
+      </a>
+
+      {/* ── Essays ── */}
+      <a href="/essays" class="tile tile-essays group hero-el" style="--delay: 160ms">
+        <div class="p-5 md:p-7 h-full flex flex-col justify-between">
+          <div>
+            <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase" style="color: #52525b">Essays</span>
+            {latestEssay && (
+              <h2 class="mt-2 text-base md:text-lg font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors leading-snug">
+                {latestEssay.data.title}
+              </h2>
+            )}
+            {latestEssay && (
+              <p class="mt-1.5 text-xs line-clamp-2 leading-relaxed" style="color: #52525b">
+                {latestEssay.data.excerpt}
+              </p>
+            )}
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <span class="font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">{essays.length} essays</span>
+            <span class="text-[#3f3f46] group-hover:text-accent transition-colors"><Icon name="arrow-right" size={14} /></span>
+          </div>
+        </div>
+      </a>
+
+      {/* ── Builds ── */}
+      <a href="/builds" class="tile tile-builds group hero-el" style="--delay: 240ms">
+        <div class="p-5 md:p-7 h-full flex flex-col justify-between">
+          <div>
+            <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase" style="color: #52525b">Builds</span>
+            <div class="mt-2 flex items-baseline gap-1.5">
+              <span class="text-2xl md:text-3xl font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors">{activeBuilds}</span>
+              <span class="text-xs" style="color: #52525b">active</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <span class="font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">Projects</span>
+            <span class="text-[#3f3f46] group-hover:text-accent transition-colors"><Icon name="arrow-right" size={14} /></span>
+          </div>
+        </div>
+      </a>
+
+      {/* ── Books ── */}
+      <a href="/books" class="tile tile-books group hero-el" style="--delay: 320ms">
+        <div class="p-5 md:p-7 h-full flex flex-col justify-between">
+          <div>
+            <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase" style="color: #52525b">Books</span>
+            {currentlyReading ? (
+              <div class="mt-2">
+                <h2 class="text-sm md:text-base font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors leading-snug">
+                  {currentlyReading.data.title}
+                </h2>
+                <span class="text-xs" style="color: #52525b">{currentlyReading.data.author}</span>
+              </div>
+            ) : (
+              <div class="mt-2 flex items-baseline gap-1.5">
+                <span class="text-2xl md:text-3xl font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors">{booksRead}</span>
+                <span class="text-xs" style="color: #52525b">read</span>
+              </div>
+            )}
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <span class="font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">Reading log</span>
+            <span class="text-[#3f3f46] group-hover:text-accent transition-colors"><Icon name="arrow-right" size={14} /></span>
+          </div>
+        </div>
+      </a>
+
+      {/* ── Now ── */}
+      <a href="/now" class="tile tile-now group hero-el" style="--delay: 400ms">
+        <div class="p-5 md:p-7 h-full flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase" style="color: #52525b">Now</span>
+              {nowFresh && (
+                <span class="relative flex h-1.5 w-1.5">
+                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
+                  <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                </span>
+              )}
+            </div>
+            <p class="mt-2 text-xs leading-relaxed" style="color: #52525b">
+              Working, reading, exploring.
+            </p>
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <span class="font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">
+              {nowFresh ? `Updated ${nowLabel}` : 'Status'}
+            </span>
+            <span class="text-[#3f3f46] group-hover:text-accent transition-colors"><Icon name="arrow-right" size={14} /></span>
+          </div>
+        </div>
+      </a>
+
     </div>
   </section>
 </Base>
+
+<style>
+  /* ═══ Animated gradient mesh ═══ */
+  .gradient-mesh {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .mesh-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    will-change: transform;
+  }
+
+  .mesh-orb-1 {
+    width: 600px;
+    height: 600px;
+    background: rgba(232, 98, 44, 0.04);
+    top: -10%;
+    right: -5%;
+    animation: drift-1 25s ease-in-out infinite;
+  }
+
+  .mesh-orb-2 {
+    width: 500px;
+    height: 500px;
+    background: rgba(59, 130, 246, 0.03);
+    bottom: -15%;
+    left: -10%;
+    animation: drift-2 30s ease-in-out infinite;
+  }
+
+  .mesh-orb-3 {
+    width: 400px;
+    height: 400px;
+    background: rgba(127, 176, 105, 0.025);
+    top: 40%;
+    left: 50%;
+    animation: drift-3 20s ease-in-out infinite;
+  }
+
+  @keyframes drift-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-80px, 60px) scale(1.1); }
+    66% { transform: translate(40px, -40px) scale(0.95); }
+  }
+
+  @keyframes drift-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(60px, -50px) scale(1.05); }
+    66% { transform: translate(-40px, 30px) scale(1.1); }
+  }
+
+  @keyframes drift-3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-60px, -40px) scale(1.15); }
+  }
+
+  /* ═══ Single-screen layout ═══ */
+  .home-layout {
+    height: calc(100dvh - 4rem);
+    padding: 1rem;
+    display: flex;
+    align-items: stretch;
+  }
+
+  @media (min-width: 768px) {
+    .home-layout {
+      padding: 1.5rem;
+    }
+  }
+
+  .home-grid {
+    flex: 1;
+    display: grid;
+    gap: 0.625rem;
+    width: 100%;
+    max-width: var(--container-grid);
+    margin: 0 auto;
+
+    /* Mobile: scrollable single column */
+    grid-template-columns: 1fr;
+    grid-auto-rows: min-content;
+  }
+
+  /* Tablet: 2×3 */
+  @media (min-width: 768px) {
+    .home-grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+    }
+
+    .tile-hero  { grid-column: 1; grid-row: 1; }
+    .tile-field { grid-column: 2; grid-row: 1 / 3; }
+    .tile-essays { grid-column: 1; grid-row: 2; }
+    .tile-builds { grid-column: 1; grid-row: 3; }
+    .tile-books { grid-column: 2; grid-row: 3; }
+    .tile-now { display: none; }
+  }
+
+  /* Desktop: 4×2 bento */
+  @media (min-width: 1024px) {
+    .home-grid {
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .tile-hero   { grid-column: 1; grid-row: 1 / 3; }
+    .tile-field  { grid-column: 2; grid-row: 1 / 3; }
+    .tile-essays { grid-column: 3 / 5; grid-row: 1; }
+    .tile-builds { grid-column: 3; grid-row: 2; }
+    .tile-books  { grid-column: 4; grid-row: 2; }
+    .tile-now    { display: none; }
+  }
+
+  /* Wide desktop: show Now tile */
+  @media (min-width: 1280px) {
+    .home-grid {
+      grid-template-columns: 1.3fr 1fr 1fr 0.8fr 0.8fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .tile-hero   { grid-column: 1; grid-row: 1 / 3; }
+    .tile-field  { grid-column: 2; grid-row: 1 / 3; }
+    .tile-essays { grid-column: 3 / 6; grid-row: 1; }
+    .tile-builds { grid-column: 3; grid-row: 2; }
+    .tile-books  { grid-column: 4; grid-row: 2; }
+    .tile-now    { display: flex; grid-column: 5; grid-row: 2; }
+  }
+
+  /* ═══ Tiles ═══ */
+  .tile {
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: rgba(39, 39, 42, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: background 0.3s, border-color 0.3s;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+  }
+
+  .tile:hover {
+    background: rgba(39, 39, 42, 0.7);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .tile-hero {
+    padding: 1.5rem;
+    cursor: default;
+  }
+
+  @media (min-width: 768px) {
+    .tile-hero {
+      padding: 2rem;
+    }
+  }
+
+  .tile-field {
+    background: var(--color-card);
+    backdrop-filter: none;
+  }
+
+  .home-name {
+    font-family: var(--font-heading);
+    font-weight: 300;
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+  }
+
+  /* Field gradient */
+  .field-gradient {
+    background: linear-gradient(
+      to top,
+      #09090b 0%,
+      #09090b 10%,
+      rgba(9, 9, 11, 0.85) 30%,
+      rgba(9, 9, 11, 0.3) 60%,
+      transparent 100%
+    );
+  }
+
+  /* Staggered reveal */
+  .hero-el {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: tile-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes tile-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Mobile: allow scroll */
+  @media (max-width: 767px) {
+    .home-layout {
+      height: auto;
+      min-height: calc(100dvh - 4rem);
+    }
+
+    .home-grid {
+      gap: 0.75rem;
+    }
+
+    .tile-hero {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .tile-field {
+      min-height: 280px;
+    }
+
+    .tile-now {
+      display: flex;
+    }
+  }
+</style>
