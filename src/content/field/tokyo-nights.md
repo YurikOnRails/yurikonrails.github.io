@@ -10,13 +10,13 @@ tags:
   - urban
   - night
   - japan
-cover: https://placehold.co/1280x854/111a15/5a6e62?text=Tokyo+Nights
+cover: https://placehold.co/1280x854/13100e/6b5f56?text=Tokyo+Nights
 photos:
-  - src: https://placehold.co/1280x854/111a15/5a6e62?text=Shinjuku+01
+  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Shinjuku+01
     caption: Shinjuku crossing in the rain
-  - src: https://placehold.co/1280x854/111a15/5a6e62?text=Golden+Gai
+  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Golden+Gai
     caption: Golden Gai alley at 2am
-  - src: https://placehold.co/1280x854/111a15/5a6e62?text=Shibuya+01
+  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Shibuya+01
     caption: Shibuya reflections
 ---
 

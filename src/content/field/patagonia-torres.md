@@ -10,13 +10,13 @@ tags:
   - mountains
   - patagonia
   - trek
-cover: https://placehold.co/1280x854/111a15/5a6e62?text=Torres+del+Paine
+cover: https://placehold.co/1280x854/13100e/6b5f56?text=Torres+del+Paine
 photos:
-  - src: https://placehold.co/1280x854/111a15/5a6e62?text=Torres+01
+  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Torres+01
     caption: The three towers at sunrise
-  - src: https://placehold.co/1280x854/111a15/5a6e62?text=Glacier+Grey
+  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Glacier+Grey
     caption: Glacier Grey calving into the lake
-  - src: https://placehold.co/1280x854/111a15/5a6e62?text=Guanaco
+  - src: https://placehold.co/1280x854/13100e/6b5f56?text=Guanaco
     caption: Guanaco on the steppe
 ---
 
