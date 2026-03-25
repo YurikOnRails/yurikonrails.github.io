@@ -31,12 +31,12 @@ const year = new Date().getFullYear()
       {/* Navigation column */}
       <div class="md:col-span-3 md:col-start-7">
         <h3 class="text-xs font-medium uppercase tracking-widest text-secondary mb-4">Navigate</h3>
-        <ul class="space-y-2">
+        <ul class="space-y-0">
           {navLinks.map(({ href, label }) => (
             <li>
               <a
                 href={href}
-                class="text-sm text-primary/70 hover:text-accent transition-colors"
+                class="block py-1.5 text-sm text-primary/70 hover:text-accent transition-colors"
               >
                 {label}
               </a>
@@ -48,14 +48,14 @@ const year = new Date().getFullYear()
       {/* Connect column */}
       <div class="md:col-span-3">
         <h3 class="text-xs font-medium uppercase tracking-widest text-secondary mb-4">Connect</h3>
-        <ul class="space-y-2">
+        <ul class="space-y-0">
           {socialLinks.map(({ href, label, icon }) => (
             <li>
               <a
                 href={href}
                 target={href.startsWith('/') ? undefined : '_blank'}
                 rel={href.startsWith('/') ? undefined : 'noopener noreferrer'}
-                class="inline-flex items-center gap-2 text-sm text-primary/70 hover:text-accent transition-colors"
+                class="inline-flex items-center gap-2 py-1.5 text-sm text-primary/70 hover:text-accent transition-colors"
               >
                 <Icon name={icon} size={16} />
                 <span>{label}</span>

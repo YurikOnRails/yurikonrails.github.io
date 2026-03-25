@@ -54,16 +54,12 @@ The lesson is not that tools are bad, or that we should resist their influence. 
 
 Here is a simple exercise I do every quarter — a tool audit:
 
-```markdown
-## Tool Audit — Q1 2026
-
 | Tool        | What it encourages       | What it suppresses        |
 |-------------|--------------------------|---------------------------|
 | Obsidian    | Linking, fragmentation   | Linear narrative          |
 | Figma       | Collaboration, polish    | Rough sketching, speed    |
 | Linear      | Velocity, throughput     | Ambiguity, exploration    |
 | Terminal    | Precision, composability | Discoverability           |
-```
 
 And periodically, put the tool down entirely. Write by hand. Think without software. Not because analog is better — it isn't, necessarily — but because the gap between tool-shaped thinking and unmediated thinking reveals the shape of the tool itself.
 

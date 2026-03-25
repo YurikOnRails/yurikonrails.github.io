@@ -34,7 +34,7 @@ const photoMarkers = (photos || []).map((p, i) => ({
   description={description}
   image={cover}
 >
-  <article class="mx-auto max-w-[var(--container-grid)] px-5 pt-8 pb-24">
+  <article class="mx-auto max-w-[var(--container-grid)] px-5 pt-8 pb-24 overflow-visible">
     {/* Back link */}
     <a href="/field" class="inline-flex items-center gap-1 text-sm text-secondary hover:text-accent transition-colors mb-8">
       <Icon name="arrow-left" size={16} />
@@ -53,13 +53,13 @@ const photoMarkers = (photos || []).map((p, i) => ({
     </header>
 
     {/* MapLibre map */}
-    <div class="mb-12 mx-auto w-full max-w-[1400px] px-4">
+    <div class="mb-12 max-w-[1400px]" style="width: calc(100vw - 2rem); margin-left: calc(50% - min(50vw - 1rem, 700px));">
       <Map lat={lat} lng={lng} title={title} photos={photoMarkers} />
     </div>
 
     {/* Photo grid */}
     {photos && photos.length > 0 && (
-      <div class="space-y-10 mb-12">
+      <div class="space-y-6 mb-12">
         {photos.map((photo, i) => (
           <figure id={`photo-${i}`} class="flex flex-col items-center">
             <img
@@ -69,7 +69,7 @@ const photoMarkers = (photos || []).map((p, i) => ({
               decoding="async"
               class="w-[calc(100vw-2rem)] max-w-[1400px] cursor-zoom-in"
             />
-            <div class="mt-3 flex items-center justify-center gap-3">
+            <div class="mt-2 flex items-center justify-center gap-3">
               {photo.caption && (
                 <figcaption class="photo-caption">
                   {photo.caption}
@@ -79,7 +79,7 @@ const photoMarkers = (photos || []).map((p, i) => ({
                 <>
                   {photo.caption && <span class="text-subtle">·</span>}
                   <button
-                    class="photo-coords text-xs text-secondary/50 hover:text-accent transition-colors font-[family-name:var(--font-mono)]"
+                    class="photo-coords text-xs text-secondary/50 hover:text-accent transition-colors font-[family-name:var(--font-mono)] py-2 px-1"
                     data-lat={photo.lat}
                     data-lng={photo.lng}
                   >

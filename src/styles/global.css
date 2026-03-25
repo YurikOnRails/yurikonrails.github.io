@@ -34,6 +34,7 @@ html {
 
 body {
   min-height: 100dvh;
+  overflow-x: hidden;
 }
 
 /* Typography hierarchy */
@@ -178,7 +179,7 @@ html.lenis, html.lenis body {
 .prose pre {
   background: var(--color-surface);
   border: 1px solid var(--color-subtle);
-  border-radius: 0.75rem;
+  border-radius: 0;
   padding: 1.25rem;
   overflow-x: auto;
   margin: 2rem 0;
@@ -221,26 +222,17 @@ html.lenis, html.lenis body {
   }
 }
 
-/* Shared photo caption style */
-.photo-caption {
-  text-align: center;
-  font-family: var(--font-heading);
-  font-size: 0.9rem;
-  letter-spacing: 0.02em;
-  color: #71717a;
-  font-style: italic;
-}
-
-/* Image captions in prose — *Caption* on next line after image (same <p>) */
+/* Photo captions — shared style for field (.photo-caption) and essays (em after img) */
+.photo-caption,
 .prose p:has(> img) > em:last-child {
   display: block;
   text-align: center;
   font-family: var(--font-heading);
   font-size: 0.9rem;
   letter-spacing: 0.02em;
-  color: #71717a;
+  color: #a1a1aa;
   font-style: italic;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .prose p:has(> img) > img {
@@ -251,6 +243,43 @@ html.lenis, html.lenis body {
   border: none;
   border-top: 1px solid var(--color-subtle);
   margin: 3rem 0;
+}
+
+/* Tables — wrap in scrollable container via display trick */
+.prose :where(table) {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-size: 0.85rem;
+}
+
+.prose th {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #52525b;
+  text-align: left;
+  padding: 0 1rem 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.prose td {
+  padding: 0.6rem 1rem 0.6rem 0;
+  color: #a1a1aa;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.prose tr:last-child td {
+  border-bottom: none;
+}
+
+.prose td:first-child {
+  color: var(--color-primary);
 }
 
 /* Drop cap — first letter of first paragraph */

@@ -18,7 +18,7 @@ const { locations } = Astro.props
 <div
   id="globe-container"
   class="relative w-full rounded-2xl border border-subtle overflow-hidden"
-  style="height: 520px"
+  style="height: clamp(320px, 60vh, 520px)"
   data-locations={JSON.stringify(locations)}
 >
   <div id="globe" class="h-full w-full"></div>
@@ -301,6 +301,8 @@ const { locations } = Astro.props
 <style is:global>
   .globe-marker {
     transition: transform 0.2s ease, opacity 0.4s ease;
+    padding: 10px;
+    margin: -10px;
   }
 
   .globe-marker:hover {

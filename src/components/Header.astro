@@ -32,7 +32,7 @@ const currentPath = Astro.url.pathname
     {/* Mobile burger */}
     <button
       id="menu-toggle"
-      class="md:hidden text-secondary hover:text-primary transition-colors"
+      class="md:hidden flex items-center justify-center w-11 h-11 -mr-2 text-secondary hover:text-primary transition-colors"
       aria-label="Open menu"
       aria-expanded="false"
     >
@@ -51,7 +51,7 @@ const currentPath = Astro.url.pathname
       </a>
       <button
         id="menu-close"
-        class="text-secondary hover:text-primary transition-colors"
+        class="flex items-center justify-center w-11 h-11 -mr-2 text-secondary hover:text-primary transition-colors"
         aria-label="Close menu"
       >
         <Icon name="x" />
