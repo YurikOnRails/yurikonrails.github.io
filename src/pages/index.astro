@@ -32,185 +32,265 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
   title={profile.name}
   description={profile.bio}
 >
-  {/* Animated gradient mesh background */}
+  {/* ── Animated gradient mesh ── */}
   <div class="gradient-mesh" aria-hidden="true">
-    <div class="mesh-orb mesh-orb-1" />
-    <div class="mesh-orb mesh-orb-2" />
-    <div class="mesh-orb mesh-orb-3" />
+    <div class="mesh-orb mesh-orb-warm" />
+    <div class="mesh-orb mesh-orb-cold" />
+    <div class="mesh-orb mesh-orb-green" />
   </div>
 
-  {/* Single-screen layout */}
+  {/* ── Film grain noise overlay ── */}
+  <svg class="noise-overlay" aria-hidden="true">
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain)" />
+  </svg>
+
+  {/* ── Centered composition ── */}
   <section class="home-layout">
-    <div class="home-grid">
+    <div class="home-center">
 
-      {/* ── Hero tile — identity ── */}
-      <div class="tile tile-hero hero-el" style="--delay: 0ms">
-        <div class="flex flex-col h-full justify-center">
-          {/* Avatar */}
-          <div class="relative w-20 h-20 md:w-24 md:h-24 mb-6 rounded-full overflow-hidden ring-1 ring-white/[0.08]">
-            <img
-              src={profile.avatar}
-              alt={profile.name}
-              class="h-full w-full object-cover"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-            />
-            <div class="hidden h-full w-full items-center justify-center bg-surface text-[#3f3f46] text-2xl font-[family-name:var(--font-heading)]">
-              {profile.name.split(' ').map((n) => n[0]).join('')}
-            </div>
-          </div>
-
-          {/* Name */}
-          <h1 class="home-name mb-4">{profile.name}</h1>
-
-          {/* Bio */}
-          <p class="text-sm md:text-base leading-relaxed max-w-sm" style="color: #71717a">
-            {profile.bio}
-          </p>
-
-          {/* Social */}
-          <div class="flex items-center gap-4 mt-6">
-            {profile.social.github && (
-              <a href={profile.social.github} target="_blank" rel="noopener noreferrer" class="text-[#3f3f46] hover:text-primary transition-colors">
-                <Icon name="github" size={18} />
-              </a>
-            )}
-            {profile.social.telegram && (
-              <a href={profile.social.telegram} target="_blank" rel="noopener noreferrer" class="text-[#3f3f46] hover:text-primary transition-colors">
-                <Icon name="telegram" size={18} />
-              </a>
-            )}
-          </div>
+      {/* Avatar */}
+      <div class="hero-avatar" id="hero-avatar">
+        <img
+          src={profile.avatar}
+          alt={profile.name}
+          class="h-full w-full object-cover"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+        />
+        <div class="hidden h-full w-full items-center justify-center bg-surface text-[#3f3f46] text-3xl font-[family-name:var(--font-heading)]">
+          {profile.name.split(' ').map((n) => n[0]).join('')}
         </div>
       </div>
 
-      {/* ── Field — photo tile ── */}
-      <a href="/field" class="tile tile-field group hero-el" style="--delay: 80ms">
-        {latestField?.data.cover && (
-          <img
-            src={latestField.data.cover}
-            alt={latestField.data.title}
-            loading="eager"
-            decoding="async"
-            class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-          />
+      {/* Name */}
+      <h1 class="home-name" id="hero-name">{profile.name}</h1>
+
+      {/* Bio */}
+      <p class="home-bio" id="hero-bio">
+        {profile.bio}
+      </p>
+
+      {/* Divider */}
+      <div class="home-divider" id="hero-divider" />
+
+      {/* Nav grid — live data links */}
+      <nav class="home-nav" id="hero-nav">
+        <a href="/field" class="nav-item" data-nav>
+          <span class="nav-label">Field</span>
+          <span class="nav-sep">·</span>
+          <span class="nav-value">
+            <span class="nav-count" data-count={fieldSorted.length}>{fieldSorted.length}</span> series
+          </span>
+        </a>
+
+        <a href="/essays" class="nav-item" data-nav>
+          <span class="nav-label">Essays</span>
+          <span class="nav-sep">·</span>
+          <span class="nav-value">
+            <span class="nav-count" data-count={essays.length}>{essays.length}</span> published
+          </span>
+        </a>
+
+        <a href="/books" class="nav-item" data-nav>
+          <span class="nav-label">Books</span>
+          <span class="nav-sep">·</span>
+          <span class="nav-value">
+            {currentlyReading
+              ? <span class="nav-reading">{currentlyReading.data.title}</span>
+              : <><span class="nav-count" data-count={booksRead}>{booksRead}</span> read</>
+            }
+          </span>
+        </a>
+
+        <a href="/builds" class="nav-item" data-nav>
+          <span class="nav-label">Builds</span>
+          <span class="nav-sep">·</span>
+          <span class="nav-value">
+            <span class="nav-count" data-count={activeBuilds}>{activeBuilds}</span> active
+          </span>
+        </a>
+      </nav>
+
+      {/* Now — standalone centered */}
+      <a href="/now" class="now-link" id="hero-now" data-nav>
+        <span class="nav-label">Now</span>
+        {nowFresh && (
+          <span class="now-indicator">
+            <span class="now-ping" />
+            <span class="now-dot" />
+          </span>
         )}
-        <div class="absolute inset-0 field-gradient" />
-        <div class="relative h-full flex flex-col justify-end p-5 md:p-7">
-          <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase mb-1.5" style="color: #71717a">Field</span>
-          <span class="text-lg md:text-xl font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors leading-tight">
-            {latestField ? latestField.data.title : 'Travel photography'}
-          </span>
-          {latestField && (
-            <span class="mt-1 text-xs" style="color: #52525b">{latestField.data.location}</span>
-          )}
-          <span class="mt-1 font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">
-            {fieldSorted.length} series · {fieldSorted.reduce((sum, s) => sum + (s.data.photos?.length || 0), 0)} photos
-          </span>
-        </div>
+        <span class="nav-value now-meta">
+          {nowFresh ? `Updated ${nowLabel}` : 'Status'}
+        </span>
       </a>
 
-      {/* ── Essays ── */}
-      <a href="/essays" class="tile tile-essays group hero-el" style="--delay: 160ms">
-        <div class="p-5 md:p-7 h-full flex flex-col justify-between">
-          <div>
-            <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase" style="color: #52525b">Essays</span>
-            {latestEssay && (
-              <h2 class="mt-2 text-base md:text-lg font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors leading-snug">
-                {latestEssay.data.title}
-              </h2>
-            )}
-            {latestEssay && (
-              <p class="mt-1.5 text-xs line-clamp-2 leading-relaxed" style="color: #52525b">
-                {latestEssay.data.excerpt}
-              </p>
-            )}
-          </div>
-          <div class="flex items-center justify-between mt-3">
-            <span class="font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">{essays.length} essays</span>
-            <span class="text-[#3f3f46] group-hover:text-accent transition-colors"><Icon name="arrow-right" size={14} /></span>
-          </div>
-        </div>
-      </a>
-
-      {/* ── Builds ── */}
-      <a href="/builds" class="tile tile-builds group hero-el" style="--delay: 240ms">
-        <div class="p-5 md:p-7 h-full flex flex-col justify-between">
-          <div>
-            <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase" style="color: #52525b">Builds</span>
-            <div class="mt-2 flex items-baseline gap-1.5">
-              <span class="text-2xl md:text-3xl font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors">{activeBuilds}</span>
-              <span class="text-xs" style="color: #52525b">active</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between mt-3">
-            <span class="font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">Projects</span>
-            <span class="text-[#3f3f46] group-hover:text-accent transition-colors"><Icon name="arrow-right" size={14} /></span>
-          </div>
-        </div>
-      </a>
-
-      {/* ── Books ── */}
-      <a href="/books" class="tile tile-books group hero-el" style="--delay: 320ms">
-        <div class="p-5 md:p-7 h-full flex flex-col justify-between">
-          <div>
-            <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase" style="color: #52525b">Books</span>
-            {currentlyReading ? (
-              <div class="mt-2">
-                <h2 class="text-sm md:text-base font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors leading-snug">
-                  {currentlyReading.data.title}
-                </h2>
-                <span class="text-xs" style="color: #52525b">{currentlyReading.data.author}</span>
-              </div>
-            ) : (
-              <div class="mt-2 flex items-baseline gap-1.5">
-                <span class="text-2xl md:text-3xl font-[family-name:var(--font-heading)] text-primary group-hover:text-accent transition-colors">{booksRead}</span>
-                <span class="text-xs" style="color: #52525b">read</span>
-              </div>
-            )}
-          </div>
-          <div class="flex items-center justify-between mt-3">
-            <span class="font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">Reading log</span>
-            <span class="text-[#3f3f46] group-hover:text-accent transition-colors"><Icon name="arrow-right" size={14} /></span>
-          </div>
-        </div>
-      </a>
-
-      {/* ── Now ── */}
-      <a href="/now" class="tile tile-now group hero-el" style="--delay: 400ms">
-        <div class="p-5 md:p-7 h-full flex flex-col justify-between">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-[family-name:var(--font-mono)] text-[10px] tracking-wider uppercase" style="color: #52525b">Now</span>
-              {nowFresh && (
-                <span class="relative flex h-1.5 w-1.5">
-                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
-                  <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                </span>
-              )}
-            </div>
-            <p class="mt-2 text-xs leading-relaxed" style="color: #52525b">
-              Working, reading, exploring.
-            </p>
-          </div>
-          <div class="flex items-center justify-between mt-3">
-            <span class="font-[family-name:var(--font-mono)] text-[10px]" style="color: #3f3f46">
-              {nowFresh ? `Updated ${nowLabel}` : 'Status'}
-            </span>
-            <span class="text-[#3f3f46] group-hover:text-accent transition-colors"><Icon name="arrow-right" size={14} /></span>
-          </div>
-        </div>
-      </a>
+      {/* Social */}
+      <div class="home-social" id="hero-social">
+        {profile.social.github && (
+          <a href={profile.social.github} target="_blank" rel="noopener noreferrer" class="social-link">
+            <Icon name="github" size={16} />
+          </a>
+        )}
+        {profile.social.telegram && (
+          <a href={profile.social.telegram} target="_blank" rel="noopener noreferrer" class="social-link">
+            <Icon name="telegram" size={16} />
+          </a>
+        )}
+      </div>
 
     </div>
   </section>
 </Base>
 
+{/* ── GSAP entrance choreography ── */}
+<script>
+  import { gsap } from 'gsap'
+  import { SplitText } from 'gsap/SplitText'
+
+  gsap.registerPlugin(SplitText)
+
+  function initHomeAnimation() {
+    const nameEl = document.getElementById('hero-name')
+    const avatarEl = document.getElementById('hero-avatar')
+    const bioEl = document.getElementById('hero-bio')
+    const dividerEl = document.getElementById('hero-divider')
+    const navEl = document.getElementById('hero-nav')
+    const nowEl = document.getElementById('hero-now')
+    const socialEl = document.getElementById('hero-social')
+
+    if (!nameEl) return
+
+    // Split name into characters
+    const split = new SplitText(nameEl, {
+      type: 'chars',
+      charsClass: 'char',
+    })
+
+    const navItems = navEl ? navEl.querySelectorAll('[data-nav]') : []
+    const allNavItems = [...navItems, nowEl].filter(Boolean)
+    const counters = document.querySelectorAll('.nav-count')
+
+    // Set initial states
+    gsap.set(avatarEl, { opacity: 0, scale: 0.85 })
+    gsap.set(split.chars, { yPercent: 110, opacity: 0 })
+    gsap.set(bioEl, { opacity: 0, y: 12 })
+    gsap.set(dividerEl, { scaleX: 0 })
+    gsap.set(allNavItems, { opacity: 0, y: 8 })
+    gsap.set(socialEl, { opacity: 0 })
+
+    // Set counters to 0 initially
+    counters.forEach((c) => {
+      const target = parseInt(c.dataset.count || '0', 10)
+      c.textContent = '0'
+      c._countTarget = target
+    })
+
+    // Build timeline
+    const tl = gsap.timeline({
+      defaults: { ease: 'power3.out' },
+      delay: 0.15,
+    })
+
+    // 1. Avatar
+    tl.to(avatarEl, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.5,
+    })
+
+    // 2. Name — character reveal
+    tl.to(split.chars, {
+      yPercent: 0,
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.03,
+    }, '-=0.3')
+
+    // 3. Bio
+    tl.to(bioEl, {
+      opacity: 1,
+      y: 0,
+      duration: 0.4,
+    }, '-=0.25')
+
+    // 4. Divider — draws from center
+    tl.to(dividerEl, {
+      scaleX: 1,
+      duration: 0.5,
+      ease: 'power2.inOut',
+    }, '-=0.15')
+
+    // 5. Nav items — staggered
+    tl.to(allNavItems, {
+      opacity: 1,
+      y: 0,
+      duration: 0.4,
+      stagger: 0.06,
+    }, '-=0.2')
+
+    // 6. Counter animation
+    counters.forEach((c) => {
+      const target = c._countTarget
+      if (target > 0) {
+        const obj = { val: 0 }
+        tl.to(obj, {
+          val: target,
+          duration: 0.8,
+          ease: 'power2.out',
+          snap: { val: 1 },
+          onUpdate: () => { c.textContent = String(Math.round(obj.val)) },
+        }, '-=0.6')
+      }
+    })
+
+    // 7. Social
+    tl.to(socialEl, {
+      opacity: 1,
+      duration: 0.3,
+    }, '-=0.4')
+
+    // ── Magnetic hover on nav items ──
+    allNavItems.forEach((item) => {
+      if (!(item instanceof HTMLElement)) return
+
+      item.addEventListener('mousemove', (e: MouseEvent) => {
+        const rect = item.getBoundingClientRect()
+        const x = e.clientX - rect.left - rect.width / 2
+        const y = e.clientY - rect.top - rect.height / 2
+        gsap.to(item, {
+          x: x * 0.08,
+          y: y * 0.08,
+          duration: 0.3,
+          ease: 'power2.out',
+        })
+      })
+
+      item.addEventListener('mouseleave', () => {
+        gsap.to(item, {
+          x: 0,
+          y: 0,
+          duration: 0.4,
+          ease: 'power2.out',
+        })
+      })
+    })
+  }
+
+  // Run on load and on Astro page transitions
+  initHomeAnimation()
+  document.addEventListener('astro:after-swap', initHomeAnimation)
+</script>
+
 <style>
-  /* ═══ Animated gradient mesh ═══ */
+  /* ═══ Gradient mesh ═══ */
   .gradient-mesh {
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: -2;
     overflow: hidden;
     pointer-events: none;
   }
@@ -218,218 +298,298 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
   .mesh-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(120px);
+    filter: blur(140px);
     will-change: transform;
   }
 
-  .mesh-orb-1 {
+  .mesh-orb-warm {
     width: 600px;
     height: 600px;
-    background: rgba(232, 98, 44, 0.04);
+    background: rgba(232, 98, 44, 0.035);
     top: -10%;
     right: -5%;
-    animation: drift-1 25s ease-in-out infinite;
+    animation: drift-warm 45s ease-in-out infinite;
   }
 
-  .mesh-orb-2 {
-    width: 500px;
-    height: 500px;
-    background: rgba(59, 130, 246, 0.03);
+  .mesh-orb-cold {
+    width: 550px;
+    height: 550px;
+    background: rgba(44, 90, 232, 0.025);
     bottom: -15%;
     left: -10%;
-    animation: drift-2 30s ease-in-out infinite;
+    animation: drift-cold 55s ease-in-out infinite;
   }
 
-  .mesh-orb-3 {
+  .mesh-orb-green {
     width: 400px;
     height: 400px;
-    background: rgba(127, 176, 105, 0.025);
-    top: 40%;
+    background: rgba(127, 176, 105, 0.02);
+    top: 45%;
     left: 50%;
-    animation: drift-3 20s ease-in-out infinite;
+    animation: drift-green 40s ease-in-out infinite;
   }
 
-  @keyframes drift-1 {
+  @keyframes drift-warm {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(-80px, 60px) scale(1.1); }
-    66% { transform: translate(40px, -40px) scale(0.95); }
+    33% { transform: translate(-60px, 50px) scale(1.08); }
+    66% { transform: translate(30px, -30px) scale(0.96); }
   }
 
-  @keyframes drift-2 {
+  @keyframes drift-cold {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(60px, -50px) scale(1.05); }
-    66% { transform: translate(-40px, 30px) scale(1.1); }
+    33% { transform: translate(50px, -40px) scale(1.04); }
+    66% { transform: translate(-30px, 25px) scale(1.08); }
   }
 
-  @keyframes drift-3 {
+  @keyframes drift-green {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-60px, -40px) scale(1.15); }
+    50% { transform: translate(-45px, -30px) scale(1.12); }
   }
 
-  /* ═══ Single-screen layout ═══ */
+  /* ═══ Film grain ═══ */
+  .noise-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.03;
+  }
+
+  /* ═══ Layout ═══ */
   .home-layout {
     height: calc(100dvh - 4rem);
-    padding: 1rem;
     display: flex;
-    align-items: stretch;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
   }
 
-  @media (min-width: 768px) {
-    .home-layout {
-      padding: 1.5rem;
-    }
-  }
-
-  .home-grid {
-    flex: 1;
-    display: grid;
-    gap: 0.625rem;
+  .home-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 540px;
     width: 100%;
-    max-width: var(--container-grid);
-    margin: 0 auto;
-
-    /* Mobile: scrollable single column */
-    grid-template-columns: 1fr;
-    grid-auto-rows: min-content;
   }
 
-  /* Tablet: 2×3 */
-  @media (min-width: 768px) {
-    .home-grid {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr 1fr;
-    }
-
-    .tile-hero  { grid-column: 1; grid-row: 1; }
-    .tile-field { grid-column: 2; grid-row: 1 / 3; }
-    .tile-essays { grid-column: 1; grid-row: 2; }
-    .tile-builds { grid-column: 1; grid-row: 3; }
-    .tile-books { grid-column: 2; grid-row: 3; }
-    .tile-now { display: none; }
-  }
-
-  /* Desktop: 4×2 bento */
-  @media (min-width: 1024px) {
-    .home-grid {
-      grid-template-columns: 1.4fr 1fr 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-    }
-
-    .tile-hero   { grid-column: 1; grid-row: 1 / 3; }
-    .tile-field  { grid-column: 2; grid-row: 1 / 3; }
-    .tile-essays { grid-column: 3 / 5; grid-row: 1; }
-    .tile-builds { grid-column: 3; grid-row: 2; }
-    .tile-books  { grid-column: 4; grid-row: 2; }
-    .tile-now    { display: none; }
-  }
-
-  /* Wide desktop: show Now tile */
-  @media (min-width: 1280px) {
-    .home-grid {
-      grid-template-columns: 1.3fr 1fr 1fr 0.8fr 0.8fr;
-      grid-template-rows: 1fr 1fr;
-    }
-
-    .tile-hero   { grid-column: 1; grid-row: 1 / 3; }
-    .tile-field  { grid-column: 2; grid-row: 1 / 3; }
-    .tile-essays { grid-column: 3 / 6; grid-row: 1; }
-    .tile-builds { grid-column: 3; grid-row: 2; }
-    .tile-books  { grid-column: 4; grid-row: 2; }
-    .tile-now    { display: flex; grid-column: 5; grid-row: 2; }
-  }
-
-  /* ═══ Tiles ═══ */
-  .tile {
-    border-radius: 2px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    background: rgba(39, 39, 42, 0.5);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    transition: background 0.3s, border-color 0.3s;
+  /* ═══ Avatar ═══ */
+  .hero-avatar {
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: 9999px;
     overflow: hidden;
+    margin-bottom: 1.75rem;
     position: relative;
-    min-height: 0;
-  }
-
-  .tile:hover {
-    background: rgba(39, 39, 42, 0.7);
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-
-  .tile-hero {
-    padding: 1.5rem;
-    cursor: default;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.06),
+      0 0 32px rgba(232, 98, 44, 0.1);
   }
 
   @media (min-width: 768px) {
-    .tile-hero {
-      padding: 2rem;
+    .hero-avatar {
+      width: 7rem;
+      height: 7rem;
+      margin-bottom: 2rem;
     }
   }
 
-  .tile-field {
-    background: var(--color-card);
-    backdrop-filter: none;
-  }
-
+  /* ═══ Name ═══ */
   .home-name {
     font-family: var(--font-heading);
     font-weight: 300;
-    font-size: clamp(2rem, 3.5vw, 3.5rem);
-    line-height: 1.1;
-    letter-spacing: 0.02em;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
     color: var(--color-primary);
+    margin-bottom: 1rem;
+    overflow: hidden;
   }
 
-  /* Field gradient */
-  .field-gradient {
-    background: linear-gradient(
-      to top,
-      #09090b 0%,
-      #09090b 10%,
-      rgba(9, 9, 11, 0.85) 30%,
-      rgba(9, 9, 11, 0.3) 60%,
-      transparent 100%
-    );
+  .home-name :global(.char) {
+    display: inline-block;
+    will-change: transform, opacity;
   }
 
-  /* Staggered reveal */
-  .hero-el {
-    opacity: 0;
-    transform: translateY(16px);
-    animation: tile-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: var(--delay);
+  /* ═══ Bio ═══ */
+  .home-bio {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #71717a;
+    max-width: 28rem;
+    margin-bottom: 2rem;
   }
 
-  @keyframes tile-reveal {
-    to {
-      opacity: 1;
-      transform: translateY(0);
+  @media (min-width: 768px) {
+    .home-bio {
+      font-size: 1rem;
     }
   }
 
-  /* Mobile: allow scroll */
+  /* ═══ Divider ═══ */
+  .home-divider {
+    width: 100%;
+    max-width: 320px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    margin-bottom: 2rem;
+    transform-origin: center;
+  }
+
+  /* ═══ Nav grid ═══ */
+  .home-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 2px;
+    transition: background 0.2s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .nav-item:hover .nav-label {
+    color: var(--color-accent);
+  }
+
+  .nav-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #71717a;
+    transition: color 0.2s;
+  }
+
+  .nav-sep {
+    color: #3f3f46;
+    font-size: 11px;
+  }
+
+  .nav-value {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: #a1a1aa;
+  }
+
+  .nav-count {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-primary);
+  }
+
+  .nav-reading {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    color: var(--color-primary);
+    font-style: italic;
+  }
+
+  /* ═══ Now link ═══ */
+  .now-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 2px;
+    text-decoration: none;
+    margin-bottom: 1.75rem;
+    transition: background 0.2s;
+  }
+
+  .now-link:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .now-link:hover .nav-label {
+    color: var(--color-accent);
+  }
+
+  .now-indicator {
+    position: relative;
+    display: flex;
+    width: 0.375rem;
+    height: 0.375rem;
+  }
+
+  .now-ping {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background-color: #34d399;
+    opacity: 0.5;
+    animation: now-ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .now-dot {
+    position: relative;
+    display: inline-flex;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background-color: #34d399;
+  }
+
+  @keyframes now-ping {
+    75%, 100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  .now-meta {
+    font-size: 11px;
+    color: #52525b;
+  }
+
+  /* ═══ Social ═══ */
+  .home-social {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .social-link {
+    color: #3f3f46;
+    transition: color 0.2s;
+  }
+
+  .social-link:hover {
+    color: var(--color-primary);
+  }
+
+  /* ═══ Mobile ═══ */
   @media (max-width: 767px) {
     .home-layout {
       height: auto;
       min-height: calc(100dvh - 4rem);
+      padding: 3rem 1.5rem;
     }
 
-    .home-grid {
-      gap: 0.75rem;
+    .home-nav {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
     }
 
-    .tile-hero {
-      padding-top: 2rem;
-      padding-bottom: 2rem;
+    .nav-item {
+      justify-content: center;
     }
 
-    .tile-field {
-      min-height: 280px;
-    }
-
-    .tile-now {
-      display: flex;
+    .now-link {
+      justify-content: center;
     }
   }
 </style>
