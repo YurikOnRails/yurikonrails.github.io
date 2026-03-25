@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+
+const allSeries = await getCollection('field')
+const series = allSeries.sort((a, b) => b.data.takenOn.getTime() - a.data.takenOn.getTime())
+---
+
+<Base
+  title="Field"
+  description="Travel photography with maps and stories."
+>
+  <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
+    <h1 class="text-3xl md:text-5xl mb-4">Field</h1>
+    <p class="text-secondary mb-10 max-w-xl">
+      Travel photography with maps and stories.
+    </p>
+
+    {/* Globe placeholder — Three.js will go here later */}
+    <div class="mb-16 flex h-64 md:h-96 items-center justify-center rounded-2xl border border-subtle bg-surface">
+      <p class="text-secondary text-sm">Interactive globe loading here</p>
+    </div>
+
+    {/* Series grid */}
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {series.map((s) => (
+        <a
+          href={`/field/${s.id}`}
+          class="card group block rounded-2xl border border-subtle overflow-hidden bg-card transition-colors hover:bg-surface"
+        >
+          <div class="relative aspect-[16/10] overflow-hidden">
+            <img
+              src={s.data.cover}
+              alt={s.data.title}
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-center gap-2 text-xs text-secondary mb-2">
+              <span>{s.data.location}</span>
+              <span class="text-subtle">·</span>
+              <time datetime={s.data.takenOn.toISOString()}>
+                {s.data.takenOn.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}
+              </time>
+            </div>
+            <h2 class="text-lg font-[family-name:var(--font-heading)] group-hover:text-accent transition-colors">
+              {s.data.title}
+            </h2>
+            <p class="mt-2 text-sm text-secondary line-clamp-2">
+              {s.data.description}
+            </p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    {series.length === 0 && (
+      <p class="text-secondary text-center py-20">No field series yet.</p>
+    )}
+  </section>
+</Base>

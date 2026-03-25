@@ -1,0 +1,47 @@
+---
+import StarRating from './StarRating.astro'
+import type { Book } from '../data/books'
+
+interface Props {
+  book: Book
+}
+
+const { book } = Astro.props
+const { title, author, cover, rating, keyIdea, status } = book
+const coverUrl = `/books/${cover}.avif`
+---
+
+<article class="card group">
+  <div class="relative rounded-2xl border border-subtle bg-card overflow-hidden transition-transform hover:-translate-y-1 hover:scale-[1.02]">
+    {/* Cover */}
+    <div class="relative aspect-[2/3] overflow-hidden">
+      <img
+        src={coverUrl}
+        alt={`${title} by ${author}`}
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover"
+      />
+      {/* Key idea overlay on hover */}
+      <div class="absolute inset-0 flex items-end bg-gradient-to-t from-base/90 via-base/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4">
+        <p class="text-sm text-primary leading-relaxed backdrop-blur-sm">
+          {keyIdea}
+        </p>
+      </div>
+      {/* Reading status badge */}
+      {status === 'reading' && (
+        <span class="absolute top-3 right-3 rounded-full bg-accent/90 px-2.5 py-0.5 text-xs text-base font-medium">
+          reading
+        </span>
+      )}
+    </div>
+    {/* Info */}
+    <div class="p-4">
+      <h2 class="text-sm font-[family-name:var(--font-heading)] leading-snug mb-1 line-clamp-2">
+        {title}
+      </h2>
+      <p class="text-xs text-secondary mb-2">{author}</p>
+      <StarRating rating={rating} />
+    </div>
+  </div>
+</article>

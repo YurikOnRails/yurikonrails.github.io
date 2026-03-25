@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content'
+import Base from '../../../layouts/Base.astro'
+import PostCard from '../../../components/PostCard.astro'
+import Icon from '../../../components/Icon.astro'
+
+export async function getStaticPaths() {
+  const allEssays = await getCollection('essays')
+  const essays = allEssays.filter((e) => !import.meta.env.PROD || e.data.status === 'published')
+
+  const tags = [...new Set(essays.flatMap((e) => e.data.tags))]
+
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      essays: essays
+        .filter((e) => e.data.tags.includes(tag))
+        .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()),
+    },
+  }))
+}
+
+const { tag, essays } = Astro.props
+---
+
+<Base
+  title={`#${tag}`}
+  description={`Essays tagged with #${tag}`}
+>
+  <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
+    <a href="/essays" class="inline-flex items-center gap-1 text-sm text-secondary hover:text-accent transition-colors mb-8">
+      <Icon name="arrow-left" size={16} />
+      <span>All essays</span>
+    </a>
+
+    <h1 class="text-3xl md:text-5xl mb-10">
+      <span class="text-accent">#</span>{tag}
+    </h1>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      {essays.map((essay) => (
+        <PostCard
+          id={essay.id}
+          title={essay.data.title}
+          excerpt={essay.data.excerpt}
+          publishedAt={essay.data.publishedAt}
+          cover={essay.data.cover}
+          tags={essay.data.tags}
+        />
+      ))}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro'
+import BookCard from '../components/BookCard.astro'
+import { books } from '../data/books'
+
+const sorted = [...books].sort((a, b) => b.yearRead - a.yearRead)
+---
+
+<Base
+  title="Books"
+  description="Reading log with ratings and key takeaways."
+>
+  <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
+    <h1 class="text-3xl md:text-5xl mb-4">Books</h1>
+    <p class="text-secondary mb-10 max-w-xl">
+      Reading log with ratings and key takeaways.
+    </p>
+
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      {sorted.map((book) => (
+        <BookCard book={book} />
+      ))}
+    </div>
+  </section>
+</Base>

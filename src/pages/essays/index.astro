@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+import PostCard from '../../components/PostCard.astro'
+
+const allEssays = await getCollection('essays')
+
+const essays = allEssays
+  .filter((e) => !import.meta.env.PROD || e.data.status === 'published')
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+
+const allTags = [...new Set(essays.flatMap((e) => e.data.tags))]
+---
+
+<Base
+  title="Essays"
+  description="Long-form writing on tech, travel, and ideas."
+>
+  <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
+    <h1 class="text-3xl md:text-5xl mb-4">Essays</h1>
+    <p class="text-secondary mb-8 max-w-xl">
+      Long-form writing on tech, travel, and ideas.
+    </p>
+
+    {allTags.length > 0 && (
+      <div class="mb-10 flex flex-wrap gap-2">
+        {allTags.map((tag) => (
+          <a
+            href={`/essays/tag/${tag}`}
+            class="rounded-full border border-subtle px-4 py-1.5 text-xs text-secondary hover:text-accent hover:border-accent transition-colors"
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    )}
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      {essays.map((essay) => (
+        <PostCard
+          id={essay.id}
+          title={essay.data.title}
+          excerpt={essay.data.excerpt}
+          publishedAt={essay.data.publishedAt}
+          cover={essay.data.cover}
+          tags={essay.data.tags}
+        />
+      ))}
+    </div>
+
+    {essays.length === 0 && (
+      <p class="text-secondary text-center py-20">No essays yet.</p>
+    )}
+  </section>
+</Base>

@@ -1,0 +1,56 @@
+---
+interface Props {
+  id: string
+  title: string
+  excerpt: string
+  publishedAt: Date
+  cover?: string
+  tags?: string[]
+}
+
+const { id, title, excerpt, publishedAt, cover, tags = [] } = Astro.props
+
+const dateStr = publishedAt.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+})
+---
+
+<article class="card group">
+  <a href={`/essays/${id}`} class="block rounded-2xl border border-subtle bg-card overflow-hidden transition-colors hover:bg-surface">
+    {cover && (
+      <div class="relative aspect-[16/9] overflow-hidden">
+        <img
+          src={cover}
+          alt={title}
+          loading="lazy"
+          decoding="async"
+          transition:name={`cover-${id}`}
+          class="h-full w-full object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+      </div>
+    )}
+    <div class="p-5 md:p-6">
+      <time class="text-xs text-secondary" datetime={publishedAt.toISOString()}>
+        {dateStr}
+      </time>
+      <h2 class="mt-2 text-xl md:text-2xl font-[family-name:var(--font-heading)] leading-snug group-hover:text-accent transition-colors">
+        {title}
+      </h2>
+      <p class="mt-3 text-sm text-secondary leading-relaxed line-clamp-3">
+        {excerpt}
+      </p>
+      {tags.length > 0 && (
+        <div class="mt-4 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span class="rounded-full bg-accent-dim px-3 py-1 text-xs text-accent">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  </a>
+</article>
