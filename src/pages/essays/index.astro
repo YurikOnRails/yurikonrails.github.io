@@ -2,10 +2,20 @@
 import Base from '../../layouts/Base.astro'
 import PostCard from '../../components/PostCard.astro'
 import { getPublishedEssays } from '../../lib/content'
+import { formatDate } from '../../lib/utils'
 
 const essays = await getPublishedEssays()
 
 const allTags = [...new Set(essays.flatMap((e) => e.data.tags))]
+
+const hero = essays[0]
+const rest = essays.slice(1)
+
+// Reading time helper
+function getReadingTime(body: string | undefined) {
+  const words = body ? body.split(/\s+/).length : 0
+  return Math.max(1, Math.round(words / 200))
+}
 ---
 
 <Base
@@ -13,13 +23,13 @@ const allTags = [...new Set(essays.flatMap((e) => e.data.tags))]
   description="Long-form writing on tech, travel, and ideas."
 >
   <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
-    <h1 class="text-3xl md:text-5xl mb-4">Essays</h1>
-    <p class="text-secondary mb-8 max-w-xl">
+    <h1 class="essay-fade text-4xl md:text-6xl mb-4" style="animation-delay: 0ms">Essays</h1>
+    <p class="essay-fade text-secondary mb-8 max-w-xl" style="animation-delay: 40ms">
       Long-form writing on tech, travel, and ideas.
     </p>
 
     {allTags.length > 0 && (
-      <div class="mb-10 flex flex-wrap gap-2">
+      <div class="essay-fade mb-10 flex flex-wrap gap-2" style="animation-delay: 80ms">
         {allTags.map((tag) => (
           <a
             href={`/essays/tag/${tag}`}
@@ -31,16 +41,68 @@ const allTags = [...new Set(essays.flatMap((e) => e.data.tags))]
       </div>
     )}
 
+    {/* Hero — latest essay */}
+    {hero && (
+      <div class="essay-fade mb-10" style="animation-delay: 120ms">
+        <a
+          href={`/essays/${hero.id}`}
+          class="group block rounded-2xl border border-subtle bg-card overflow-hidden transition-all hover:bg-surface hover:border-[#3f3f46]"
+        >
+          {hero.data.cover && (
+            <div class="relative aspect-[21/9] overflow-hidden">
+              <img
+                src={hero.data.cover}
+                alt={hero.data.title}
+                loading="eager"
+                decoding="async"
+                transition:name={`cover-${hero.id}`}
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
+            </div>
+          )}
+          <div class="p-6 md:p-8">
+            <div class="flex flex-wrap items-center gap-3 text-xs text-secondary mb-3">
+              <time datetime={hero.data.publishedAt.toISOString()}>
+                {formatDate(hero.data.publishedAt)}
+              </time>
+              <span class="text-[#3f3f46]">·</span>
+              <span class="font-[family-name:var(--font-mono)]">{getReadingTime(hero.body)} min read</span>
+            </div>
+            <h2 class="text-2xl md:text-4xl font-[family-name:var(--font-heading)] leading-snug group-hover:text-accent transition-colors mb-3">
+              {hero.data.title}
+            </h2>
+            <p class="text-secondary leading-relaxed max-w-2xl">
+              {hero.data.excerpt}
+            </p>
+            {hero.data.tags && hero.data.tags.length > 0 && (
+              <div class="mt-4 flex flex-wrap gap-2">
+                {hero.data.tags.map((tag) => (
+                  <span class="rounded-full bg-accent-dim px-3 py-1 text-xs text-accent">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </a>
+      </div>
+    )}
+
+    {/* Rest of essays */}
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-      {essays.map((essay) => (
-        <PostCard
-          id={essay.id}
-          title={essay.data.title}
-          excerpt={essay.data.excerpt}
-          publishedAt={essay.data.publishedAt}
-          cover={essay.data.cover}
-          tags={essay.data.tags}
-        />
+      {rest.map((essay, i) => (
+        <div class="essay-fade" style={`animation-delay: ${160 + i * 60}ms`}>
+          <PostCard
+            id={essay.id}
+            title={essay.data.title}
+            excerpt={essay.data.excerpt}
+            publishedAt={essay.data.publishedAt}
+            cover={essay.data.cover}
+            tags={essay.data.tags}
+            readingTime={getReadingTime(essay.body)}
+          />
+        </div>
       ))}
     </div>
 
@@ -48,4 +110,21 @@ const allTags = [...new Set(essays.flatMap((e) => e.data.tags))]
       <p class="text-secondary text-center py-20">No essays yet.</p>
     )}
   </section>
+
+  <style>
+    @keyframes essay-fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .essay-fade {
+      animation: essay-fade-in 0.5s ease both;
+    }
+  </style>
 </Base>

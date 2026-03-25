@@ -8,9 +8,10 @@ interface Props {
   publishedAt: Date
   cover?: string
   tags?: string[]
+  readingTime?: number
 }
 
-const { id, title, excerpt, publishedAt, cover, tags = [] } = Astro.props
+const { id, title, excerpt, publishedAt, cover, tags = [], readingTime } = Astro.props
 
 const dateStr = formatDate(publishedAt)
 ---
@@ -31,9 +32,17 @@ const dateStr = formatDate(publishedAt)
       </div>
     )}
     <div class="p-5 md:p-6">
-      <time class="text-xs text-secondary" datetime={publishedAt.toISOString()}>
-        {dateStr}
-      </time>
+      <div class="flex flex-wrap items-center gap-2 text-xs text-secondary">
+        <time datetime={publishedAt.toISOString()}>
+          {dateStr}
+        </time>
+        {readingTime && (
+          <>
+            <span class="text-[#3f3f46]">·</span>
+            <span class="font-[family-name:var(--font-mono)]">{readingTime} min read</span>
+          </>
+        )}
+      </div>
       <h2 class="mt-2 text-xl md:text-2xl font-[family-name:var(--font-heading)] leading-snug group-hover:text-accent transition-colors">
         {title}
       </h2>
