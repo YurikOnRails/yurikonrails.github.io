@@ -3,7 +3,6 @@ title: Learning in Layers
 excerpt: Why understanding arrives in passes, not in a single read. On the spiral nature of deep knowledge and why re-reading is not repetition.
 status: published
 publishedAt: 2025-11-28
-location: Istanbul
 tags:
   - thinking
   - craft
@@ -17,13 +16,36 @@ This experience — of returning to the same material and finding it transformed
 
 A better metaphor for learning is the spiral. You circle back to the same territory, but each time you arrive at a higher elevation. The view is different because your vantage point has changed. The landscape is the same, but your ability to see its features has developed.
 
+![A spiral staircase viewed from above](https://placehold.co/800x400/18181b/a1a1aa?text=Spiral+Staircase)
+
 This has practical implications for how we learn. It means that reading a difficult book once and moving on is almost always less effective than reading it twice with an interval of lived experience between readings. The interval is not wasted time — it's the time during which your mind develops the structures needed to receive the book's ideas.
 
 ## The curse of prerequisites
 
 Traditional education handles this problem with prerequisites: you must understand calculus before differential equations, data structures before algorithms. This linear model works for some domains, but it fundamentally misunderstands how deep understanding develops.
 
-In practice, the best way to understand data structures is to need them while building something. The best way to understand calculus is to encounter a physics problem that requires it. Understanding develops from context, and context develops from experience, and experience is, by nature, non-linear.
+In practice, the best way to understand data structures is to need them while building something:
+
+```typescript
+// You don't really understand a hash map until you need one.
+
+// First encounter: "it's like an array but with string keys"
+const cache = new Map<string, Response>()
+
+// Second encounter: "oh, O(1) lookup matters here"
+function findUser(id: string): User {
+  if (cache.has(id)) return cache.get(id)!
+  const user = db.query(`SELECT * FROM users WHERE id = $1`, [id])
+  cache.set(id, user)
+  return user
+}
+
+// Third encounter: "collision resolution, load factors,
+// why Redis exists, why bloom filters exist..."
+// Each pass reveals a deeper layer.
+```
+
+The best way to understand calculus is to encounter a physics problem that requires it. Understanding develops from context, and context develops from experience, and experience is, by nature, non-linear.
 
 The implication is uncomfortable: you will not understand many things the first time you encounter them, and this is not a failure. It's the expected behavior of a healthy learning process. The first encounter plants a seed. The second encounter provides water. The third provides sunlight. Growth happens in between, invisibly, in the space where you're not actively studying.
 
@@ -39,7 +61,19 @@ Spaced repetition systems try to hack this process, and they work well for certa
 
 The spiral model of learning requires patience, which is in short supply. We want to understand things now. We want to read one book and have the knowledge. We want to take one course and acquire the skill.
 
-This impatience produces a specific failure mode: the illusion of understanding. You read a summary of a complex idea, understand the summary, and believe you understand the idea. But a summary is a compression, and compression is lossy. The nuances, the edge cases, the emotional resonance of the original — these are lost in compression, and they're often where the real understanding lives.
+This impatience produces a specific failure mode: the illusion of understanding. You read a summary of a complex idea, understand the summary, and believe you understand the idea. But a summary is a compression, and compression is lossy:
+
+```
+Original idea (100%)
+  → Blog post summary (40%)
+    → Twitter thread (15%)
+      → Quote retweet (3%)
+        → "So true" reply (0%)
+```
+
+![Signal loss through layers of compression](https://placehold.co/800x400/18181b/a1a1aa?text=Compression+Loss)
+
+The nuances, the edge cases, the emotional resonance of the original — these are lost in compression, and they're often where the real understanding lives.
 
 The antidote to this impatience is not discipline, exactly. It's trust. Trust that the understanding will come, that the repeated encounters will build on each other, that the confusion you feel now is a necessary precursor to the clarity you'll feel later. This trust is hard to maintain in a culture that demands immediate results, but it's the most important skill a learner can develop.
 
@@ -53,7 +87,24 @@ If learning is spiral rather than linear, then several practical conclusions fol
 
 **Teach early.** One of the best ways to accelerate the spiral is to try to explain what you've learned to someone else. The act of teaching reveals your gaps with brutal clarity, and those gaps become the focus of your next pass through the material.
 
-**Keep a journal.** Not a summary of what you read, but a record of your reactions, questions, and confusions. When you re-read, read your journal entries first. The delta between your past understanding and your current understanding is itself a valuable form of knowledge.
+**Keep a journal.** Not a summary of what you read, but a record of your reactions, questions, and confusions. When you re-read, read your journal entries first. The delta between your past understanding and your current understanding is itself a valuable form of knowledge:
+
+```markdown
+## Reading Journal — A Pattern Language
+
+### First read (2024-03)
+- Overwhelmed by scope. 253 patterns feels arbitrary.
+- Pattern 159 (Light on Two Sides) stuck with me. Why?
+- Skeptical of the "generative" claims.
+
+### Second read (2025-01)
+- Now I see: patterns CONNECT. That's the whole point.
+- The numbering isn't arbitrary — it's scale (region → room).
+- "Generative" means: follow these and good things emerge
+  that you didn't explicitly design. Like CSS Grid.
+- I was wrong about almost everything in my first read.
+  That's the point of this journal.
+```
 
 ## The long game
 

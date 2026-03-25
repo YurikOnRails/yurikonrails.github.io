@@ -15,6 +15,8 @@ I want to argue the opposite. Not that optimization is always bad, but that our 
 
 When you optimize a system, you remove slack. Slack is the unused capacity, the buffer, the margin of error that allows a system to absorb shocks. A factory running at 100% capacity is maximally efficient right up until one machine breaks and the entire line stops. A schedule with no free time is maximally productive right up until something unexpected happens and everything cascades into crisis.
 
+![Factory floor at maximum capacity](https://placehold.co/800x400/18181b/a1a1aa?text=100%25+Capacity)
+
 Nassim Taleb calls this the difference between efficiency and robustness. Efficient systems are fragile. Robust systems are, by definition, somewhat wasteful. They maintain capacity they don't currently need, precisely so they can handle situations they haven't yet encountered.
 
 Nature understands this. The human body maintains enormous redundancy — two kidneys, two lungs, far more neural connections than strictly necessary. Evolution optimizes for survival, not efficiency, and survival requires waste.
@@ -27,19 +29,58 @@ How do you measure the value of a conversation that doesn't lead to an action it
 
 You can't, and so optimization cultures systematically eliminate these activities. The unmeasurable is treated as valueless, and over time, organizations lose exactly the capacities they most need: creativity, judgment, the ability to respond to novel situations with something other than a pre-existing playbook.
 
+Consider a typical "productivity" setup in code:
+
+```typescript
+interface Day {
+  slots: TimeSlot[]
+  utilization: number  // target: 100%
+  unplanned: never     // no room for surprise
+}
+
+// This is what an optimized calendar looks like
+// as a type system. Notice what it cannot express:
+// - serendipitous conversations
+// - thinking time
+// - recovery
+// - the thing you don't know you need yet
+```
+
 ## Slack as strategy
 
 Some of the most innovative companies in history understood the value of deliberate inefficiency. Bell Labs gave researchers freedom to pursue projects with no obvious commercial application. The result was the transistor, information theory, Unix, and the laser. Google's famous "20% time" — whatever its actual implementation — expressed the same insight: that some percentage of organizational capacity should be deliberately unoptimized.
 
 The key word is "deliberately." This is not an argument for laziness or carelessness. It's an argument for intentional slack — for consciously maintaining capacity that serves no immediate purpose but preserves the organization's ability to respond to the unknown.
 
-In software engineering, we have a name for systems that are optimized to the point of fragility: tightly coupled. The antidote is loose coupling — building systems with clear boundaries and deliberate redundancy. The same principle applies to organizations, schedules, and lives.
+In software engineering, we have a name for systems that are optimized to the point of fragility: tightly coupled. The antidote is loose coupling — building systems with clear boundaries and deliberate redundancy:
+
+```python
+# Tightly coupled — optimized, fragile
+def process_order(order):
+    validate(order)
+    charge_card(order.payment)
+    update_inventory(order.items)
+    send_confirmation(order.email)
+    # If any step fails, everything fails.
+    # No slack, no recovery.
+
+# Loosely coupled — "wasteful", resilient
+def process_order(order):
+    event = OrderPlaced(order)
+    event_bus.publish(event)
+    # Each downstream service handles its own concern.
+    # Redundant? Yes. Resilient? Also yes.
+```
+
+The same principle applies to organizations, schedules, and lives.
 
 ## The personal dimension
 
 At a personal level, the optimization mindset produces a specific kind of anxiety. If every minute should be optimized, then every minute not spent productively is a failure. Rest becomes something to be minimized. Hobbies must be "productive." Relationships are evaluated by their "return on investment."
 
 This is, of course, insane. But it's the logical endpoint of applying optimization thinking to a human life. And it's surprisingly common among the kind of ambitious, driven people who are drawn to technology and building things.
+
+![An over-scheduled calendar with no white space](https://placehold.co/800x400/18181b/a1a1aa?text=No+White+Space)
 
 The antidote is not anti-ambition. It's a more sophisticated understanding of what ambition is for. If you're optimizing your morning routine to save fifteen minutes, the question is: fifteen minutes for what? If the answer is "more optimizing," you've built a perpetual motion machine of productivity that produces nothing.
 
@@ -56,6 +97,15 @@ When we optimize away the slack in our lives and organizations, we lose specific
 ## A modest proposal
 
 I'm not suggesting we abandon efficiency entirely. Some optimization is necessary and good. The morning routine that saves you from decision fatigue, the automated deployment pipeline that eliminates manual errors, the well-designed API that reduces integration time — these are genuine improvements.
+
+```yaml
+# A healthier model
+schedule:
+  focused_work: 60%
+  slack: 20%        # deliberately unscheduled
+  recovery: 10%
+  exploration: 10%  # no expected output
+```
 
 But I am suggesting that we treat optimization as a tool rather than a value. Use it where it serves you, and put it down where it doesn't. Maintain some deliberate slack in your schedule, your systems, and your thinking. Protect the unmeasurable from the measured. And when someone asks you to justify an activity that doesn't produce measurable output, consider the possibility that the inability to measure its value is precisely what makes it valuable.
 

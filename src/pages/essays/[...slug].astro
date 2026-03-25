@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props
 const { Content, headings } = await render(entry)
-const { title, excerpt, publishedAt, cover, location, tags } = entry.data
+const { title, excerpt, publishedAt, cover, tags } = entry.data
 
 const dateStr = formatDate(publishedAt)
 
@@ -71,12 +71,6 @@ const tocItems = headings.filter((h) => h.depth === 2)
             <time datetime={publishedAt.toISOString()}>{dateStr}</time>
             <span class="text-subtle">·</span>
             <span class="font-[family-name:var(--font-mono)] text-xs">{readingTime} min read</span>
-            {location && (
-              <>
-                <span class="text-subtle">·</span>
-                <span>{location}</span>
-              </>
-            )}
           </div>
           <h1 class="text-4xl md:text-6xl leading-tight mb-6">{title}</h1>
           {tags && tags.length > 0 && (

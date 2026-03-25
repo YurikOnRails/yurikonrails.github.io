@@ -10,7 +10,6 @@ const essays = defineCollection({
     status: z.enum(['draft', 'published']),
     publishedAt: z.coerce.date(),
     cover: z.string().optional(),
-    location: z.string().optional(),
     lat: z.number().optional(),
     lng: z.number().optional(),
     tags: z.array(z.string()).optional().default([]),
