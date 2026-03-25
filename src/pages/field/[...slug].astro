@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content'
 import Base from '../../layouts/Base.astro'
 import Icon from '../../components/Icon.astro'
+import Map from '../../components/Map.astro'
 
 export async function getStaticPaths() {
   const field = await getCollection('field')
@@ -13,12 +14,18 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props
 const { Content } = await render(entry)
-const { title, description, location, takenOn, cover, photos, videos } = entry.data
+const { title, description, location, takenOn, lat, lng, cover, photos, videos } = entry.data
 
 const dateStr = takenOn.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
 })
+
+const photoMarkers = (photos || []).map((p, i) => ({
+  src: p.src,
+  caption: p.caption,
+  index: i,
+}))
 ---
 
 <Base
@@ -44,9 +51,9 @@ const dateStr = takenOn.toLocaleDateString('en-US', {
       <p class="text-secondary max-w-2xl">{description}</p>
     </header>
 
-    {/* Map placeholder */}
-    <div class="mb-12 h-64 md:h-80 rounded-2xl border border-subtle bg-surface flex items-center justify-center">
-      <p class="text-secondary text-sm">Map loading here</p>
+    {/* MapLibre map */}
+    <div class="mb-12">
+      <Map lat={lat} lng={lng} title={title} photos={photoMarkers} />
     </div>
 
     {/* Photo grid */}

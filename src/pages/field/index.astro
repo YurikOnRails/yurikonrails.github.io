@@ -1,9 +1,19 @@
 ---
 import { getCollection } from 'astro:content'
 import Base from '../../layouts/Base.astro'
+import Globe from '../../components/Globe.astro'
 
 const allSeries = await getCollection('field')
 const series = allSeries.sort((a, b) => b.data.takenOn.getTime() - a.data.takenOn.getTime())
+
+const globeMarkers = series.map((s) => ({
+  id: s.id,
+  title: s.data.title,
+  location: s.data.location,
+  lat: s.data.lat,
+  lng: s.data.lng,
+  cover: s.data.cover,
+}))
 ---
 
 <Base
@@ -16,9 +26,9 @@ const series = allSeries.sort((a, b) => b.data.takenOn.getTime() - a.data.takenO
       Travel photography with maps and stories.
     </p>
 
-    {/* Globe placeholder — Three.js will go here later */}
-    <div class="mb-16 flex h-64 md:h-96 items-center justify-center rounded-2xl border border-subtle bg-surface">
-      <p class="text-secondary text-sm">Interactive globe loading here</p>
+    {/* Interactive 3D Globe */}
+    <div class="mb-16 mx-auto max-w-xl">
+      <Globe markers={globeMarkers} />
     </div>
 
     {/* Series grid */}
