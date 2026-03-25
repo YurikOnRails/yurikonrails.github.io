@@ -1,0 +1,105 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Colors — Fieldnotes dark palette */
+  --color-base: #080d0b;
+  --color-surface: #111a15;
+  --color-card: #162019;
+  --color-subtle: rgba(127, 176, 105, 0.08);
+  --color-primary: #e8e0d4;
+  --color-secondary: #5a6e62;
+  --color-accent: #7fb069;
+  --color-accent-dim: rgba(127, 176, 105, 0.15);
+
+  /* Font families */
+  --font-heading: 'Prata', serif;
+  --font-ui: 'Onest', sans-serif;
+  --font-body: 'Spectral', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Content widths */
+  --container-prose: 768px;
+  --container-grid: 1200px;
+}
+
+/* Base styles */
+html {
+  background-color: var(--color-base);
+  color: var(--color-primary);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+/* Typography hierarchy */
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Smooth scroll (Lenis overrides, but fallback) */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* Film grain overlay */
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Card reveal animation (CSS scroll-driven) */
+@keyframes card-reveal {
+  from { opacity: 0; translate: 0 32px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+.card {
+  animation: card-reveal linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 25%;
+}
+
+@supports not (animation-timeline: view()) {
+  .card {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-accent-dim);
+  color: var(--color-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-secondary);
+  border-radius: 3px;
+}

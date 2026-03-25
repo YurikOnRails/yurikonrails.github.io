@@ -1,17 +1,56 @@
 ---
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+import { profile } from '../data/profile'
 
+const sections = [
+  { href: '/essays', title: 'Essays', description: 'Long-form writing on tech, travel, and ideas' },
+  { href: '/builds', title: 'Builds', description: 'Projects, tools, and communities' },
+  { href: '/books', title: 'Books', description: 'Reading log with ratings and takeaways' },
+  { href: '/field', title: 'Field', description: 'Travel photography with maps and stories' },
+  { href: '/now', title: 'Now', description: 'What I am doing right now' },
+]
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base
+  title={profile.name}
+  description={profile.bio}
+>
+  {/* Hero */}
+  <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-16 pb-20 md:pt-24 md:pb-28">
+    <div class="max-w-2xl">
+      <h1 class="text-4xl md:text-6xl leading-tight mb-6">
+        {profile.name}
+      </h1>
+      <p class="text-lg md:text-xl text-secondary leading-relaxed mb-4">
+        {profile.bio}
+      </p>
+      <p class="text-sm text-secondary">
+        {profile.location}
+      </p>
+    </div>
+  </section>
+
+  {/* Section tiles */}
+  <section class="mx-auto max-w-[var(--container-grid)] px-5 pb-24">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {sections.map(({ href, title, description }) => (
+        <a
+          href={href}
+          class="group rounded-2xl border border-subtle bg-card p-6 md:p-8 transition-colors hover:bg-surface"
+        >
+          <h2 class="text-xl md:text-2xl font-[family-name:var(--font-heading)] mb-3 group-hover:text-accent transition-colors">
+            {title}
+          </h2>
+          <p class="text-sm text-secondary leading-relaxed">
+            {description}
+          </p>
+          <div class="mt-4 flex items-center gap-1 text-sm text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+            <span>Explore</span>
+            <Icon name="arrow-right" size={16} />
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

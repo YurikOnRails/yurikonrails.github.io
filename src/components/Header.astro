@@ -1,0 +1,117 @@
+---
+import Icon from './Icon.astro'
+
+const navLinks = [
+  { href: '/essays', label: 'Essays' },
+  { href: '/builds', label: 'Builds' },
+  { href: '/books', label: 'Books' },
+  { href: '/field', label: 'Field' },
+  { href: '/now', label: 'Now' },
+]
+
+const currentPath = Astro.url.pathname
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-base/80 backdrop-blur-md border-b border-subtle">
+  <nav class="mx-auto flex max-w-[var(--container-grid)] items-center justify-between px-5 py-4" aria-label="Main navigation">
+    <a href="/" class="font-[family-name:var(--font-heading)] text-lg text-primary hover:text-accent transition-colors">
+      Fieldnotes
+    </a>
+
+    {/* Desktop nav */}
+    <ul class="hidden md:flex items-center gap-8">
+      {navLinks.map(({ href, label }) => (
+        <li>
+          <a
+            href={href}
+            class:list={[
+              'text-sm font-medium transition-colors',
+              currentPath.startsWith(href) ? 'text-accent' : 'text-secondary hover:text-primary',
+            ]}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    {/* Mobile burger */}
+    <button
+      id="menu-toggle"
+      class="md:hidden text-secondary hover:text-primary transition-colors"
+      aria-label="Open menu"
+      aria-expanded="false"
+    >
+      <Icon name="menu" />
+    </button>
+  </nav>
+
+  {/* Mobile menu */}
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden fixed inset-0 top-0 z-50 bg-base/95 backdrop-blur-lg"
+  >
+    <div class="flex items-center justify-between px-5 py-4 border-b border-subtle">
+      <a href="/" class="font-[family-name:var(--font-heading)] text-lg text-primary">
+        Fieldnotes
+      </a>
+      <button
+        id="menu-close"
+        class="text-secondary hover:text-primary transition-colors"
+        aria-label="Close menu"
+      >
+        <Icon name="x" />
+      </button>
+    </div>
+    <ul class="flex flex-col gap-2 p-5 pt-8">
+      {navLinks.map(({ href, label }) => (
+        <li>
+          <a
+            href={href}
+            class:list={[
+              'block py-3 text-2xl font-[family-name:var(--font-heading)] transition-colors',
+              currentPath.startsWith(href) ? 'text-accent' : 'text-primary hover:text-accent',
+            ]}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</header>
+
+<div class="h-16"></div>
+
+<script>
+  function initMenu() {
+    const toggle = document.getElementById('menu-toggle')
+    const close = document.getElementById('menu-close')
+    const menu = document.getElementById('mobile-menu')
+
+    if (!toggle || !close || !menu) return
+
+    toggle.addEventListener('click', () => {
+      menu.classList.remove('hidden')
+      toggle.setAttribute('aria-expanded', 'true')
+      document.body.style.overflow = 'hidden'
+    })
+
+    close.addEventListener('click', () => {
+      menu.classList.add('hidden')
+      toggle.setAttribute('aria-expanded', 'false')
+      document.body.style.overflow = ''
+    })
+
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        menu.classList.add('hidden')
+        toggle.setAttribute('aria-expanded', 'false')
+        document.body.style.overflow = ''
+      })
+    })
+  }
+
+  initMenu()
+  document.addEventListener('astro:after-swap', initMenu)
+</script>

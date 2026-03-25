@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro'
+
+const socialLinks = [
+  { href: 'https://github.com/yurikonrails', label: 'GitHub', icon: 'github' },
+  { href: 'https://t.me/yurikonrails', label: 'Telegram', icon: 'telegram' },
+]
+
+const year = new Date().getFullYear()
+---
+
+<footer class="border-t border-subtle mt-24">
+  <div class="mx-auto flex max-w-[var(--container-grid)] items-center justify-between px-5 py-8">
+    <span class="text-sm text-secondary">&copy; {year}</span>
+    <div class="flex items-center gap-4">
+      {socialLinks.map(({ href, label, icon }) => (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-secondary hover:text-accent transition-colors"
+          aria-label={label}
+        >
+          <Icon name={icon} size={20} />
+        </a>
+      ))}
+    </div>
+  </div>
+</footer>
