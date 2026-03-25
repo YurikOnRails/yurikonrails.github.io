@@ -12,6 +12,18 @@ const { Content } = await render(entry)
 const { updatedAt } = entry.data
 
 const dateStr = formatDate(updatedAt)
+
+// Relative time
+const msAgo = Date.now() - updatedAt.getTime()
+const daysAgo = Math.floor(msAgo / 86_400_000)
+const relativeStr =
+  daysAgo === 0 ? 'today' :
+  daysAgo === 1 ? 'yesterday' :
+  daysAgo < 30 ? `${daysAgo} days ago` :
+  daysAgo < 60 ? '1 month ago' :
+  `${Math.floor(daysAgo / 30)} months ago`
+
+const isFresh = daysAgo < 14
 ---
 
 <Base
@@ -19,13 +31,71 @@ const dateStr = formatDate(updatedAt)
   description="What I'm doing right now."
 >
   <section class="mx-auto max-w-[var(--container-prose)] px-5 pt-12 pb-24">
-    <h1 class="text-4xl md:text-6xl mb-4">Now</h1>
-    <p class="text-sm text-secondary mb-10">
-      Last updated: {dateStr}
-    </p>
+    <div class="now-fade" style="animation-delay: 0ms">
+      <h1 class="text-4xl md:text-6xl mb-5">Now</h1>
+    </div>
 
-    <div class="prose">
+    <div class="now-fade flex items-center gap-3 mb-10" style="animation-delay: 60ms">
+      {/* Status indicator */}
+      <span class="relative flex items-center justify-center w-3 h-3 shrink-0">
+        {isFresh && <span class="now-ping absolute rounded-full bg-emerald-400/50" style="inset: -4px" />}
+        {isFresh && <span class="now-ping-delay absolute rounded-full bg-emerald-400/30" style="inset: -4px" />}
+        <span class:list={[
+          'relative block w-3 h-3 rounded-full',
+          isFresh ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]' : 'bg-secondary/40',
+        ]} />
+      </span>
+
+      <p class="text-sm text-secondary">
+        Updated {relativeStr}
+        <span class="text-subtle mx-1">·</span>
+        <span class="text-secondary/50">{dateStr}</span>
+      </p>
+    </div>
+
+    <div class="now-fade prose" style="animation-delay: 120ms">
       <Content />
     </div>
   </section>
+
+  <style>
+    @keyframes now-fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .now-fade {
+      animation: now-fade-in 0.5s ease both;
+    }
+
+    @keyframes now-ping-anim {
+      0% {
+        transform: scale(0.5);
+        opacity: 0.7;
+      }
+      70% {
+        transform: scale(2.8);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(2.8);
+        opacity: 0;
+      }
+    }
+
+    .now-ping {
+      animation: now-ping-anim 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .now-ping-delay {
+      animation: now-ping-anim 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+      animation-delay: 0.8s;
+    }
+  </style>
 </Base>

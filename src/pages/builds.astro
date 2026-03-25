@@ -2,12 +2,16 @@
 import Base from '../layouts/Base.astro'
 import BuildCard from '../components/BuildCard.astro'
 import Icon from '../components/Icon.astro'
-import { builds } from '../data/builds'
+import { builds, kindLabel } from '../data/builds'
 
 const sorted = [...builds].sort((a, b) => a.position - b.position)
 const hero = sorted.find((b) => b.status === 'active' && b.cover)
-const rest = sorted.filter((b) => b !== hero)
-const heroMonogram = hero ? hero.title.charAt(0).toUpperCase() : ''
+const active = sorted.filter((b) => b.status === 'active' && b !== hero)
+const upcoming = sorted.filter((b) => b.status === 'soon')
+
+const heroSince = hero?.startedOn
+  ? new Date(hero.startedOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
+  : null
 ---
 
 <Base
@@ -15,96 +19,135 @@ const heroMonogram = hero ? hero.title.charAt(0).toUpperCase() : ''
   description="Projects, tools, and communities I've built or contributed to."
 >
   <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
-    <h1 class="text-4xl md:text-6xl mb-4">Builds</h1>
-    <p class="text-secondary mb-10 max-w-xl">
-      Projects, tools, and things I'm making.
-    </p>
+    <div class="build-fade" style="animation-delay: 0ms">
+      <h1 class="text-4xl md:text-6xl mb-4">Builds</h1>
+      <p class="text-secondary mb-12 max-w-xl">
+        Projects, tools, and things I'm making.
+      </p>
+    </div>
 
-    {/* Hero card */}
+    {/* ─── Hero — featured project ─── */}
     {hero && (
-      <div class="build-fade mb-8" style="animation-delay: 0ms">
+      <div class="build-fade mb-14" style="animation-delay: 60ms">
         <a
           href={hero.url}
           target="_blank"
           rel="noopener noreferrer"
-          class="hero-card group block rounded-2xl border border-subtle bg-card overflow-hidden transition-all hover:bg-surface hover:border-[#3f3f46]"
+          class="hero-build group block relative rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_60px_rgba(232,98,44,0.08)]"
         >
-          {/* Cover */}
-          <div class="relative aspect-[21/9] overflow-hidden">
+          {/* Cover image */}
+          <div class="relative aspect-[21/9] md:aspect-[2.4/1] overflow-hidden">
             <img
               src={hero.cover}
               alt={hero.title}
               loading="eager"
               decoding="async"
-              class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+              class="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
-            {/* Status badge on cover */}
-            <span class="absolute top-4 right-4 font-[family-name:var(--font-mono)] text-xs px-2.5 py-1 rounded bg-accent-dim text-accent">
-              {hero.status}
-            </span>
+            {/* Gradient overlay */}
+            <div class="absolute inset-0 bg-gradient-to-t from-base from-20% via-base/85 via-60% to-base/30" />
           </div>
 
-          {/* Content */}
-          <div class="p-6 md:p-8">
-            <div class="mb-4">
-              <h2 class="text-2xl md:text-3xl font-[family-name:var(--font-heading)] group-hover:text-accent transition-colors mb-2">
-                {hero.title}
-              </h2>
-              <p class="text-sm text-secondary max-w-lg">{hero.description}</p>
+          {/* Content overlay — positioned over the image */}
+          <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
+            {/* Kind + Status */}
+            <div class="flex items-center gap-3 mb-3">
+              <span class="font-[family-name:var(--font-mono)] text-[11px] text-secondary tracking-wider uppercase">
+                {kindLabel[hero.kind]}
+              </span>
+              <span class="text-secondary/30">·</span>
+              <span class="font-[family-name:var(--font-mono)] text-xs text-secondary">
+                {hero.status}
+              </span>
             </div>
 
-            {/* Progress bar */}
-            <div class="progress-track h-1.5 rounded-full bg-subtle overflow-hidden">
-              <div
-                class="progress-fill h-full rounded-full bg-accent"
-                data-progress={hero.progress}
-                style="width: 0%"
-              />
+            {/* Title */}
+            <h2 class="text-3xl md:text-5xl font-[family-name:var(--font-heading)] leading-tight text-primary group-hover:text-accent transition-colors duration-300 mb-3">
+              {hero.title}
+            </h2>
+
+            {/* Description */}
+            <p class="text-sm md:text-base max-w-xl mb-5 leading-relaxed" style="color: #a1a1aa">
+              {hero.description}
+            </p>
+
+            {/* Stack + meta row */}
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+              {hero.stack && hero.stack.length > 0 && (
+                <div class="flex flex-wrap gap-1.5">
+                  {hero.stack.map((tech) => (
+                    <span class="font-[family-name:var(--font-mono)] text-[11px] text-secondary/70 bg-white/[0.08] px-2 py-0.5 rounded">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {heroSince && (
+                <>
+                  <span class="text-secondary/30 hidden md:inline">·</span>
+                  <span class="font-[family-name:var(--font-mono)] text-[11px] text-secondary/50">
+                    Since {heroSince}
+                  </span>
+                </>
+              )}
             </div>
-            <div class="flex justify-between mt-1.5">
-              <span class="text-[10px] font-[family-name:var(--font-mono)] text-[#52525b]">progress</span>
-              <span class="text-[10px] font-[family-name:var(--font-mono)] text-[#52525b]">{hero.progress}%</span>
+
+            {/* CTA arrow */}
+            <div class="absolute top-5 right-5 md:top-8 md:right-8 text-secondary/40 group-hover:text-accent transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+              <Icon name="arrow-up-right" size={20} />
             </div>
           </div>
         </a>
       </div>
     )}
 
-    {/* Other projects */}
-    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-      {rest.map((build, i) => (
-        <div class="build-fade" style={`animation-delay: ${(i + 1) * 100}ms`}>
-          <BuildCard build={build} />
+    {/* ─── Active projects ─── */}
+    {active.length > 0 && (
+      <div class="mb-16">
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+          {active.map((build, i) => (
+            <div class="build-fade" style={`animation-delay: ${120 + i * 80}ms`}>
+              <BuildCard build={build} />
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      </div>
+    )}
+
+    {/* ─── On the horizon ─── */}
+    {upcoming.length > 0 && (
+      <div class="build-fade" style={`animation-delay: ${120 + active.length * 80 + 80}ms`}>
+        <div class="flex items-center gap-4 mb-6">
+          <h2 class="font-[family-name:var(--font-mono)] text-xs text-[#52525b] tracking-wider uppercase">On the horizon</h2>
+          <div class="flex-1 h-px bg-subtle" />
+        </div>
+
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {upcoming.map((build) => (
+            <div class="group flex items-start gap-4 rounded-xl border border-white/[0.03] bg-card/50 p-5 transition-colors hover:bg-surface/50">
+              <div class="flex-1 min-w-0">
+                <h3 class="font-[family-name:var(--font-heading)] text-lg text-[#52525b] group-hover:text-secondary transition-colors leading-snug mb-1.5">
+                  {build.title}
+                </h3>
+                <p class="text-sm text-[#3f3f46] leading-relaxed mb-3">
+                  {build.description}
+                </p>
+                {build.stack && build.stack.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5">
+                    {build.stack.map((tech) => (
+                      <span class="font-[family-name:var(--font-mono)] text-[10px] text-[#3f3f46] bg-subtle px-1.5 py-0.5 rounded">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
   </section>
-
-  <script>
-    function animateProgressBars() {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const bar = entry.target as HTMLElement
-            const target = parseInt(bar.dataset.progress || '0', 10)
-            requestAnimationFrame(() => {
-              bar.style.transition = 'width 1s cubic-bezier(0.22, 1, 0.36, 1)'
-              bar.style.width = `${target}%`
-            })
-            observer.unobserve(bar)
-          }
-        })
-      }, { threshold: 0.5 })
-
-      document.querySelectorAll('.progress-fill').forEach((bar) => {
-        observer.observe(bar)
-      })
-    }
-
-    animateProgressBars()
-    document.addEventListener('astro:after-swap', animateProgressBars)
-  </script>
 
   <style>
     @keyframes build-fade-in {

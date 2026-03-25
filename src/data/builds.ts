@@ -9,8 +9,16 @@ export interface Build {
   kind: 'business' | 'oss' | 'media' | 'community'
   progress: number
   position: number
+  stack?: string[]
   startedOn?: string
   finishedOn?: string
+}
+
+export const kindLabel: Record<string, string> = {
+  business: 'business',
+  oss: 'open source',
+  media: 'media',
+  community: 'community',
 }
 
 export const builds: Build[] = [
@@ -22,6 +30,7 @@ export const builds: Build[] = [
     cover: '/builds/industrialprofi-cover.png',
     status: 'active',
     kind: 'business',
+    stack: ['Ruby on Rails', 'PostgreSQL', 'Redis', 'Docker'],
     progress: 75,
     position: 1,
     startedOn: '2025-06-01',
@@ -29,10 +38,11 @@ export const builds: Build[] = [
   {
     title: 'Fieldnotes',
     description: 'Personal publishing platform. Essays, travel photography, reading log, project documentation. Built with Astro 6 and a cinematic dark aesthetic.',
-    url: 'https://yurikonrails.github.io',
+    url: 'https://github.com/YurikOnRails/yurikonrails.github.io',
     icon: 'arrow-right',
     status: 'active',
     kind: 'oss',
+    stack: ['Astro', 'Tailwind CSS', 'TypeScript', 'MapLibre'],
     progress: 40,
     position: 2,
     startedOn: '2026-03-01',
@@ -44,6 +54,7 @@ export const builds: Build[] = [
     icon: 'arrow-right',
     status: 'active',
     kind: 'oss',
+    stack: ['HTML', 'CSS', 'JavaScript'],
     progress: 7,
     position: 3,
   },
@@ -53,6 +64,7 @@ export const builds: Build[] = [
     icon: 'map-pin',
     status: 'soon',
     kind: 'oss',
+    stack: ['Swift', 'MapKit', 'CoreLocation'],
     progress: 0,
     position: 3,
   },
@@ -62,6 +74,7 @@ export const builds: Build[] = [
     icon: 'heart',
     status: 'soon',
     kind: 'oss',
+    stack: ['Rust', 'Tauri', 'Svelte'],
     progress: 0,
     position: 4,
   },
