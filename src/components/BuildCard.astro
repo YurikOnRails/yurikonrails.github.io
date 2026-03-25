@@ -7,38 +7,94 @@ interface Props {
 }
 
 const { build } = Astro.props
-const { title, description, url, icon, status } = build
+const { title, description, url, icon, status, progress } = build
+const isSoon = status === 'soon'
+const monogram = title.charAt(0).toUpperCase()
 
-const statusColors: Record<string, string> = {
-  active: 'bg-accent/20 text-accent',
-  paused: 'bg-yellow-500/20 text-yellow-400',
-  completed: 'bg-blue-500/20 text-blue-400',
-  archived: 'bg-secondary/20 text-secondary',
+const statusLabel: Record<string, string> = {
+  active: 'active',
+  soon: 'soon',
+  paused: 'paused',
+  completed: 'completed',
+  archived: 'archived',
+}
+const statusStyle: Record<string, string> = {
+  active: 'text-accent bg-accent-dim',
+  soon: 'text-[#52525b] bg-subtle',
+  paused: 'text-yellow-400 bg-yellow-500/20',
+  completed: 'text-blue-400 bg-blue-500/20',
+  archived: 'text-secondary bg-secondary/20',
 }
 ---
 
-<article class="card group">
-  <a
-    href={url}
-    target="_blank"
-    rel="noopener noreferrer"
-    class="flex flex-col rounded-2xl border border-subtle bg-card p-5 md:p-6 transition-colors hover:bg-surface h-full"
+<article class:list={['group', isSoon && 'opacity-50']}>
+  <div
+    class:list={[
+      'build-card relative flex flex-col rounded-2xl border border-white/[0.03] bg-card p-6 md:p-8 transition-all h-full overflow-hidden',
+      isSoon ? 'cursor-default' : 'hover:bg-surface hover:border-[#3f3f46]',
+    ]}
   >
+    {/* Title + status */}
     <div class="flex items-start justify-between gap-3 mb-3">
-      <div class="flex items-center gap-3">
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-dim text-accent">
-          <Icon name={icon} size={20} />
-        </div>
-        <h2 class="text-lg font-[family-name:var(--font-heading)] group-hover:text-accent transition-colors">
-          {title}
-        </h2>
-      </div>
-      <span class:list={['shrink-0 rounded-full px-2.5 py-0.5 text-xs', statusColors[status]]}>
-        {status}
+      <h2 class:list={[
+        'text-xl font-[family-name:var(--font-heading)] transition-colors leading-snug',
+        isSoon ? 'text-[#52525b]' : 'group-hover:text-accent',
+      ]}>
+        {title}
+      </h2>
+      <span class:list={[
+        'font-[family-name:var(--font-mono)] text-xs px-2 py-0.5 rounded shrink-0 mt-1',
+        statusStyle[status],
+      ]}>
+        {statusLabel[status]}
       </span>
     </div>
-    <p class="text-sm text-secondary leading-relaxed flex-1">
+
+    {/* Description */}
+    <p class:list={[
+      'text-sm leading-relaxed flex-1 mb-5',
+      isSoon ? 'text-[#3f3f46]' : 'text-secondary',
+    ]}>
       {description}
     </p>
-  </a>
+
+    {/* Link hint for active projects */}
+    {!isSoon && url && (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-1.5 text-xs text-[#52525b] group-hover:text-accent transition-colors font-[family-name:var(--font-mono)] mb-4"
+      >
+        <span>View project</span>
+        <Icon name="arrow-right" size={14} />
+      </a>
+    )}
+
+    {/* Progress bar */}
+    <div class="progress-track h-1 rounded-full bg-subtle overflow-hidden">
+      <div
+        class:list={[
+          'progress-fill h-full rounded-full',
+          isSoon ? 'bg-[#3f3f46]' : 'bg-accent',
+        ]}
+        data-progress={progress}
+        style="width: 0%"
+      />
+    </div>
+    <div class="flex justify-between mt-1.5">
+      <span class:list={[
+        'text-[10px] font-[family-name:var(--font-mono)]',
+        isSoon ? 'text-[#3f3f46]' : 'text-[#52525b]',
+      ]}>
+        progress
+      </span>
+      <span class:list={[
+        'text-[10px] font-[family-name:var(--font-mono)]',
+        isSoon ? 'text-[#3f3f46]' : 'text-[#52525b]',
+      ]}>
+        {progress}%
+      </span>
+    </div>
+  </div>
 </article>

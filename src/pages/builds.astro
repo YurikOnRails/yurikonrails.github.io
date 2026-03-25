@@ -1,9 +1,13 @@
 ---
 import Base from '../layouts/Base.astro'
 import BuildCard from '../components/BuildCard.astro'
+import Icon from '../components/Icon.astro'
 import { builds } from '../data/builds'
 
 const sorted = [...builds].sort((a, b) => a.position - b.position)
+const hero = sorted.find((b) => b.status === 'active' && b.cover)
+const rest = sorted.filter((b) => b !== hero)
+const heroMonogram = hero ? hero.title.charAt(0).toUpperCase() : ''
 ---
 
 <Base
@@ -13,13 +17,114 @@ const sorted = [...builds].sort((a, b) => a.position - b.position)
   <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
     <h1 class="text-3xl md:text-5xl mb-4">Builds</h1>
     <p class="text-secondary mb-10 max-w-xl">
-      Projects, tools, and communities.
+      Projects, tools, and things I'm making.
     </p>
 
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {sorted.map((build) => (
-        <BuildCard build={build} />
+    {/* Hero card */}
+    {hero && (
+      <div class="build-fade mb-8" style="animation-delay: 0ms">
+        <a
+          href={hero.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hero-card group block rounded-2xl border border-subtle bg-card overflow-hidden transition-all hover:bg-surface hover:border-[#3f3f46]"
+        >
+          {/* Cover */}
+          <div class="relative aspect-[21/9] overflow-hidden">
+            <img
+              src={hero.cover}
+              alt={hero.title}
+              loading="eager"
+              decoding="async"
+              class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
+            {/* Status badge on cover */}
+            <span class="absolute top-4 right-4 font-[family-name:var(--font-mono)] text-xs px-2.5 py-1 rounded bg-accent-dim text-accent">
+              {hero.status}
+            </span>
+          </div>
+
+          {/* Content */}
+          <div class="p-6 md:p-8">
+            <div class="mb-4">
+              <h2 class="text-2xl md:text-3xl font-[family-name:var(--font-heading)] group-hover:text-accent transition-colors mb-2">
+                {hero.title}
+              </h2>
+              <p class="text-sm text-secondary max-w-lg">{hero.description}</p>
+            </div>
+
+            <div class="flex items-center gap-1.5 text-xs text-[#52525b] group-hover:text-accent transition-colors font-[family-name:var(--font-mono)] mb-4">
+              <span>View project</span>
+              <Icon name="arrow-right" size={14} />
+            </div>
+
+            {/* Progress bar */}
+            <div class="progress-track h-1.5 rounded-full bg-subtle overflow-hidden">
+              <div
+                class="progress-fill h-full rounded-full bg-accent"
+                data-progress={hero.progress}
+                style="width: 0%"
+              />
+            </div>
+            <div class="flex justify-between mt-1.5">
+              <span class="text-[10px] font-[family-name:var(--font-mono)] text-[#52525b]">progress</span>
+              <span class="text-[10px] font-[family-name:var(--font-mono)] text-[#52525b]">{hero.progress}%</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    )}
+
+    {/* Other projects */}
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+      {rest.map((build, i) => (
+        <div class="build-fade" style={`animation-delay: ${(i + 1) * 100}ms`}>
+          <BuildCard build={build} />
+        </div>
       ))}
     </div>
   </section>
+
+  <script>
+    function animateProgressBars() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const bar = entry.target as HTMLElement
+            const target = parseInt(bar.dataset.progress || '0', 10)
+            requestAnimationFrame(() => {
+              bar.style.transition = 'width 1s cubic-bezier(0.22, 1, 0.36, 1)'
+              bar.style.width = `${target}%`
+            })
+            observer.unobserve(bar)
+          }
+        })
+      }, { threshold: 0.5 })
+
+      document.querySelectorAll('.progress-fill').forEach((bar) => {
+        observer.observe(bar)
+      })
+    }
+
+    animateProgressBars()
+    document.addEventListener('astro:after-swap', animateProgressBars)
+  </script>
+
+  <style>
+    @keyframes build-fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .build-fade {
+      animation: build-fade-in 0.6s ease both;
+    }
+  </style>
 </Base>

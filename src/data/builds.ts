@@ -1,25 +1,58 @@
 export interface Build {
   title: string
   description: string
-  url: string
+  url?: string
   icon: string
-  status: 'active' | 'paused' | 'completed' | 'archived'
-  kind: 'business' | 'oss' | 'media' | 'community'
-  position: number
-  startedOn: string
-  finishedOn?: string
+  logo?: string
   cover?: string
+  status: 'active' | 'soon' | 'paused' | 'completed' | 'archived'
+  kind: 'business' | 'oss' | 'media' | 'community'
+  progress: number
+  position: number
+  startedOn?: string
+  finishedOn?: string
 }
 
 export const builds: Build[] = [
   {
+    title: 'industrialPROFI.com',
+    description: 'Industrial equipment and professional tooling platform. Full-cycle product catalog, procurement automation, and dealer network management.',
+    url: 'https://industrialprofi.com',
+    icon: 'arrow-right',
+    cover: '/builds/industrialprofi-cover.png',
+    status: 'active',
+    kind: 'business',
+    progress: 75,
+    position: 1,
+    startedOn: '2025-06-01',
+  },
+  {
     title: 'Fieldnotes',
-    description: 'Personal publishing platform. Essays, travel photography, project documentation. Built with Astro 6 and a cinematic dark aesthetic.',
+    description: 'Personal publishing platform. Essays, travel photography, reading log, project documentation. Built with Astro 6 and a cinematic dark aesthetic.',
     url: 'https://yurikonrails.github.io',
     icon: 'arrow-right',
     status: 'active',
     kind: 'oss',
-    position: 1,
+    progress: 40,
+    position: 2,
     startedOn: '2026-03-01',
+  },
+  {
+    title: 'Pathlog',
+    description: 'GPS trail recorder with offline maps and auto-generated photo journals. Designed for backcountry trips without cell service.',
+    icon: 'map-pin',
+    status: 'soon',
+    kind: 'oss',
+    progress: 0,
+    position: 3,
+  },
+  {
+    title: 'Inkdrop',
+    description: 'Minimal markdown editor with live preview, focused on distraction-free long-form writing. Local-first, no cloud.',
+    icon: 'heart',
+    status: 'soon',
+    kind: 'oss',
+    progress: 0,
+    position: 4,
   },
 ]

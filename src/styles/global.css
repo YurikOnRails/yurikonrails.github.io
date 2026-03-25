@@ -15,7 +15,7 @@
   --font-heading: 'Cormorant Garamond', serif;
   --font-ui: 'Onest', sans-serif;
   --font-body: 'Spectral', serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'IBM Plex Mono', monospace;
 
   /* Content widths */
   --container-prose: 768px;

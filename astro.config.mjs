@@ -37,7 +37,7 @@ export default defineConfig({
     },
     {
       provider: fontProviders.google(),
-      name: 'JetBrains Mono',
+      name: 'IBM Plex Mono',
       cssVariable: '--font-mono',
       weights: [400],
       subsets: ['latin', 'cyrillic'],
