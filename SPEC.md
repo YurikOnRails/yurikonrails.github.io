@@ -24,7 +24,7 @@
 | Icons        | SVG (inline)                  | Custom icons, no icon font, no emoji               |
 | RSS          | `@astrojs/rss`                | Official Astro package                             |
 | Sitemap      | `@astrojs/sitemap`            | Official Astro package                             |
-| Fonts        | Astro 6 Fonts API             | Prata + Onest + Spectral + JetBrains Mono          |
+| Fonts        | Astro 6 Fonts API             | Cormorant Garamond + Onest + Spectral + JetBrains Mono          |
 
 ### Баланс производительности
 

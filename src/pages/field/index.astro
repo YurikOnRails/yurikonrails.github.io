@@ -1,19 +1,9 @@
 ---
 import { getCollection } from 'astro:content'
 import Base from '../../layouts/Base.astro'
-import FieldGlobe from '../../components/react/FieldGlobe'
 
 const allSeries = await getCollection('field')
 const series = allSeries.sort((a, b) => b.data.takenOn.getTime() - a.data.takenOn.getTime())
-
-const globeMarkers = series.map((s) => ({
-  id: s.id,
-  lat: s.data.lat,
-  lng: s.data.lng,
-  src: s.data.cover,
-  label: s.data.title,
-  location: s.data.location,
-}))
 ---
 
 <Base
@@ -25,11 +15,6 @@ const globeMarkers = series.map((s) => ({
     <p class="text-secondary mb-10 max-w-xl">
       Travel photography with maps and stories.
     </p>
-
-    {/* Interactive 3D Globe */}
-    <div class="mb-16">
-      <FieldGlobe client:idle markers={globeMarkers} />
-    </div>
 
     {/* Series grid */}
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
