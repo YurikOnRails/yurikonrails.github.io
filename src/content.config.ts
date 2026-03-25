@@ -32,6 +32,8 @@ const field = defineCollection({
     photos: z.array(z.object({
       src: z.string(),
       caption: z.string().optional(),
+      lat: z.number().optional(),
+      lng: z.number().optional(),
     })).optional().default([]),
     videos: z.array(z.object({
       youtube: z.string(),

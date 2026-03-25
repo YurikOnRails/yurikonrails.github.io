@@ -14,10 +14,14 @@ cover: https://placehold.co/1280x854/18181b/a1a1aa?text=Altai+Mountains
 photos:
   - src: https://placehold.co/1280x854/18181b/a1a1aa?text=Altai+01
     caption: Dawn over Chulyshman valley
+    lat: 50.3842
+    lng: 87.7151
   - src: https://placehold.co/1280x854/18181b/a1a1aa?text=Altai+02
     caption: Golden larches at 2400m
   - src: https://placehold.co/1280x854/18181b/a1a1aa?text=Altai+03
     caption: Granite peaks in evening light
+    lat: 50.1631
+    lng: 87.5878
 ---
 
 The Altai mountains in late September exist in a state between seasons. Summer has left but winter hasn't fully arrived. The larches are golden — that brief two-week window when the entire landscape turns amber before the needles drop.

@@ -22,6 +22,8 @@ const dateStr = formatDate(takenOn, 'month-year')
 const photoMarkers = (photos || []).map((p, i) => ({
   src: p.src,
   caption: p.caption,
+  lat: p.lat,
+  lng: p.lng,
   index: i,
 }))
 ---
@@ -57,8 +59,8 @@ const photoMarkers = (photos || []).map((p, i) => ({
     {/* Photo grid */}
     {photos && photos.length > 0 && (
       <div class="space-y-6 mb-12">
-        {photos.map((photo) => (
-          <figure>
+        {photos.map((photo, i) => (
+          <figure id={`photo-${i}`}>
             <div class="overflow-hidden rounded-2xl">
               <img
                 src={photo.src}
@@ -68,11 +70,25 @@ const photoMarkers = (photos || []).map((p, i) => ({
                 class="w-full"
               />
             </div>
-            {photo.caption && (
-              <figcaption class="mt-2 text-sm text-secondary text-center">
-                {photo.caption}
-              </figcaption>
-            )}
+            <div class="mt-2 flex items-center justify-center gap-3">
+              {photo.caption && (
+                <figcaption class="text-sm text-secondary">
+                  {photo.caption}
+                </figcaption>
+              )}
+              {photo.lat != null && photo.lng != null && (
+                <>
+                  {photo.caption && <span class="text-subtle">·</span>}
+                  <button
+                    class="photo-coords text-xs text-secondary/50 hover:text-accent transition-colors font-[family-name:var(--font-mono)]"
+                    data-lat={photo.lat}
+                    data-lng={photo.lng}
+                  >
+                    {photo.lat.toFixed(4)}°, {photo.lng.toFixed(4)}°
+                  </button>
+                </>
+              )}
+            </div>
           </figure>
         ))}
       </div>
@@ -108,4 +124,26 @@ const photoMarkers = (photos || []).map((p, i) => ({
       <Content />
     </div>
   </article>
+
+  <script>
+    function initCoordLinks() {
+      document.querySelectorAll('.photo-coords').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mapContainer = document.getElementById('map-container')
+          if (!mapContainer) return
+
+          // Scroll to map
+          mapContainer.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+          // Dispatch event so Map.astro can fly to coordinates
+          const lat = parseFloat((btn as HTMLElement).dataset.lat || '0')
+          const lng = parseFloat((btn as HTMLElement).dataset.lng || '0')
+          mapContainer.dispatchEvent(new CustomEvent('flyto', { detail: { lat, lng } }))
+        })
+      })
+    }
+
+    initCoordLinks()
+    document.addEventListener('astro:after-swap', initCoordLinks)
+  </script>
 </Base>

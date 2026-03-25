@@ -1,43 +1,44 @@
 ---
-interface PhotoMarker {
-  src: string
-  caption?: string
-  lat?: number
-  lng?: number
-  index: number
+interface Location {
+  slug: string
+  title: string
+  location: string
+  lat: number
+  lng: number
+  year: number
 }
 
 interface Props {
-  lat: number
-  lng: number
-  title: string
-  photos?: PhotoMarker[]
+  locations: Location[]
 }
 
-const { lat, lng, title, photos = [] } = Astro.props
+const { locations } = Astro.props
 ---
 
 <div
-  id="map-container"
-  class="relative h-64 md:h-80 rounded-2xl border border-subtle overflow-hidden"
-  data-lat={lat}
-  data-lng={lng}
-  data-title={title}
-  data-photos={JSON.stringify(photos)}
+  id="globe-container"
+  class="relative w-full rounded-2xl border border-subtle overflow-hidden"
+  style="height: 520px"
+  data-locations={JSON.stringify(locations)}
 >
-  <div id="map" class="h-full w-full"></div>
+  <div id="globe" class="h-full w-full"></div>
+
+  {/* Coordinates display */}
+  <div
+    id="globe-coords"
+    class="absolute bottom-4 left-4 text-xs font-[family-name:var(--font-mono)] text-secondary/40 select-none pointer-events-none"
+  ></div>
 
   {/* Zoom controls */}
   <div class="absolute bottom-3 right-3 flex flex-col gap-1 z-10">
-    <button id="map-zoom-in" class="map-zoom-btn" aria-label="Zoom in">+</button>
-    <button id="map-zoom-out" class="map-zoom-btn" aria-label="Zoom out">&minus;</button>
+    <button id="globe-zoom-in" class="map-zoom-btn" aria-label="Zoom in">+</button>
+    <button id="globe-zoom-out" class="map-zoom-btn" aria-label="Zoom out">&minus;</button>
   </div>
-
 </div>
 
 <script>
-  async function initMap() {
-    const container = document.getElementById('map-container')
+  async function initGlobe() {
+    const container = document.getElementById('globe-container')
     if (!container) return
 
     const maplibregl = await import('maplibre-gl')
@@ -47,15 +48,17 @@ const { lat, lng, title, photos = [] } = Astro.props
     link.href = 'https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css'
     document.head.appendChild(link)
 
-    const lat = parseFloat(container.dataset.lat || '0')
-    const lng = parseFloat(container.dataset.lng || '0')
-    const title = container.dataset.title || ''
-    const photos: Array<{ src: string; caption?: string; lat?: number; lng?: number; index: number }> = JSON.parse(
-      container.dataset.photos || '[]'
-    )
+    const locations: Array<{
+      slug: string
+      title: string
+      location: string
+      lat: number
+      lng: number
+      year: number
+    }> = JSON.parse(container.dataset.locations || '[]')
 
     const map = new maplibregl.Map({
-      container: 'map',
+      container: 'globe',
       style: {
         version: 8,
         name: 'Fieldnotes Ink',
@@ -67,13 +70,11 @@ const { lat, lng, title, photos = [] } = Astro.props
         },
         glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
         layers: [
-          // Background = land
           {
             id: 'background',
             type: 'background',
             paint: { 'background-color': '#18181b' },
           },
-          // Landcover (forest, grass, sand)
           {
             id: 'landcover',
             type: 'fill',
@@ -81,7 +82,6 @@ const { lat, lng, title, photos = [] } = Astro.props
             'source-layer': 'landcover',
             paint: { 'fill-color': '#1f1f23', 'fill-opacity': 0.3 },
           },
-          // Landuse (residential, industrial, etc)
           {
             id: 'landuse',
             type: 'fill',
@@ -89,7 +89,6 @@ const { lat, lng, title, photos = [] } = Astro.props
             'source-layer': 'landuse',
             paint: { 'fill-color': '#1f1f23', 'fill-opacity': 0.3 },
           },
-          // Water (oceans, lakes)
           {
             id: 'water',
             type: 'fill',
@@ -97,7 +96,6 @@ const { lat, lng, title, photos = [] } = Astro.props
             'source-layer': 'water',
             paint: { 'fill-color': '#09090b' },
           },
-          // Rivers, streams
           {
             id: 'waterway',
             type: 'line',
@@ -108,7 +106,6 @@ const { lat, lng, title, photos = [] } = Astro.props
               'line-width': ['interpolate', ['linear'], ['zoom'], 3, 0.5, 12, 2],
             },
           },
-          // Roads
           {
             id: 'transportation',
             type: 'line',
@@ -119,7 +116,6 @@ const { lat, lng, title, photos = [] } = Astro.props
               'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.3, 12, 1.2],
             },
           },
-          // Country & state borders
           {
             id: 'boundary-country',
             type: 'line',
@@ -143,7 +139,6 @@ const { lat, lng, title, photos = [] } = Astro.props
               'line-dasharray': [6, 3],
             },
           },
-          // Water labels
           {
             id: 'water-name',
             type: 'symbol',
@@ -161,7 +156,6 @@ const { lat, lng, title, photos = [] } = Astro.props
               'text-halo-width': 1.5,
             },
           },
-          // Place labels
           {
             id: 'place-country',
             type: 'symbol',
@@ -201,8 +195,8 @@ const { lat, lng, title, photos = [] } = Astro.props
           },
         ],
       },
-      center: [lng, lat],
-      zoom: 7,
+      center: [40, 30],
+      zoom: 1.8,
       attributionControl: false,
       pitchWithRotate: false,
     })
@@ -210,132 +204,143 @@ const { lat, lng, title, photos = [] } = Astro.props
     map.scrollZoom.disable()
 
     map.on('load', () => {
-      const el = document.createElement('div')
-      el.className = 'map-marker-main'
-      el.innerHTML = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Outer ring -->
-        <circle cx="16" cy="16" r="12" stroke="#e8622c" stroke-width="1" fill="none"/>
-        <!-- Crosshair lines with center gap -->
-        <line x1="16" y1="1" x2="16" y2="7" stroke="#e8622c" stroke-width="1"/>
-        <line x1="16" y1="25" x2="16" y2="31" stroke="#e8622c" stroke-width="1"/>
-        <line x1="1" y1="16" x2="7" y2="16" stroke="#e8622c" stroke-width="1"/>
-        <line x1="25" y1="16" x2="31" y2="16" stroke="#e8622c" stroke-width="1"/>
-        <!-- Center dot -->
-        <circle cx="16" cy="16" r="2" fill="#e8622c"/>
-      </svg>`
+      // Add location markers — store references for filtering
+      const markers: Array<{ marker: any; el: HTMLElement; year: number }> = []
 
-      new maplibregl.Marker({ element: el })
-        .setLngLat([lng, lat])
-        .setPopup(
-          new maplibregl.Popup({
-            offset: 16,
-            closeButton: false,
-            className: 'fieldnotes-popup',
-          }).setHTML(`<span style="font-size:13px;color:#fafafa;">${title}</span>`)
-        )
-        .addTo(map)
+      locations.forEach((loc) => {
+        const el = document.createElement('div')
+        el.className = 'globe-marker'
+        el.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="8" stroke="#e8622c" stroke-width="1" fill="none" opacity="0.4"/>
+          <circle cx="12" cy="12" r="3" fill="#e8622c"/>
+        </svg>`
 
-      // Only show markers for photos with real coordinates
-      const geoPhotos = photos.filter((p) => p.lat != null && p.lng != null)
-      geoPhotos.forEach((photo) => {
-        const photoEl = document.createElement('div')
-        photoEl.style.cssText = `
-          width: 7px; height: 7px;
-          background: #e8622c;
-          border-radius: 50%;
-          border: 1.5px solid #18181b;
-          cursor: pointer;
-          opacity: 0.6;
-          transition: opacity 0.15s;
-        `
-        photoEl.addEventListener('mouseenter', () => {
-          photoEl.style.opacity = '1'
-        })
-        photoEl.addEventListener('mouseleave', () => {
-          photoEl.style.opacity = '0.6'
-        })
-        photoEl.addEventListener('click', () => {
-          const figureEl = document.getElementById(`photo-${photo.index}`)
-          if (figureEl) {
-            figureEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
-          }
-        })
-
-        new maplibregl.Marker({ element: photoEl })
-          .setLngLat([photo.lng, photo.lat])
+        const marker = new maplibregl.Marker({ element: el })
+          .setLngLat([loc.lng, loc.lat])
           .addTo(map)
+
+        markers.push({ marker, el, year: loc.year })
+
+        // Tooltip on hover
+        const popup = new maplibregl.Popup({
+          offset: 14,
+          closeButton: false,
+          closeOnClick: false,
+          className: 'globe-popup',
+        }).setHTML(`
+          <div class="globe-popup-inner">
+            <span class="globe-popup-title">${loc.title}</span>
+            <span class="globe-popup-location">${loc.location}</span>
+          </div>
+        `)
+
+        el.addEventListener('mouseenter', () => {
+          marker.setPopup(popup)
+          marker.togglePopup()
+        })
+
+        el.addEventListener('mouseleave', () => {
+          popup.remove()
+        })
+
+        el.addEventListener('click', () => {
+          map.flyTo({
+            center: [loc.lng, loc.lat],
+            zoom: 6,
+            duration: 1200,
+            easing: (t: number) => 1 - Math.pow(1 - t, 3),
+          })
+          setTimeout(() => {
+            window.location.href = `/field/${loc.slug}`
+          }, 800)
+        })
+
+        el.style.cursor = 'pointer'
       })
 
-      const zoomIn = document.getElementById('map-zoom-in')
-      const zoomOut = document.getElementById('map-zoom-out')
-      zoomIn?.addEventListener('click', () => map.zoomIn({ duration: 300 }))
-      zoomOut?.addEventListener('click', () => map.zoomOut({ duration: 300 }))
-
-      // Listen for flyto events from photo coordinate clicks
-      container.addEventListener('flyto', ((e: CustomEvent) => {
-        map.flyTo({
-          center: [e.detail.lng, e.detail.lat],
-          zoom: 12,
-          duration: 1800,
-          easing: (t: number) => 1 - Math.pow(1 - t, 3),
+      // Listen for year filter events
+      container.addEventListener('filter-year', ((e: CustomEvent) => {
+        const year = e.detail.year
+        markers.forEach(({ el, year: markerYear }) => {
+          const show = year === 'all' || String(markerYear) === String(year)
+          el.style.opacity = show ? '1' : '0.15'
+          el.style.pointerEvents = show ? 'auto' : 'none'
         })
       }) as EventListener)
 
-      map.flyTo({
-        center: [lng, lat],
-        zoom: 9,
-        duration: 2400,
-        curve: 1.4,
-        easing: (t: number) => 1 - Math.pow(1 - t, 3),
+      // Zoom controls
+      const zoomIn = document.getElementById('globe-zoom-in')
+      const zoomOut = document.getElementById('globe-zoom-out')
+      zoomIn?.addEventListener('click', () => map.zoomIn({ duration: 300 }))
+      zoomOut?.addEventListener('click', () => map.zoomOut({ duration: 300 }))
+
+      // Live coordinates display
+      const coordsEl = document.getElementById('globe-coords')
+      map.on('mousemove', (e) => {
+        if (coordsEl) {
+          const { lng, lat } = e.lngLat
+          coordsEl.textContent = `${lat.toFixed(4)}° ${lng.toFixed(4)}°`
+        }
+      })
+      map.on('mouseout', () => {
+        if (coordsEl) coordsEl.textContent = ''
       })
     })
   }
 
-  if (document.getElementById('map-container')) {
-    initMap()
+  if (document.getElementById('globe-container')) {
+    initGlobe()
   }
   document.addEventListener('astro:after-swap', () => {
-    if (document.getElementById('map-container')) {
-      initMap()
+    if (document.getElementById('globe-container')) {
+      initGlobe()
     }
   })
 </script>
 
 <style is:global>
-  .maplibregl-popup-content {
+  .globe-marker {
+    transition: transform 0.2s ease;
+  }
+
+  .globe-marker:hover {
+    transform: scale(1.25);
+  }
+
+  .globe-popup .maplibregl-popup-content {
     background: #18181b !important;
-    border: 1px solid #3a3c48 !important;
+    border: 1px solid #27272a !important;
     border-radius: 0.5rem !important;
-    padding: 6px 10px !important;
-    box-shadow: none !important;
+    padding: 10px 14px !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5) !important;
   }
 
-  .maplibregl-popup-tip {
-    border-top-color: #18181b !important;
+  .globe-popup .maplibregl-popup-tip {
+    border-top-color: #27272a !important;
   }
 
-  .maplibregl-ctrl-attrib {
-    display: none !important;
-  }
-
-  .map-zoom-btn {
-    width: 28px;
-    height: 28px;
+  .globe-popup-inner {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    border: 1px solid #3a3c48;
-    background: #18181b;
-    color: #71717a;
-    font-size: 15px;
-    font-family: var(--font-mono);
-    line-height: 1;
-    cursor: pointer;
-    transition: color 0.15s;
+    flex-direction: column;
+    gap: 3px;
   }
 
-  .map-zoom-btn:hover {
-    color: #fafafa;
+  .globe-popup-title {
+    font-size: 13px;
+    color: #d4d4d8;
+    font-family: var(--font-heading);
+    letter-spacing: 0.01em;
+  }
+
+  .globe-popup-location {
+    font-size: 11px;
+    color: #52525b;
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+  }
+
+  /* Hide MapLibre cooperative gesture overlay */
+  .maplibregl-cooperative-gesture-screen {
+    display: none !important;
   }
 </style>
