@@ -33,7 +33,7 @@ const heroSince = hero?.startedOn
           href={hero.url}
           target="_blank"
           rel="noopener noreferrer"
-          class="hero-build group block relative rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_60px_rgba(232,98,44,0.08)]"
+          class="hero-build group block relative overflow-hidden transition-all duration-500 hover:shadow-[0_0_60px_rgba(232,98,44,0.08)]"
         >
           {/* Cover image */}
           <div class="relative aspect-[21/9] md:aspect-[2.4/1] overflow-hidden">
@@ -124,7 +124,7 @@ const heroSince = hero?.startedOn
 
         <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
           {upcoming.map((build) => (
-            <div class="group flex items-start gap-4 rounded-xl border border-white/[0.03] bg-card/50 p-5 transition-colors hover:bg-surface/50">
+            <div class="group flex items-start gap-4 border border-white/[0.03] bg-card/50 p-5 transition-colors hover:bg-surface/50">
               <div class="flex-1 min-w-0">
                 <h3 class="font-[family-name:var(--font-heading)] text-lg text-[#52525b] group-hover:text-secondary transition-colors leading-snug mb-1.5">
                   {build.title}

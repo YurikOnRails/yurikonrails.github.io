@@ -205,7 +205,7 @@ html.lenis, html.lenis body {
 
 /* Narrow images — prose width with small bleed */
 .prose img[title="narrow"] {
-  border-radius: 0.375rem;
+  border-radius: 0;
   margin: 2.5rem -1rem;
   width: calc(100% + 2rem);
   max-width: calc(100% + 2rem);
