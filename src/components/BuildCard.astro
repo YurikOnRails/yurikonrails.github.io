@@ -9,7 +9,6 @@ interface Props {
 const { build } = Astro.props
 const { title, description, url, icon, status, progress } = build
 const isSoon = status === 'soon'
-const monogram = title.charAt(0).toUpperCase()
 
 const statusLabel: Record<string, string> = {
   active: 'active',
@@ -34,11 +33,16 @@ const statusStyle: Record<string, string> = {
       isSoon ? 'cursor-default' : 'hover:bg-surface hover:border-[#3f3f46]',
     ]}
   >
+    {/* Accent top stripe for active projects */}
+    {!isSoon && (
+      <div class="absolute top-0 left-0 right-0 h-[2px] bg-accent" />
+    )}
+
     {/* Title + status */}
     <div class="flex items-start justify-between gap-3 mb-3">
       <h2 class:list={[
         'text-xl font-[family-name:var(--font-heading)] transition-colors leading-snug',
-        isSoon ? 'text-[#52525b]' : 'group-hover:text-accent',
+        isSoon ? 'text-[#52525b]' : 'text-primary group-hover:text-accent',
       ]}>
         {title}
       </h2>
@@ -64,7 +68,7 @@ const statusStyle: Record<string, string> = {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        class="flex items-center gap-1.5 text-xs text-[#52525b] group-hover:text-accent transition-colors font-[family-name:var(--font-mono)] mb-4"
+        class="flex items-center gap-1.5 text-xs text-accent transition-colors font-[family-name:var(--font-mono)] mb-5 hover:text-accent/80"
       >
         <span>View project</span>
         <Icon name="arrow-right" size={14} />
@@ -72,7 +76,7 @@ const statusStyle: Record<string, string> = {
     )}
 
     {/* Progress bar */}
-    <div class="progress-track h-1 rounded-full bg-subtle overflow-hidden">
+    <div class="progress-track h-1.5 rounded-full bg-subtle overflow-hidden">
       <div
         class:list={[
           'progress-fill h-full rounded-full',
