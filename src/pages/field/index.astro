@@ -1,18 +1,18 @@
 ---
 import { getCollection } from 'astro:content'
 import Base from '../../layouts/Base.astro'
-import Globe from '../../components/Globe.astro'
+import FieldGlobe from '../../components/react/FieldGlobe'
 
 const allSeries = await getCollection('field')
 const series = allSeries.sort((a, b) => b.data.takenOn.getTime() - a.data.takenOn.getTime())
 
 const globeMarkers = series.map((s) => ({
   id: s.id,
-  title: s.data.title,
-  location: s.data.location,
   lat: s.data.lat,
   lng: s.data.lng,
-  cover: s.data.cover,
+  src: s.data.cover,
+  label: s.data.title,
+  location: s.data.location,
 }))
 ---
 
@@ -27,8 +27,8 @@ const globeMarkers = series.map((s) => ({
     </p>
 
     {/* Interactive 3D Globe */}
-    <div class="mb-16 mx-auto max-w-xl">
-      <Globe markers={globeMarkers} />
+    <div class="mb-16">
+      <FieldGlobe client:idle markers={globeMarkers} />
     </div>
 
     {/* Series grid */}
