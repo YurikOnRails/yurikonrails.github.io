@@ -1,43 +1,60 @@
-# Astro Starter Kit: Minimal
+# Fieldnotes
 
-```sh
-npm create astro@latest -- --template minimal
+Personal publishing platform. Essays, travel photography, reading log, project documentation. Built with Astro 6, Tailwind CSS 4, dark theme "Cold Ink".
+
+## Commands
+
+| Command           | Action                                      |
+| :---------------- | :------------------------------------------ |
+| `npm install`     | Install dependencies                        |
+| `npm run dev`     | Start local dev server at `localhost:4321`   |
+| `npm run build`   | Build production site to `./dist/`           |
+| `npm run preview` | Preview build locally before deploying       |
+
+## Images in essays
+
+Place images in `public/essays/<slug>/`. Reference them in markdown as `/essays/<slug>/filename.jpeg`.
+
+### Two image modes
+
+**Normal width** -- for diagrams, screenshots, schemas. Stays within the text column with a small bleed:
+
+```markdown
+![Database schema diagram](/essays/my-post/schema.png)
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**Full width** -- for high-resolution travel photography, cinematic shots. Stretches edge-to-edge across the entire viewport. Add `"wide"` after the URL:
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```markdown
+![Sunset over the mountains](/essays/my-post/sunset.jpeg "wide")
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Guidelines
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- Use `"wide"` for landscape photography, travel shots, cinematic images
+- Keep diagrams, code screenshots, and schemas at normal width
+- Recommended resolution: 2000px+ wide for `"wide"` images, 1200px+ for normal
+- Formats: JPEG for photos, PNG for diagrams, AVIF/WebP for optimized delivery
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Images in field
 
-## 🧞 Commands
+Place photos in `public/field/<slug>/`. Reference in frontmatter:
 
-All commands are run from the root of the project, from a terminal:
+```yaml
+cover: /field/altai/cover.avif
+photos:
+  - src: /field/altai/photo-01.avif
+    caption: Valley at dawn
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Content structure
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```
+src/content/
+  essays/       -- long-form writing (markdown + images)
+  books/        -- reading log with reviews
+  field/        -- travel photography series
+  now/          -- /now page updates
+src/data/
+  builds.ts     -- project cards for /builds
+```

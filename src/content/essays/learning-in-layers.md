@@ -16,7 +16,8 @@ This experience — of returning to the same material and finding it transformed
 
 A better metaphor for learning is the spiral. You circle back to the same territory, but each time you arrive at a higher elevation. The view is different because your vantage point has changed. The landscape is the same, but your ability to see its features has developed.
 
-![A spiral staircase viewed from above](https://placehold.co/800x400/18181b/a1a1aa?text=Spiral+Staircase)
+![Layers of rock and sea, built over millennia](/essays/learning-in-layers/coastal-cliffs.jpeg "wide")
+*Layers of rock and sea, built over millennia*
 
 This has practical implications for how we learn. It means that reading a difficult book once and moving on is almost always less effective than reading it twice with an interval of lived experience between readings. The interval is not wasted time — it's the time during which your mind develops the structures needed to receive the book's ideas.
 
@@ -71,7 +72,8 @@ Original idea (100%)
         → "So true" reply (0%)
 ```
 
-![Signal loss through layers of compression](https://placehold.co/800x400/18181b/a1a1aa?text=Compression+Loss)
+![A path through the forest, each step revealing more](/essays/learning-in-layers/forest-path.jpeg "wide")
+*A path through the forest, each step revealing more*
 
 The nuances, the edge cases, the emotional resonance of the original — these are lost in compression, and they're often where the real understanding lives.
 

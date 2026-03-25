@@ -18,6 +18,9 @@ The biggest obstacle isn't technical — it's psychological. What if someone see
 
 These fears are real, but they point to something important: the desire for control over narrative. We want to tell the story of our work after we know how it ends. Building in public means surrendering that control.
 
+![Sunset over the river — everything visible, nothing hidden](/essays/on-building-in-public/river-sunset.jpeg "wide")
+*Sunset over the river — everything visible, nothing hidden*
+
 ## What I've learned
 
 Three months into this experiment, I've noticed a few things:

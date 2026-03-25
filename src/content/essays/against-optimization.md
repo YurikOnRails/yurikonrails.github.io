@@ -15,7 +15,8 @@ I want to argue the opposite. Not that optimization is always bad, but that our 
 
 When you optimize a system, you remove slack. Slack is the unused capacity, the buffer, the margin of error that allows a system to absorb shocks. A factory running at 100% capacity is maximally efficient right up until one machine breaks and the entire line stops. A schedule with no free time is maximally productive right up until something unexpected happens and everything cascades into crisis.
 
-![Factory floor at maximum capacity](https://placehold.co/800x400/18181b/a1a1aa?text=100%25+Capacity)
+![Peak rising above the clouds at sunset](/essays/against-optimization/peak-above-clouds.jpeg "wide")
+*Peak rising above the clouds at sunset*
 
 Nassim Taleb calls this the difference between efficiency and robustness. Efficient systems are fragile. Robust systems are, by definition, somewhat wasteful. They maintain capacity they don't currently need, precisely so they can handle situations they haven't yet encountered.
 
@@ -80,7 +81,8 @@ At a personal level, the optimization mindset produces a specific kind of anxiet
 
 This is, of course, insane. But it's the logical endpoint of applying optimization thinking to a human life. And it's surprisingly common among the kind of ambitious, driven people who are drawn to technology and building things.
 
-![An over-scheduled calendar with no white space](https://placehold.co/800x400/18181b/a1a1aa?text=No+White+Space)
+![No white space left](/essays/against-optimization/peak-above-clouds.jpeg "wide")
+*No white space left*
 
 The antidote is not anti-ambition. It's a more sophisticated understanding of what ambition is for. If you're optimizing your morning routine to save fifteen minutes, the question is: fifteen minutes for what? If the answer is "more optimizing," you've built a perpetual motion machine of productivity that produces nothing.
 

@@ -40,9 +40,9 @@ const tocItems = headings.filter((h) => h.depth === 2)
   type="article"
   publishedAt={publishedAt.toISOString()}
 >
-  <article class="mx-auto max-w-[var(--container-grid)] px-5 pt-8 pb-24">
+  <article class="pt-8 pb-24">
     {/* Back link */}
-    <div class="essay-fade" style="animation-delay: 0ms">
+    <div class="essay-fade mx-auto max-w-[var(--container-prose)] px-5" style="animation-delay: 0ms">
       <a href="/essays" class="inline-flex items-center gap-1 text-sm text-secondary hover:text-accent transition-colors mb-8">
         <Icon name="arrow-left" size={16} />
         <span>All essays</span>
@@ -51,7 +51,7 @@ const tocItems = headings.filter((h) => h.depth === 2)
 
     {/* Hero cover */}
     {cover && (
-      <div class="essay-fade relative -mx-5 md:-mx-12 mb-10 aspect-[16/9] overflow-hidden rounded-2xl" style="animation-delay: 40ms">
+      <div class="essay-fade relative mb-10 aspect-[21/9] overflow-hidden" style="animation-delay: 40ms">
         <img
           src={cover}
           alt={title}
@@ -62,151 +62,86 @@ const tocItems = headings.filter((h) => h.depth === 2)
       </div>
     )}
 
-    <div class="flex gap-12 relative">
-      {/* Main content */}
-      <div class="min-w-0 flex-1 max-w-[var(--container-prose)]">
-        {/* Meta */}
-        <header class="essay-fade mb-10" style="animation-delay: 80ms">
-          <div class="flex flex-wrap items-center gap-3 text-sm text-secondary mb-4">
-            <time datetime={publishedAt.toISOString()}>{dateStr}</time>
-            <span class="text-subtle">·</span>
-            <span class="font-[family-name:var(--font-mono)] text-xs">{readingTime} min read</span>
-          </div>
-          <h1 class="text-4xl md:text-6xl leading-tight mb-6">{title}</h1>
-          {tags && tags.length > 0 && (
-            <div class="flex flex-wrap gap-2 mb-6">
-              {tags.map((tag) => (
-                <a
-                  href={`/essays/tag/${tag}`}
-                  class="rounded-full bg-accent-dim px-3 py-1 text-xs text-accent hover:bg-accent/20 transition-colors"
-                >
-                  #{tag}
-                </a>
-              ))}
-            </div>
-          )}
-
-          {/* Excerpt as pull quote */}
-          <blockquote class="border-l-2 border-accent pl-4 text-lg italic text-secondary leading-relaxed">
-            {excerpt}
-          </blockquote>
-        </header>
-
-        {/* TOC for mobile */}
-        {tocItems.length > 1 && (
-          <nav class="essay-fade lg:hidden mb-10 rounded-xl bg-surface border border-subtle p-5" style="animation-delay: 120ms">
-            <span class="text-xs font-[family-name:var(--font-mono)] text-secondary uppercase tracking-wider block mb-3">Contents</span>
-            <ul class="space-y-2">
-              {tocItems.map((item) => (
-                <li>
-                  <a href={`#${item.slug}`} class="text-sm text-secondary hover:text-accent transition-colors">
-                    {item.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
-
-        {/* Article body */}
-        <div class="essay-fade prose prose-dropcap prose-dividers" style="animation-delay: 160ms" id="article-body">
-          <Content />
-        </div>
-
-        {/* Footer meta */}
-        <div class="essay-fade mt-12 mb-12 text-center" style="animation-delay: 200ms">
-          <span class="text-[#3f3f46] text-lg tracking-widest">· · ·</span>
-          <p class="text-sm text-secondary mt-4 font-[family-name:var(--font-mono)]">
-            {dateStr} · {readingTime} min read
-          </p>
-        </div>
-
-        {/* Prev / Next navigation */}
-        <nav class="essay-fade pt-8 border-t border-subtle" style="animation-delay: 240ms">
-          <div class="flex justify-between gap-6">
-            {prevEssay ? (
-              <a href={`/essays/${prevEssay.id}`} class="group flex-1 min-w-0">
-                <span class="text-xs font-[family-name:var(--font-mono)] text-secondary block mb-1">Previous</span>
-                <span class="text-primary group-hover:text-accent transition-colors font-[family-name:var(--font-heading)] text-lg leading-snug line-clamp-2">
-                  {prevEssay.data.title}
-                </span>
-              </a>
-            ) : <div />}
-            {nextEssay ? (
-              <a href={`/essays/${nextEssay.id}`} class="group flex-1 min-w-0 text-right">
-                <span class="text-xs font-[family-name:var(--font-mono)] text-secondary block mb-1">Next</span>
-                <span class="text-primary group-hover:text-accent transition-colors font-[family-name:var(--font-heading)] text-lg leading-snug line-clamp-2">
-                  {nextEssay.data.title}
-                </span>
-              </a>
-            ) : <div />}
-          </div>
-        </nav>
+    {/* Meta */}
+    <header class="essay-fade mb-10 mx-auto max-w-[var(--container-prose)] px-5" style="animation-delay: 80ms">
+      <div class="flex flex-wrap items-center gap-3 text-sm text-secondary mb-4">
+        <time datetime={publishedAt.toISOString()}>{dateStr}</time>
+        <span class="text-subtle">·</span>
+        <span class="font-[family-name:var(--font-mono)] text-xs">{readingTime} min read</span>
       </div>
-
-      {/* Sidebar TOC for desktop */}
-      {tocItems.length > 1 && (
-        <aside class="hidden lg:block w-48 shrink-0">
-          <nav class="sticky top-20" id="toc-desktop">
-            <span class="text-xs font-[family-name:var(--font-mono)] text-secondary uppercase tracking-wider block mb-4">Contents</span>
-            <ul class="space-y-2.5 border-l border-subtle pl-4">
-              {tocItems.map((item) => (
-                <li>
-                  <a
-                    href={`#${item.slug}`}
-                    class="toc-link text-sm text-[#52525b] hover:text-secondary transition-colors block leading-snug"
-                    data-slug={item.slug}
-                  >
-                    {item.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
+      <h1 class="text-4xl md:text-6xl leading-tight mb-6">{title}</h1>
+      {tags && tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-6">
+          {tags.map((tag) => (
+            <a
+              href={`/essays/tag/${tag}`}
+              class="rounded-full bg-accent-dim px-3 py-1 text-xs text-accent hover:bg-accent/20 transition-colors"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
       )}
+
+      {/* Excerpt as pull quote */}
+      <blockquote class="border-l-2 border-accent pl-4 text-lg italic text-secondary leading-relaxed">
+        {excerpt}
+      </blockquote>
+    </header>
+
+    {/* TOC */}
+    {tocItems.length > 1 && (
+      <nav class="essay-fade mb-10 mx-auto max-w-[var(--container-prose)] px-5" style="animation-delay: 120ms">
+        <details class="rounded-xl bg-surface border border-subtle p-5">
+          <summary class="text-xs font-[family-name:var(--font-mono)] text-secondary uppercase tracking-wider cursor-pointer select-none">Contents</summary>
+          <ul class="space-y-2 mt-3">
+            {tocItems.map((item) => (
+              <li>
+                <a href={`#${item.slug}`} class="text-sm text-secondary hover:text-accent transition-colors">
+                  {item.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      </nav>
+    )}
+
+    {/* Article body */}
+    <div class="essay-fade prose prose-dropcap prose-dividers mx-auto max-w-[var(--container-prose)] px-5" style="animation-delay: 160ms" id="article-body">
+      <Content />
     </div>
+
+    {/* Footer meta */}
+    <div class="essay-fade mt-12 mb-12 text-center" style="animation-delay: 200ms">
+      <span class="text-[#3f3f46] text-lg tracking-widest">· · ·</span>
+      <p class="text-sm text-secondary mt-4 font-[family-name:var(--font-mono)]">
+        {dateStr} · {readingTime} min read
+      </p>
+    </div>
+
+    {/* Prev / Next navigation */}
+    <nav class="essay-fade pt-8 border-t border-subtle mx-auto max-w-[var(--container-prose)] px-5" style="animation-delay: 240ms">
+      <div class="flex justify-between gap-6">
+        {prevEssay ? (
+          <a href={`/essays/${prevEssay.id}`} class="group flex-1 min-w-0">
+            <span class="text-xs font-[family-name:var(--font-mono)] text-secondary block mb-1">Previous</span>
+            <span class="text-primary group-hover:text-accent transition-colors font-[family-name:var(--font-heading)] text-lg leading-snug line-clamp-2">
+              {prevEssay.data.title}
+            </span>
+          </a>
+        ) : <div />}
+        {nextEssay ? (
+          <a href={`/essays/${nextEssay.id}`} class="group flex-1 min-w-0 text-right">
+            <span class="text-xs font-[family-name:var(--font-mono)] text-secondary block mb-1">Next</span>
+            <span class="text-primary group-hover:text-accent transition-colors font-[family-name:var(--font-heading)] text-lg leading-snug line-clamp-2">
+              {nextEssay.data.title}
+            </span>
+          </a>
+        ) : <div />}
+      </div>
+    </nav>
   </article>
-
-  <script>
-    function initEssay() {
-      // TOC active state
-      const tocLinks = document.querySelectorAll('.toc-link')
-      if (tocLinks.length > 0) {
-        const headings = Array.from(tocLinks).map((link) => {
-          const slug = (link as HTMLElement).dataset.slug
-          return document.getElementById(slug || '')
-        }).filter(Boolean) as HTMLElement[]
-
-        const updateToc = () => {
-          let activeSlug = ''
-          for (const heading of headings) {
-            const rect = heading.getBoundingClientRect()
-            if (rect.top <= 100) {
-              activeSlug = heading.id
-            }
-          }
-
-          tocLinks.forEach((link) => {
-            const slug = (link as HTMLElement).dataset.slug
-            if (slug === activeSlug) {
-              link.classList.add('text-accent')
-              link.classList.remove('text-[#52525b]')
-            } else {
-              link.classList.remove('text-accent')
-              link.classList.add('text-[#52525b]')
-            }
-          })
-        }
-
-        window.addEventListener('scroll', updateToc, { passive: true })
-        updateToc()
-      }
-    }
-
-    initEssay()
-    document.addEventListener('astro:after-swap', initEssay)
-  </script>
 
   <style>
     @keyframes essay-fade-in {
@@ -224,4 +159,5 @@ const tocItems = headings.filter((h) => h.depth === 2)
       animation: essay-fade-in 0.5s ease both;
     }
   </style>
+
 </Base>
