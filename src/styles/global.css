@@ -1,15 +1,18 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Colors — Warm Ember palette */
-  --color-base: #100f0a;
-  --color-surface: #1c1b14;
-  --color-card: #252419;
-  --color-subtle: rgba(242, 237, 220, 0.07);
-  --color-primary: #f2ede4;
-  --color-secondary: #948c7e;
-  --color-accent: #d4612a;
-  --color-accent-dim: rgba(212, 97, 42, 0.14);
+  /* Colors — Warm Editorial (Johnny Harris palette) */
+  --color-base: #f2ebe0;
+  --color-surface: #ede5d2;
+  --color-card: #e7dfc6;
+  --color-dark: #1a1912;
+  --color-sage: #6d8572;
+  --color-terra: #c45c28;
+  --color-subtle: rgba(26, 26, 18, 0.08);
+  --color-primary: #1a1912;
+  --color-secondary: #6b5f50;
+  --color-accent: #c45c28;
+  --color-accent-dim: rgba(196, 92, 40, 0.12);
 
   /* Font families */
   --font-heading: 'Geologica', sans-serif;
@@ -25,6 +28,11 @@
 /* Base styles */
 html {
   background-color: var(--color-base);
+  /* Subtle graph-paper grid — like Johnny Harris */
+  background-image:
+    linear-gradient(rgba(26, 26, 18, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 26, 18, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
   color: var(--color-primary);
   font-family: var(--font-ui);
   scroll-behavior: smooth;
@@ -199,7 +207,7 @@ html.lenis, html.lenis body {
   width: calc(100% + 2rem);
   max-width: calc(100% + 2rem);
   margin-left: -1rem;
-  border: 1px solid rgba(242, 237, 220, 0.05);
+  border: 1px solid rgba(26, 26, 18, 0.07);
 }
 
 @media (max-width: 768px) {
@@ -251,16 +259,16 @@ html.lenis, html.lenis body {
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #5a5040;
+  color: #8a7e6e;
   text-align: left;
   padding: 0 1rem 0.75rem 0;
-  border-bottom: 1px solid rgba(242, 237, 220, 0.08);
+  border-bottom: 1px solid rgba(26, 26, 18, 0.10);
 }
 
 .prose td {
   padding: 0.6rem 1rem 0.6rem 0;
   color: var(--color-secondary);
-  border-bottom: 1px solid rgba(242, 237, 220, 0.05);
+  border-bottom: 1px solid rgba(26, 26, 18, 0.06);
 }
 
 .prose tr:last-child td {
@@ -288,7 +296,7 @@ html.lenis, html.lenis body {
   content: '· · ·';
   display: block;
   text-align: center;
-  color: #3d3828;
+  color: #b0a48e;
   letter-spacing: 0.3em;
   font-size: 1rem;
   font-family: var(--font-ui);

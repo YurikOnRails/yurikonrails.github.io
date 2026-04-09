@@ -6,9 +6,9 @@ import { SITE_NAME } from '../data/config'
 const currentPath = Astro.url.pathname
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-base/80 backdrop-blur-md border-b border-subtle">
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-white/10" style="background: #1a1912;">
   <nav class="mx-auto flex max-w-[var(--container-grid)] items-center justify-between px-5 py-4" aria-label="Main navigation">
-    <a href="/" class="font-[family-name:var(--font-heading)] text-lg text-primary hover:text-accent transition-colors">
+    <a href="/" class="font-[family-name:var(--font-heading)] text-base font-bold tracking-tight text-white hover:text-accent transition-colors uppercase">
       {SITE_NAME}
     </a>
 
@@ -19,8 +19,8 @@ const currentPath = Astro.url.pathname
           <a
             href={href}
             class:list={[
-              'text-sm font-medium transition-colors',
-              currentPath.startsWith(href) ? 'text-accent' : 'text-secondary hover:text-primary',
+              'text-xs font-medium uppercase tracking-widest transition-colors',
+              currentPath.startsWith(href) ? 'text-accent' : 'text-white/60 hover:text-white',
             ]}
           >
             {label}
@@ -32,7 +32,7 @@ const currentPath = Astro.url.pathname
     {/* Mobile burger */}
     <button
       id="menu-toggle"
-      class="md:hidden flex items-center justify-center w-11 h-11 -mr-2 text-secondary hover:text-primary transition-colors"
+      class="md:hidden flex items-center justify-center w-11 h-11 -mr-2 text-white/60 hover:text-white transition-colors"
       aria-label="Open menu"
       aria-expanded="false"
     >
@@ -47,17 +47,17 @@ const currentPath = Astro.url.pathname
   class="md:hidden fixed inset-0 z-[100] pointer-events-none"
 >
   {/* Backdrop */}
-  <div id="menu-backdrop" class="absolute inset-0 bg-base opacity-0 transition-opacity duration-300 ease-out" />
+  <div id="menu-backdrop" class="absolute inset-0 opacity-0 transition-opacity duration-300 ease-out" style="background: #1a1912;" />
 
   {/* Panel */}
   <div id="menu-panel" class="relative h-full flex flex-col translate-y-[-8px] opacity-0 transition-all duration-300 ease-out">
-    <div class="flex items-center justify-between px-5 py-4 border-b border-subtle">
-      <a href="/" class="font-[family-name:var(--font-heading)] text-lg text-primary">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
+      <a href="/" class="font-[family-name:var(--font-heading)] text-base font-bold uppercase tracking-tight text-white">
         {SITE_NAME}
       </a>
       <button
         id="menu-close"
-        class="flex items-center justify-center w-11 h-11 -mr-2 text-secondary hover:text-primary transition-colors"
+        class="flex items-center justify-center w-11 h-11 -mr-2 text-white/60 hover:text-white transition-colors"
         aria-label="Close menu"
       >
         <Icon name="x" />
@@ -70,7 +70,7 @@ const currentPath = Astro.url.pathname
             href={href}
             class:list={[
               'menu-link block py-3 text-2xl font-[family-name:var(--font-heading)] transition-all duration-300 opacity-0 translate-y-3',
-              currentPath.startsWith(href) ? 'text-accent' : 'text-primary hover:text-accent',
+              currentPath.startsWith(href) ? 'text-accent' : 'text-white hover:text-accent',
             ]}
             style={`transition-delay: ${80 + i * 40}ms`}
           >
@@ -122,7 +122,6 @@ const currentPath = Astro.url.pathname
       toggle.setAttribute('aria-expanded', 'false')
       document.body.style.overflow = ''
 
-      // Reset links first (they animate out faster)
       menu.querySelectorAll('.menu-link').forEach((link) => {
         ;(link as HTMLElement).style.opacity = '0'
         ;(link as HTMLElement).style.transform = 'translateY(12px)'
@@ -133,11 +132,9 @@ const currentPath = Astro.url.pathname
       panel.style.opacity = '0'
       panel.style.transform = 'translateY(-8px)'
 
-      // After transition, disable pointer events and restore link delays
       setTimeout(() => {
         if (!isOpen) {
           menu.style.pointerEvents = 'none'
-          // Restore staggered delays for next open
           menu.querySelectorAll('.menu-link').forEach((link, i) => {
             ;(link as HTMLElement).style.transitionDelay = `${80 + i * 40}ms`
           })
