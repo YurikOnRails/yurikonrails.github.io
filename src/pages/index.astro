@@ -49,8 +49,14 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
         </div>
       </div>
 
-      {/* Name */}
-      <h1 class="home-name" id="hero-name">{profile.name}</h1>
+      {/* Name + animated underline */}
+      <div class="name-wrapper">
+        <h1 class="home-name" id="hero-name">{profile.name}</h1>
+        <span class="name-glint" id="name-glint" aria-hidden="true"></span>
+        <svg class="name-underline" id="name-underline" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M 2 8 C 40 2, 90 11, 150 6 C 210 1, 260 10, 298 7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
 
       {/* Bio */}
       <p class="home-bio" id="hero-bio">
@@ -154,17 +160,25 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
       charsClass: 'char',
     })
 
+    const underlinePath = document.querySelector<SVGPathElement>('#name-underline path')
+    const glintEl = document.getElementById('name-glint')
+
     const navItems = navEl ? navEl.querySelectorAll('[data-nav]') : []
     const allNavItems = [...navItems, nowEl].filter(Boolean)
     const counters = document.querySelectorAll('.nav-count')
 
     // Set initial states
     gsap.set(avatarEl, { opacity: 0, scale: 0.85 })
-    gsap.set(split.chars, { yPercent: 110, opacity: 0 })
+    gsap.set(split.chars, { yPercent: 110, opacity: 0, filter: 'blur(8px)' })
     gsap.set(bioEl, { opacity: 0, y: 12 })
     gsap.set(dividerEl, { scaleX: 0 })
     gsap.set(allNavItems, { opacity: 0, y: 8 })
     gsap.set(socialEl, { opacity: 0 })
+    gsap.set(glintEl, { xPercent: -200, opacity: 0 })
+    if (underlinePath) {
+      const pl = underlinePath.getTotalLength()
+      gsap.set(underlinePath, { strokeDasharray: pl, strokeDashoffset: pl })
+    }
 
     // Set counters to 0 initially
     counters.forEach((c) => {
@@ -186,13 +200,32 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
       duration: 0.5,
     })
 
-    // 2. Name — character reveal
+    // 2. Name — character reveal with blur
     tl.to(split.chars, {
       yPercent: 0,
       opacity: 1,
+      filter: 'blur(0px)',
       duration: 0.6,
       stagger: 0.03,
     }, '-=0.3')
+
+    // 2.5. Glint sweep across name
+    tl.to(glintEl, {
+      xPercent: 320,
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.in',
+    }, '-=0.05')
+    tl.to(glintEl, { opacity: 0, duration: 0.08 }, '-=0.04')
+
+    // 2.6. SVG underline draws in
+    if (underlinePath) {
+      tl.to(underlinePath, {
+        strokeDashoffset: 0,
+        duration: 0.85,
+        ease: 'power2.inOut',
+      }, '-=0.15')
+    }
 
     // 3. Bio
     tl.to(bioEl, {
@@ -237,6 +270,40 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
       duration: 0.3,
     }, '-=0.4')
 
+    // ── Avatar 3D tilt on hover ──
+    if (avatarEl instanceof HTMLElement) {
+      avatarEl.style.transformStyle = 'preserve-3d'
+      avatarEl.addEventListener('mousemove', (e: MouseEvent) => {
+        const rect = avatarEl.getBoundingClientRect()
+        const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2)
+        const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2)
+        gsap.to(avatarEl, {
+          rotationX: -y * 15,
+          rotationY: x * 15,
+          scale: 1.06,
+          duration: 0.3,
+          ease: 'power2.out',
+          transformPerspective: 600,
+        })
+      })
+      avatarEl.addEventListener('mouseleave', () => {
+        gsap.to(avatarEl, {
+          rotationX: 0, rotationY: 0, scale: 1,
+          duration: 0.55, ease: 'back.out(1.5)',
+        })
+      })
+    }
+
+    // ── Cursor aura ──
+    const homeLayout = document.querySelector('.home-layout')
+    if (homeLayout instanceof HTMLElement) {
+      homeLayout.addEventListener('mousemove', (e: MouseEvent) => {
+        const rect = homeLayout.getBoundingClientRect()
+        homeLayout.style.setProperty('--aura-x', `${((e.clientX - rect.left) / rect.width) * 100}%`)
+        homeLayout.style.setProperty('--aura-y', `${((e.clientY - rect.top) / rect.height) * 100}%`)
+      })
+    }
+
     // ── Magnetic hover on nav items ──
     allNavItems.forEach((item) => {
       if (!(item instanceof HTMLElement)) return
@@ -277,6 +344,22 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
     align-items: center;
     justify-content: center;
     padding: 2rem 1.5rem;
+    position: relative;
+    --aura-x: 50%;
+    --aura-y: 50%;
+  }
+
+  .home-layout::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      700px circle at var(--aura-x) var(--aura-y),
+      rgba(196, 92, 40, 0.06),
+      transparent 65%
+    );
+    z-index: 0;
   }
 
   .home-center {
@@ -286,6 +369,8 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
     text-align: center;
     max-width: 540px;
     width: 100%;
+    position: relative;
+    z-index: 1;
   }
 
   /* ═══ Avatar ═══ */
@@ -310,6 +395,45 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
   }
 
   /* ═══ Name ═══ */
+  .name-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding-bottom: 16px;
+  }
+
+  .name-glint {
+    position: absolute;
+    top: 5%;
+    left: 0;
+    width: 25%;
+    height: 75%;
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      rgba(255, 252, 235, 0.55) 50%,
+      transparent 100%
+    );
+    transform: skewX(-18deg);
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  .name-underline {
+    position: absolute;
+    bottom: 0;
+    left: 4%;
+    width: 92%;
+    height: 12px;
+    overflow: visible;
+  }
+
+  .name-underline path {
+    stroke: var(--color-accent);
+    stroke-width: 2.5px;
+    opacity: 0.6;
+  }
+
   .home-name {
     font-family: var(--font-heading);
     font-weight: 800;
@@ -317,7 +441,7 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
     line-height: 1.0;
     letter-spacing: -0.04em;
     color: var(--color-primary);
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     overflow: hidden;
   }
 

@@ -14,13 +14,13 @@ const logoName = profile.name.toUpperCase().split(' ').join('·')
     </a>
 
     {/* Desktop nav */}
-    <ul class="hidden md:flex items-center gap-8">
+    <ul class="hidden md:flex items-center gap-7">
       {navLinks.map(({ href, label }) => (
         <li>
           <a
             href={href}
             class:list={[
-              'nav-link text-xs font-medium uppercase tracking-widest',
+              'nav-link',
               currentPath.startsWith(href) ? 'nav-link--active' : '',
             ]}
           >
@@ -33,13 +33,14 @@ const logoName = profile.name.toUpperCase().split(' ').join('·')
     {/* Mobile burger */}
     <button
       id="menu-toggle"
-      class="md:hidden flex items-center justify-center w-11 h-11 -mr-2 text-white/60 hover:text-white transition-colors"
+      class="md:hidden flex items-center justify-center w-11 h-11 -mr-2 text-white/50 hover:text-white transition-colors"
       aria-label="Open menu"
       aria-expanded="false"
     >
       <Icon name="menu" />
     </button>
   </nav>
+  <div class="header-accent"></div>
 </header>
 
 {/* Mobile menu — outside header to avoid stacking context issues */}
@@ -83,7 +84,7 @@ const logoName = profile.name.toUpperCase().split(' ').join('·')
   </div>
 </div>
 
-<div class="h-16"></div>
+<div class="h-[62px]"></div>
 
 <script>
   function initMenu() {
@@ -157,7 +158,17 @@ const logoName = profile.name.toUpperCase().split(' ').join('·')
 </script>
 
 <style>
-  /* ── Logo: YURI·KONRAILS с оранжевым подчёркиванием ── */
+  /* ── Terra accent line at bottom — mirrors footer terra bar ── */
+  .header-accent {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-terra);
+  }
+
+  /* ── Logo — same tokens as footer heading ── */
   .logo-link {
     font-family: var(--font-heading);
     font-size: 0.875rem;
@@ -184,10 +195,14 @@ const logoName = profile.name.toUpperCase().split(' ').join('·')
     color: var(--color-accent);
   }
 
-  /* ── Nav links: анимированное подчёркивание при hover ── */
+  /* ── Nav links — unified with footer link tokens ── */
   .nav-link {
     position: relative;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(242, 235, 224, 0.55);
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     text-decoration: none;
     padding-bottom: 3px;
     transition: color 0.2s;
@@ -214,7 +229,6 @@ const logoName = profile.name.toUpperCase().split(' ').join('·')
     transform: scaleX(1);
   }
 
-  /* Активный пункт — подчёркивание всегда видно */
   .nav-link--active {
     color: var(--color-accent);
   }

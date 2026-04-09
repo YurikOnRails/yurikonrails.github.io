@@ -10,101 +10,119 @@ const socialLinks = [
 
 const year = new Date().getFullYear()
 const initials = profile.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+const firstName = profile.name.split(' ')[0]
 ---
 
+{/* ── Terra accent bar ── */}
+<div class="footer-accent">
+  <nav class="mx-auto max-w-[var(--container-grid)] px-5 flex items-center justify-center flex-wrap gap-x-10 gap-y-2 py-5">
+    {navLinks.map(({ href, label }) => (
+      <a href={href} class="accent-link">{label}</a>
+    ))}
+  </nav>
+</div>
+
+{/* ── Main footer ── */}
 <footer style="background: #1a1912; margin-top: 0;">
+  <div class="mx-auto max-w-[var(--container-grid)] px-5 py-14 md:py-16">
+    <div class="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_1fr] gap-12 md:gap-8">
 
-  {/* ── Top strip: Follow heading + badge ── */}
-  <div class="mx-auto max-w-[var(--container-grid)] px-5 pt-14 pb-10">
-    <div class="flex items-start justify-between">
+      {/* ── Follow column ── */}
       <div>
-        <p class="text-xs uppercase tracking-widest mb-2" style="color: rgba(242,235,224,0.35);">Follow</p>
-        <h2 class="text-3xl font-bold text-white" style="font-family: var(--font-heading); letter-spacing: -0.03em;">
-          {profile.name}
+        <h2 class="footer-heading">
+          Follow<br />{firstName}
         </h2>
-      </div>
-
-      {/* Monogram badge — like JH in Johnny Harris footer */}
-      <div class="footer-badge">
-        {initials}
-      </div>
-    </div>
-  </div>
-
-  {/* ── Divider ── */}
-  <div class="mx-auto max-w-[var(--container-grid)] px-5">
-    <div style="height: 1px; background: rgba(242,235,224,0.10);"></div>
-  </div>
-
-  {/* ── Nav columns ── */}
-  <div class="mx-auto max-w-[var(--container-grid)] px-5 py-12">
-    <div class="grid grid-cols-2 gap-10 md:grid-cols-4">
-
-      {/* Navigate */}
-      <div>
-        <h3 class="text-xs uppercase tracking-widest mb-5 font-medium" style="color: rgba(242,235,224,0.30);">
-          Navigate
-        </h3>
-        <ul class="space-y-3">
-          {navLinks.map(({ href, label }) => (
-            <li>
-              <a
-                href={href}
-                class="footer-link text-sm"
-              >
-                {label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Connect */}
-      <div>
-        <h3 class="text-xs uppercase tracking-widest mb-5 font-medium" style="color: rgba(242,235,224,0.30);">
-          Connect
-        </h3>
-        <ul class="space-y-3">
+        <div class="grid grid-cols-2 gap-x-8 gap-y-3">
           {socialLinks.map(({ href, label, icon }) => (
-            <li>
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="footer-link inline-flex items-center gap-2 text-sm"
-              >
-                <Icon name={icon} size={15} />
-                <span>{label}</span>
-              </a>
-            </li>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer-link inline-flex items-center gap-2"
+            >
+              <Icon name={icon} size={14} />
+              {label}
+            </a>
           ))}
           {profile.email && (
-            <li>
-              <a href={`mailto:${profile.email}`} class="footer-link inline-flex items-center gap-2 text-sm">
-                <Icon name="mail" size={15} />
-                <span>Email</span>
-              </a>
-            </li>
+            <a href={`mailto:${profile.email}`} class="footer-link inline-flex items-center gap-2">
+              <Icon name="mail" size={14} />
+              Email
+            </a>
           )}
-        </ul>
+        </div>
+      </div>
+
+      {/* ── Navigation columns ── */}
+      <div class="flex justify-start md:justify-center">
+        <div class="grid grid-cols-2 gap-x-12 gap-y-3 content-start">
+          {navLinks.map(({ href, label }) => (
+            <a href={href} class="footer-link">{label}</a>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Bio + badge ── */}
+      <div class="flex flex-col items-start md:items-end">
+        <div class="footer-badge">{initials}</div>
+        <p class="footer-bio">
+          {profile.bio}
+        </p>
+        <p class="footer-copy">
+          &copy; {profile.name} {year}
+        </p>
       </div>
 
     </div>
   </div>
 
-  {/* ── Bottom bar ── */}
+  {/* ── Bottom tagline ── */}
   <div class="mx-auto max-w-[var(--container-grid)] px-5 pb-8">
-    <div style="height: 1px; background: rgba(242,235,224,0.08); margin-bottom: 1.5rem;"></div>
-    <p class="text-xs" style="color: rgba(242,235,224,0.25);">
-      &copy; {year} {profile.name}
+    <div style="height: 1px; background: rgba(242,235,224,0.06); margin-bottom: 1.25rem;"></div>
+    <p class="footer-tagline">
+      Built with <Icon name="heart" size={12} class="inline-block text-terra" /> curiosity and bad WiFi
     </p>
   </div>
-
 </footer>
 
 <style>
+  /* ── Terra accent bar ── */
+  .footer-accent {
+    background: var(--color-terra);
+  }
+
+  .accent-link {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .accent-link:hover {
+    color: white;
+  }
+
+  /* ── Footer content ── */
+  .footer-heading {
+    font-family: var(--font-heading);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: white;
+    margin-bottom: 2rem;
+  }
+
   .footer-link {
-    color: rgba(242, 235, 224, 0.55);
+    color: rgba(242, 235, 224, 0.5);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     text-decoration: none;
     transition: color 0.2s;
   }
@@ -126,6 +144,31 @@ const initials = profile.name.split(' ').map(n => n[0]).join('').slice(0, 2).toU
     font-size: 0.875rem;
     letter-spacing: 0.05em;
     border-radius: 4px;
-    flex-shrink: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-bio {
+    color: rgba(242, 235, 224, 0.4);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    max-width: 260px;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .footer-bio {
+      text-align: right;
+    }
+  }
+
+  .footer-copy {
+    color: rgba(242, 235, 224, 0.2);
+    font-size: 0.75rem;
+  }
+
+  .footer-tagline {
+    color: rgba(242, 235, 224, 0.2);
+    font-size: 0.75rem;
+    text-align: center;
   }
 </style>
