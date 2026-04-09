@@ -1,15 +1,16 @@
 ---
 import Icon from './Icon.astro'
 import { navLinks } from '../data/navigation'
-import { SITE_NAME } from '../data/config'
+import { profile } from '../data/profile'
 
 const currentPath = Astro.url.pathname
+const logoName = profile.name.toUpperCase().split(' ').join('·')
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 border-b border-white/10" style="background: #1a1912;">
   <nav class="mx-auto flex max-w-[var(--container-grid)] items-center justify-between px-5 py-4" aria-label="Main navigation">
-    <a href="/" class="font-[family-name:var(--font-heading)] text-base font-bold tracking-tight text-white hover:text-accent transition-colors uppercase">
-      {SITE_NAME}
+    <a href="/" class="logo-link">
+      {logoName}
     </a>
 
     {/* Desktop nav */}
@@ -19,8 +20,8 @@ const currentPath = Astro.url.pathname
           <a
             href={href}
             class:list={[
-              'text-xs font-medium uppercase tracking-widest transition-colors',
-              currentPath.startsWith(href) ? 'text-accent' : 'text-white/60 hover:text-white',
+              'nav-link text-xs font-medium uppercase tracking-widest',
+              currentPath.startsWith(href) ? 'nav-link--active' : '',
             ]}
           >
             {label}
@@ -52,8 +53,8 @@ const currentPath = Astro.url.pathname
   {/* Panel */}
   <div id="menu-panel" class="relative h-full flex flex-col translate-y-[-8px] opacity-0 transition-all duration-300 ease-out">
     <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
-      <a href="/" class="font-[family-name:var(--font-heading)] text-base font-bold uppercase tracking-tight text-white">
-        {SITE_NAME}
+      <a href="/" class="logo-link">
+        {logoName}
       </a>
       <button
         id="menu-close"
@@ -154,3 +155,71 @@ const currentPath = Astro.url.pathname
   initMenu()
   document.addEventListener('astro:after-swap', initMenu)
 </script>
+
+<style>
+  /* ── Logo: YURI·KONRAILS с оранжевым подчёркиванием ── */
+  .logo-link {
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: white;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 3px;
+    transition: color 0.2s;
+  }
+
+  .logo-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--color-accent);
+  }
+
+  .logo-link:hover {
+    color: var(--color-accent);
+  }
+
+  /* ── Nav links: анимированное подчёркивание при hover ── */
+  .nav-link {
+    position: relative;
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    padding-bottom: 3px;
+    transition: color 0.2s;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-link:hover {
+    color: white;
+  }
+
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* Активный пункт — подчёркивание всегда видно */
+  .nav-link--active {
+    color: var(--color-accent);
+  }
+
+  .nav-link--active::after {
+    transform: scaleX(1);
+  }
+</style>

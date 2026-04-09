@@ -15,7 +15,7 @@
   --color-accent-dim: rgba(196, 92, 40, 0.12);
 
   /* Font families */
-  --font-heading: 'Geologica', sans-serif;
+  --font-heading: 'Manrope', sans-serif;
   --font-ui: 'Onest', sans-serif;
   --font-body: 'Spectral', serif;
   --font-mono: 'IBM Plex Mono', monospace;
@@ -28,11 +28,6 @@
 /* Base styles */
 html {
   background-color: var(--color-base);
-  /* Subtle graph-paper grid — like Johnny Harris */
-  background-image:
-    linear-gradient(rgba(26, 26, 18, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(26, 26, 18, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
   color: var(--color-primary);
   font-family: var(--font-ui);
   scroll-behavior: smooth;
@@ -40,24 +35,81 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* World map */
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url('/world.svg');
+  background-size: 110% auto;
+  background-position: center 45%;
+  background-repeat: no-repeat;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+/* Film grain */
+html::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 9999;
+  animation: grain 0.5s steps(1) infinite;
+}
+
+@keyframes grain {
+  0%   { transform: translate(0,     0)    }
+  25%  { transform: translate(-12px, 7px)  }
+  50%  { transform: translate(6px,  -11px) }
+  75%  { transform: translate(-7px,  12px) }
+}
+
 body {
   min-height: 100dvh;
   overflow-x: hidden;
+  background-color: transparent;
 }
 
-/* Typography hierarchy */
+/* Typography hierarchy — Manrope */
 h1 {
   font-family: var(--font-heading);
-  font-weight: 700;
-  line-height: 1.05;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  line-height: 1.1;
   letter-spacing: -0.03em;
 }
 
-h2, h3 {
+h3 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+}
+
+/*
+ * Kicker — маленький uppercase-лейбл над большим заголовком.
+ * Приём NatGeo / Vox / Bloomberg. Использование:
+ *   <p class="kicker">Essays</p>
+ *   <h2>Заголовок раздела</h2>
+ */
+.kicker {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+  margin-bottom: 0.5rem;
 }
 
 /* Smooth scroll (Lenis overrides, but fallback) */
@@ -101,8 +153,8 @@ html.lenis, html.lenis body {
 .prose h2 {
   font-family: var(--font-heading);
   font-size: 1.75rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
   margin-top: 3rem;
   margin-bottom: 1rem;
   scroll-margin-top: 5rem;
@@ -111,8 +163,8 @@ html.lenis, html.lenis body {
 .prose h3 {
   font-family: var(--font-heading);
   font-size: 1.375rem;
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   margin-top: 2.5rem;
   margin-bottom: 0.75rem;
   scroll-margin-top: 5rem;
@@ -282,7 +334,7 @@ html.lenis, html.lenis body {
 /* Drop cap — first letter of first paragraph */
 .prose-dropcap > p:first-of-type::first-letter {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 3.5em;
   line-height: 0.8;
   float: left;

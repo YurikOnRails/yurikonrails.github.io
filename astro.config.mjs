@@ -12,9 +12,9 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Geologica',
+      name: 'Manrope',
       cssVariable: '--font-heading',
-      weights: [300, 400, 500, 600, 700],
+      weights: [300, 400, 500, 600, 700, 800],
       subsets: ['latin', 'cyrillic'],
       display: 'swap',
     },
