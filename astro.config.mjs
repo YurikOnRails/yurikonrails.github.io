@@ -12,9 +12,9 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Cormorant Garamond',
+      name: 'Geologica',
       cssVariable: '--font-heading',
-      weights: [400, 600],
+      weights: [300, 400, 500, 600, 700],
       subsets: ['latin', 'cyrillic'],
       display: 'swap',
     },
