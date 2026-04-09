@@ -9,135 +9,116 @@ const socialLinks = [
 ].filter(Boolean) as { href: string; label: string; icon: string }[]
 
 const year = new Date().getFullYear()
-const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
+
+// Split bio into mission (display) and values (terra bar quote)
+const bioSentences = profile.bio.split('. ')
+const displayLines = (bioSentences[0] + '.').split(', ')
+const barQuote = bioSentences.slice(1).join('. ')
 ---
 
-{/* ── Terra connect bar ── */}
-<div class="footer-accent">
-  <div class="mx-auto max-w-[var(--container-grid)] px-5 py-4 flex items-center justify-between gap-8 flex-wrap">
-    <span class="accent-label">Connect</span>
-    <div class="flex items-center gap-8 flex-wrap">
-      {socialLinks.map(({ href, label, icon }) => (
-        <a href={href} target="_blank" rel="noopener noreferrer" class="accent-link inline-flex items-center gap-2">
-          <Icon name={icon} size={13} />
-          {label}
-        </a>
-      ))}
-      {profile.email && (
-        <a href={`mailto:${profile.email}`} class="accent-link inline-flex items-center gap-2">
-          <Icon name="mail" size={13} />
-          Email
-        </a>
-      )}
+<footer class="site-footer">
+
+  {/* ── Terra bar: values quote | social icons ── */}
+  <div class="terra-bar">
+    <div class="mx-auto max-w-[var(--container-grid)] px-5 py-3.5 flex items-center justify-center md:justify-between gap-6">
+      <p class="terra-quote hidden md:block">{barQuote}</p>
+      <div class="flex items-center gap-5">
+        {socialLinks.map(({ href, label, icon }) => (
+          <a href={href} target="_blank" rel="noopener noreferrer" class="terra-icon-link" aria-label={label}>
+            <Icon name={icon} size={17} />
+          </a>
+        ))}
+        {profile.email && (
+          <a href={`mailto:${profile.email}`} class="terra-icon-link" aria-label="Email">
+            <Icon name="mail" size={17} />
+          </a>
+        )}
+      </div>
     </div>
   </div>
-</div>
 
-{/* ── Main footer ── */}
-<footer class="footer-main">
+  {/* ── Footer body ── */}
   <div class="mx-auto max-w-[var(--container-grid)] px-5 py-14 md:py-16">
     <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12 md:gap-16">
 
-      {/* ── Brand column ── */}
-      <div>
-        <p class="footer-brand">
-          <span class="brand-first">{logoFirst}</span><span class="brand-sep"> · </span><span class="brand-last">{logoLast}</span>
-        </p>
-        <p class="footer-bio">{profile.bio}</p>
-      </div>
+      {/* ── Mission pull-quote ── */}
+      <p class="footer-pullquote">
+        {displayLines.map((line, i) => (
+          <span class="pullquote-line">
+            {line}{i < displayLines.length - 1 ? ',' : ''}
+          </span>
+        ))}
+      </p>
 
       {/* ── Navigate column ── */}
-      <div>
-        <p class="footer-col-label">Navigate</p>
-        <nav class="flex flex-col gap-3">
-          {navLinks.map(({ href, label }) => (
-            <a href={href} class="footer-link">{label}</a>
-          ))}
-        </nav>
+      <div class="flex flex-col justify-between">
+        <div>
+          <p class="footer-col-label">Navigate</p>
+          <nav class="flex flex-col gap-3">
+            {navLinks.map(({ href, label }) => (
+              <a href={href} class="footer-link">{label}</a>
+            ))}
+          </nav>
+        </div>
+        <p class="footer-copy mt-10">&copy; {profile.name} {year}</p>
       </div>
 
     </div>
   </div>
 
-  {/* ── Bottom strip ── */}
+  {/* ── Bottom colophon ── */}
   <div class="mx-auto max-w-[var(--container-grid)] px-5 pb-8">
     <div class="footer-rule"></div>
-    <div class="flex items-center justify-between gap-4 flex-wrap">
-      <p class="footer-copy">&copy; {profile.name} {year}</p>
-      <p class="footer-tagline">// built with curiosity and bad wifi</p>
-    </div>
+    <p class="footer-tagline">// built with curiosity and bad wifi</p>
   </div>
+
 </footer>
 
 <style>
-  /* ── Terra connect bar ── */
-  .footer-accent {
-    background: var(--color-terra);
-  }
-
-  .accent-label {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: rgba(255, 255, 255, 0.5);
-    white-space: nowrap;
-  }
-
-  .accent-link {
-    color: rgba(255, 255, 255, 0.9);
-    font-family: var(--font-ui);
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .accent-link:hover {
-    color: white;
-  }
-
-  /* ── Main footer ── */
-  .footer-main {
+  .site-footer {
     background: var(--color-dark);
     margin-top: 0;
   }
 
-  /* ── Brand ── */
-  .footer-brand {
-    font-family: var(--font-heading);
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    line-height: 1.05;
-    margin-bottom: 1.75rem;
+  /* ── Terra bar ── */
+  .terra-bar {
+    background: var(--color-terra);
   }
 
-  .brand-first {
-    font-weight: 300;
-    color: rgba(242, 235, 224, 0.4);
-    letter-spacing: 0.02em;
-  }
-
-  .brand-sep {
-    font-weight: 300;
-    color: var(--color-terra);
-    opacity: 0.75;
-  }
-
-  .brand-last {
-    font-weight: 800;
-    color: #f2ebe0;
-    letter-spacing: -0.03em;
-  }
-
-  .footer-bio {
-    color: rgba(242, 235, 224, 0.55);
+  .terra-quote {
     font-family: var(--font-body);
-    font-size: 0.9375rem;
-    line-height: 1.75;
-    max-width: 420px;
+    font-style: italic;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+  }
+
+  .terra-icon-link {
+    color: rgba(255, 255, 255, 0.72);
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+
+  .terra-icon-link:hover {
+    color: white;
+  }
+
+  /* ── Mission pull-quote ── */
+  .footer-pullquote {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: clamp(1.5rem, 3.5vw, 2.375rem);
+    font-weight: 400;
+    line-height: 1.35;
+    color: rgba(242, 235, 224, 0.92);
+    letter-spacing: -0.01em;
+  }
+
+  .pullquote-line {
+    display: block;
   }
 
   /* ── Navigate column ── */
@@ -166,24 +147,25 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
     color: rgba(242, 235, 224, 1);
   }
 
-  /* ── Bottom strip ── */
+  /* ── Bottom colophon ── */
   .footer-rule {
     height: 1px;
     background: rgba(242, 235, 224, 0.07);
     margin-bottom: 1.25rem;
   }
 
+  .footer-tagline {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: rgba(242, 235, 224, 0.22);
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+
   .footer-copy {
-    color: rgba(242, 235, 224, 0.25);
+    color: rgba(242, 235, 224, 0.22);
     font-family: var(--font-mono);
     font-size: 0.7rem;
     letter-spacing: 0.04em;
-  }
-
-  .footer-tagline {
-    color: rgba(242, 235, 224, 0.25);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.02em;
   }
 </style>
