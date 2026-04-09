@@ -7,7 +7,7 @@ const currentPath = Astro.url.pathname
 const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 border-b border-white/10" style="background: #1a1912;">
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-white/10" style="background: #111111;">
   <nav class="mx-auto flex max-w-[var(--container-grid)] items-center justify-between px-5 py-4" aria-label="Main navigation">
     <a href="/" class="logo-link">
       <span class="logo-first">{logoFirst}</span><span class="logo-sep"> · </span><span class="logo-last">{logoLast}</span>
@@ -49,7 +49,7 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
   class="md:hidden fixed inset-0 z-[100] pointer-events-none"
 >
   {/* Backdrop */}
-  <div id="menu-backdrop" class="absolute inset-0 opacity-0 transition-opacity duration-300 ease-out" style="background: #1a1912;" />
+  <div id="menu-backdrop" class="absolute inset-0 opacity-0 transition-opacity duration-300 ease-out" style="background: #111111;" />
 
   {/* Panel */}
   <div id="menu-panel" class="relative h-full flex flex-col translate-y-[-8px] opacity-0 transition-all duration-300 ease-out">

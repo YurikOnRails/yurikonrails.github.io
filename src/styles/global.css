@@ -1,18 +1,18 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Colors — Warm Editorial (Johnny Harris palette) */
-  --color-base: #f2ebe0;
-  --color-surface: #ede5d2;
-  --color-card: #e7dfc6;
-  --color-dark: #1a1912;
-  --color-sage: #6d8572;
-  --color-terra: #c45c28;
-  --color-subtle: rgba(26, 26, 18, 0.08);
-  --color-primary: #1a1912;
-  --color-secondary: #6b5f50;
-  --color-accent: #c45c28;
-  --color-accent-dim: rgba(196, 92, 40, 0.12);
+  /* Colors */
+  --color-base: #f5efe6;
+  --color-surface: #ece5d5;
+  --color-card: #e2dbc8;
+  --color-dark: #111111;
+  --color-sage: #8aa1a3;
+  --color-terra: #e15735;
+  --color-subtle: rgba(17, 17, 17, 0.08);
+  --color-primary: #111111;
+  --color-secondary: #645849;
+  --color-accent: #e15735;
+  --color-accent-dim: rgba(225, 87, 53, 0.12);
 
   /* Font families */
   --font-heading: 'Manrope', sans-serif;
@@ -80,8 +80,8 @@ body::before {
   inset: -40%;
   z-index: -1;
   background:
-    radial-gradient(ellipse 600px 500px at 30% 40%, rgba(196, 92, 40, 0.06), transparent 70%),
-    radial-gradient(ellipse 500px 600px at 70% 55%, rgba(210, 150, 60, 0.05), transparent 70%);
+    radial-gradient(ellipse 600px 500px at 30% 40%, rgba(225, 87, 53, 0.05), transparent 70%),
+    radial-gradient(ellipse 500px 600px at 70% 55%, rgba(225, 87, 53, 0.035), transparent 70%);
   pointer-events: none;
   animation: drift 30s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
@@ -100,8 +100,8 @@ body::after {
   inset: 0;
   z-index: -1;
   background:
-    repeating-linear-gradient(0deg, rgba(26, 25, 18, 0.04) 0 1px, transparent 1px 90px),
-    repeating-linear-gradient(90deg, rgba(26, 25, 18, 0.04) 0 1px, transparent 1px 90px);
+    repeating-linear-gradient(0deg, rgba(17, 17, 17, 0.04) 0 1px, transparent 1px 90px),
+    repeating-linear-gradient(90deg, rgba(17, 17, 17, 0.04) 0 1px, transparent 1px 90px);
   pointer-events: none;
 }
 
@@ -290,7 +290,7 @@ html.lenis, html.lenis body {
   width: calc(100% + 2rem);
   max-width: calc(100% + 2rem);
   margin-left: -1rem;
-  border: 1px solid rgba(26, 26, 18, 0.07);
+  border: 1px solid rgba(17, 17, 17, 0.07);
 }
 
 @media (max-width: 768px) {
@@ -342,16 +342,16 @@ html.lenis, html.lenis body {
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #8a7e6e;
+  color: #857165;
   text-align: left;
   padding: 0 1rem 0.75rem 0;
-  border-bottom: 1px solid rgba(26, 26, 18, 0.10);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.10);
 }
 
 .prose td {
   padding: 0.6rem 1rem 0.6rem 0;
   color: var(--color-secondary);
-  border-bottom: 1px solid rgba(26, 26, 18, 0.06);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.06);
 }
 
 .prose tr:last-child td {
@@ -379,7 +379,7 @@ html.lenis, html.lenis body {
   content: '· · ·';
   display: block;
   text-align: center;
-  color: #b0a48e;
+  color: #aca49a;
   letter-spacing: 0.3em;
   font-size: 1rem;
   font-family: var(--font-ui);
