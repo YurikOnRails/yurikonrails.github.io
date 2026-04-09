@@ -16,80 +16,109 @@ const locations = series.map((s) => ({
   year: s.data.takenOn.getFullYear(),
 }))
 
-const years = [...new Set(series.map((s) => s.data.takenOn.getFullYear()))].sort((a, b) => a - b)
+const years = [...new Set(series.map((s) => s.data.takenOn.getFullYear()))].sort((a, b) => b - a)
 const tripsByYear = Object.fromEntries(
   years.map((y) => [y, series.filter((s) => s.data.takenOn.getFullYear() === y).length])
 )
 ---
 
-<Base
-  title="Field"
-  description="Travel photography with maps and stories."
->
+<Base title="Field" description="Travel photography — moments from the road, frame by frame.">
   <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
-    <h1 class="text-4xl md:text-6xl mb-4">Field</h1>
-    <p class="text-secondary mb-10 max-w-xl">
-      Travel photography with maps and stories.
-    </p>
 
-    {/* Map */}
+    {/* ── Page header ── */}
+    <div class="mb-12">
+      <p class="kicker">Photography</p>
+      <h1 class="text-4xl md:text-6xl mb-3">Field</h1>
+      <p class="text-secondary max-w-xl">
+        Moments from the road — shot on Panasonic GH5, frame by frame.
+      </p>
+    </div>
+
+    {/* ── Globe map ── */}
     <div class="mb-12">
       <GlobeMap locations={locations} />
     </div>
 
-    {/* Year filter */}
+    {/* ── Year filter ── */}
     {years.length > 0 && (
       <div class="year-filter mb-10" id="year-filter">
+        <button class="year-btn active" data-year="all">All</button>
+        <span class="year-sep">·</span>
         {years.map((year) => (
           <button class="year-btn" data-year={year}>
             {year}<sup>{tripsByYear[year]}</sup>
           </button>
         ))}
-        <span class="year-sep">·</span>
-        <button class="year-btn active" data-year="all">All</button>
       </div>
     )}
 
-    {/* Series grid */}
-    <div id="field-grid" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {series.map((s) => (
-        <a
-          href={`/field/${s.id}`}
-          class="field-card group block rounded-sm border border-subtle overflow-hidden bg-card transition-all hover:bg-surface"
-          data-year={s.data.takenOn.getFullYear()}
-        >
-          <div class="relative aspect-[16/10] overflow-hidden">
-            <img
-              src={s.data.cover}
-              alt={s.data.title}
-              loading="lazy"
-              decoding="async"
-              class="h-full w-full object-cover"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-          </div>
-          <div class="p-5">
-            <div class="flex items-center gap-2 text-xs text-secondary mb-2">
-              <span>{s.data.location}</span>
-              <span class="text-subtle">·</span>
-              <time datetime={s.data.takenOn.toISOString()}>
-                {formatDate(s.data.takenOn, 'month-year')}
-              </time>
-            </div>
-            <h2 class="text-lg font-[family-name:var(--font-heading)] group-hover:text-accent transition-colors">
-              {s.data.title}
-            </h2>
-            <p class="mt-2 text-sm text-secondary line-clamp-2">
-              {s.data.description}
-            </p>
-          </div>
-        </a>
-      ))}
-    </div>
+    {/* ── Photo grid ── */}
+    {series.length > 0 ? (
+      <div id="field-grid" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {series.map((s, i) => {
+          const photoCount = s.data.photos?.length ?? 0
+          const videoCount = s.data.videos?.length ?? 0
+          const isFeatured = i === 0
+          const badgeLabel =
+            photoCount > 0 && videoCount > 0
+              ? `${photoCount} photos · ${videoCount} video`
+              : photoCount > 0
+                ? `${photoCount} photos`
+                : videoCount > 0
+                  ? `${videoCount} videos`
+                  : null
+          return (
+            <a
+              href={`/field/${s.id}`}
+              class:list={[
+                'field-card group block overflow-hidden',
+                isFeatured ? 'md:col-span-2' : '',
+              ]}
+              data-year={s.data.takenOn.getFullYear()}
+            >
+              <div class:list={[
+                'relative overflow-hidden',
+                isFeatured ? 'aspect-[3/2]' : 'aspect-[4/3]',
+              ]}>
 
-    {series.length === 0 && (
+                {/* Photo */}
+                <img
+                  src={s.data.cover}
+                  alt={s.data.title}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+
+                {/* Gradient overlay */}
+                <div class="card-overlay" />
+
+                {/* Photo/video count badge */}
+                {badgeLabel && (
+                  <div class="card-badge">{badgeLabel}</div>
+                )}
+
+                {/* Text overlay */}
+                <div class="card-content">
+                  <p class="card-kicker">
+                    {s.data.location}
+                    <span class="card-sep">·</span>
+                    {s.data.takenOn.getFullYear()}
+                  </p>
+                  <h2 class:list={['card-title', isFeatured && 'card-title--lg']}>
+                    {s.data.title}
+                  </h2>
+                </div>
+
+              </div>
+            </a>
+          )
+        })}
+      </div>
+    ) : (
       <p class="text-secondary text-center py-20">No field series yet.</p>
     )}
+
   </section>
 
   <script>
@@ -112,23 +141,17 @@ const tripsByYear = Object.fromEntries(
 
             if (show) {
               el.style.display = ''
-              requestAnimationFrame(() => {
-                el.classList.remove('field-card--hidden')
-              })
+              requestAnimationFrame(() => el.classList.remove('field-card--hidden'))
             } else {
               el.classList.add('field-card--hidden')
               setTimeout(() => {
-                if (el.classList.contains('field-card--hidden')) {
-                  el.style.display = 'none'
-                }
-              }, 300)
+                if (el.classList.contains('field-card--hidden')) el.style.display = 'none'
+              }, 350)
             }
           })
 
           if (globeContainer) {
-            globeContainer.dispatchEvent(
-              new CustomEvent('filter-year', { detail: { year } })
-            )
+            globeContainer.dispatchEvent(new CustomEvent('filter-year', { detail: { year } }))
           }
         })
       })
@@ -139,13 +162,13 @@ const tripsByYear = Object.fromEntries(
   </script>
 
   <style is:global>
+    /* ── Year filter ── */
     .year-filter {
       display: flex;
       align-items: baseline;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 12px 20px;
-      font-family: var(--font-mono);
+      gap: 6px 14px;
     }
 
     .year-btn {
@@ -153,50 +176,129 @@ const tripsByYear = Object.fromEntries(
       border: none;
       cursor: pointer;
       font-family: var(--font-mono);
-      font-size: 14px;
-      letter-spacing: 0.04em;
-      color: #52525b;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-secondary);
       padding: 8px 4px;
       min-height: 44px;
       display: inline-flex;
       align-items: center;
-      transition: color 0.2s;
+      opacity: 0.45;
+      transition: opacity 0.2s;
     }
 
-    .year-btn:hover {
-      color: #a1a1aa;
-    }
-
-    .year-btn.active {
-      color: #e8622c;
-    }
+    .year-btn:hover  { opacity: 0.75; }
+    .year-btn.active { opacity: 1; color: var(--color-accent); }
 
     .year-btn sup {
-      font-size: 10px;
-      color: #3f3f46;
-      margin-left: 1px;
+      font-size: 0.55rem;
+      margin-left: 2px;
       vertical-align: super;
-      transition: color 0.2s;
-    }
-
-    .year-btn.active sup {
-      color: rgba(232, 98, 44, 0.5);
     }
 
     .year-sep {
-      color: #27272a;
-      font-size: 14px;
+      color: var(--color-secondary);
+      opacity: 0.25;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
       user-select: none;
     }
 
-    /* Card transitions */
+    /* ── Card ── */
     .field-card {
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.35s ease, transform 0.35s ease;
     }
 
     .field-card--hidden {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(10px);
+    }
+
+    /* Gradient overlay — 4-stop for smooth editorial feel */
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.82) 0%,
+        rgba(0, 0, 0, 0.38) 38%,
+        rgba(0, 0, 0, 0.08) 65%,
+        transparent 100%
+      );
+      transition: opacity 0.4s ease;
+    }
+
+    .field-card:hover .card-overlay {
+      opacity: 1.0;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.88) 0%,
+        rgba(0, 0, 0, 0.45) 38%,
+        rgba(0, 0, 0, 0.12) 65%,
+        transparent 100%
+      );
+    }
+
+    /* Photo count badge */
+    .card-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.82);
+      background: rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 0.3rem 0.65rem;
+      border-radius: 2px;
+    }
+
+    /* Text overlay */
+    .card-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem;
+    }
+
+    .card-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: rgba(255, 255, 255, 0.58);
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .card-sep {
+      color: var(--color-terra);
+      opacity: 0.75;
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.93);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      transition: color 0.25s;
+    }
+
+    .card-title--lg {
+      font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+    }
+
+    .field-card:hover .card-title {
+      color: #ffffff;
     }
   </style>
 </Base>
