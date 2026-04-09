@@ -4,13 +4,13 @@ import { navLinks } from '../data/navigation'
 import { profile } from '../data/profile'
 
 const currentPath = Astro.url.pathname
-const logoName = profile.name.toUpperCase().split(' ').join('·')
+const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 border-b border-white/10" style="background: #1a1912;">
   <nav class="mx-auto flex max-w-[var(--container-grid)] items-center justify-between px-5 py-4" aria-label="Main navigation">
     <a href="/" class="logo-link">
-      {logoName}
+      <span class="logo-first">{logoFirst}</span><span class="logo-sep"> · </span><span class="logo-last">{logoLast}</span>
     </a>
 
     {/* Desktop nav */}
@@ -55,7 +55,7 @@ const logoName = profile.name.toUpperCase().split(' ').join('·')
   <div id="menu-panel" class="relative h-full flex flex-col translate-y-[-8px] opacity-0 transition-all duration-300 ease-out">
     <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
       <a href="/" class="logo-link">
-        {logoName}
+        <span class="logo-first">{logoFirst}</span><span class="logo-sep"> · </span><span class="logo-last">{logoLast}</span>
       </a>
       <button
         id="menu-close"
@@ -168,31 +168,39 @@ const logoName = profile.name.toUpperCase().split(' ').join('·')
     background: var(--color-terra);
   }
 
-  /* ── Logo — same tokens as footer heading ── */
+  /* ── Logo ── */
   .logo-link {
     font-family: var(--font-heading);
-    font-size: 0.875rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: white;
+    font-size: 1.25rem;
+    letter-spacing: 0em;
     text-decoration: none;
-    position: relative;
-    padding-bottom: 3px;
-    transition: color 0.2s;
-  }
-
-  .logo-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--color-accent);
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    transition: opacity 0.2s;
   }
 
   .logo-link:hover {
-    color: var(--color-accent);
+    opacity: 0.75;
+  }
+
+  .logo-first {
+    font-weight: 300;
+    color: rgba(242, 235, 224, 0.55);
+    letter-spacing: 0.03em;
+  }
+
+  .logo-sep {
+    font-weight: 300;
+    color: var(--color-terra);
+    opacity: 0.6;
+    font-size: 0.9em;
+  }
+
+  .logo-last {
+    font-weight: 800;
+    color: #f2ebe0;
+    letter-spacing: -0.01em;
   }
 
   /* ── Nav links — unified with footer link tokens ── */
