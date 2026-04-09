@@ -9,86 +9,80 @@ const socialLinks = [
 ].filter(Boolean) as { href: string; label: string; icon: string }[]
 
 const year = new Date().getFullYear()
-const initials = profile.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-const firstName = profile.name.split(' ')[0]
+const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
 ---
 
-{/* ── Terra accent bar ── */}
+{/* ── Terra connect bar ── */}
 <div class="footer-accent">
-  <nav class="mx-auto max-w-[var(--container-grid)] px-5 flex items-center justify-center flex-wrap gap-x-10 gap-y-2 py-5">
-    {navLinks.map(({ href, label }) => (
-      <a href={href} class="accent-link">{label}</a>
-    ))}
-  </nav>
+  <div class="mx-auto max-w-[var(--container-grid)] px-5 py-4 flex items-center justify-between gap-8 flex-wrap">
+    <span class="accent-label">Connect</span>
+    <div class="flex items-center gap-8 flex-wrap">
+      {socialLinks.map(({ href, label, icon }) => (
+        <a href={href} target="_blank" rel="noopener noreferrer" class="accent-link inline-flex items-center gap-2">
+          <Icon name={icon} size={13} />
+          {label}
+        </a>
+      ))}
+      {profile.email && (
+        <a href={`mailto:${profile.email}`} class="accent-link inline-flex items-center gap-2">
+          <Icon name="mail" size={13} />
+          Email
+        </a>
+      )}
+    </div>
+  </div>
 </div>
 
 {/* ── Main footer ── */}
-<footer style="background: #111111; margin-top: 0;">
+<footer class="footer-main">
   <div class="mx-auto max-w-[var(--container-grid)] px-5 py-14 md:py-16">
-    <div class="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_1fr] gap-12 md:gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12 md:gap-16">
 
-      {/* ── Follow column ── */}
+      {/* ── Brand column ── */}
       <div>
-        <h2 class="footer-heading">
-          Follow<br />{firstName}
-        </h2>
-        <div class="grid grid-cols-2 gap-x-8 gap-y-3">
-          {socialLinks.map(({ href, label, icon }) => (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="footer-link inline-flex items-center gap-2"
-            >
-              <Icon name={icon} size={14} />
-              {label}
-            </a>
-          ))}
-          {profile.email && (
-            <a href={`mailto:${profile.email}`} class="footer-link inline-flex items-center gap-2">
-              <Icon name="mail" size={14} />
-              Email
-            </a>
-          )}
-        </div>
+        <p class="footer-brand">
+          <span class="brand-first">{logoFirst}</span><span class="brand-sep"> · </span><span class="brand-last">{logoLast}</span>
+        </p>
+        <p class="footer-bio">{profile.bio}</p>
       </div>
 
-      {/* ── Navigation columns ── */}
-      <div class="flex justify-start md:justify-center">
-        <div class="grid grid-cols-2 gap-x-12 gap-y-3 content-start">
+      {/* ── Navigate column ── */}
+      <div>
+        <p class="footer-col-label">Navigate</p>
+        <nav class="flex flex-col gap-3">
           {navLinks.map(({ href, label }) => (
             <a href={href} class="footer-link">{label}</a>
           ))}
-        </div>
-      </div>
-
-      {/* ── Bio + badge ── */}
-      <div class="flex flex-col items-start md:items-end">
-        <div class="footer-badge">{initials}</div>
-        <p class="footer-bio">
-          {profile.bio}
-        </p>
-        <p class="footer-copy">
-          &copy; {profile.name} {year}
-        </p>
+        </nav>
       </div>
 
     </div>
   </div>
 
-  {/* ── Bottom tagline ── */}
+  {/* ── Bottom strip ── */}
   <div class="mx-auto max-w-[var(--container-grid)] px-5 pb-8">
-    <div style="height: 1px; background: rgba(242,235,224,0.06); margin-bottom: 1.25rem;"></div>
-    <p class="footer-tagline">
-      Built with <Icon name="heart" size={12} class="inline-block text-terra" /> curiosity and bad WiFi
-    </p>
+    <div class="footer-rule"></div>
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <p class="footer-copy">&copy; {profile.name} {year}</p>
+      <p class="footer-tagline">// built with curiosity and bad wifi</p>
+    </div>
   </div>
 </footer>
 
 <style>
-  /* ── Terra accent bar ── */
+  /* ── Terra connect bar ── */
   .footer-accent {
     background: var(--color-terra);
+  }
+
+  .accent-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
   }
 
   .accent-link {
@@ -97,7 +91,7 @@ const firstName = profile.name.split(' ')[0]
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-decoration: none;
     transition: color 0.2s;
   }
@@ -106,19 +100,60 @@ const firstName = profile.name.split(' ')[0]
     color: white;
   }
 
-  /* ── Footer content ── */
-  .footer-heading {
+  /* ── Main footer ── */
+  .footer-main {
+    background: var(--color-dark);
+    margin-top: 0;
+  }
+
+  /* ── Brand ── */
+  .footer-brand {
     font-family: var(--font-heading);
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 700;
-    line-height: 1.15;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.05;
+    margin-bottom: 1.75rem;
+  }
+
+  .brand-first {
+    font-weight: 300;
+    color: rgba(242, 235, 224, 0.4);
+    letter-spacing: 0.02em;
+  }
+
+  .brand-sep {
+    font-weight: 300;
+    color: var(--color-terra);
+    opacity: 0.75;
+  }
+
+  .brand-last {
+    font-weight: 800;
+    color: #f2ebe0;
     letter-spacing: -0.03em;
-    color: white;
-    margin-bottom: 2rem;
+  }
+
+  .footer-bio {
+    color: rgba(242, 235, 224, 0.55);
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    max-width: 420px;
+  }
+
+  /* ── Navigate column ── */
+  .footer-col-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(242, 235, 224, 0.3);
+    margin-bottom: 1.25rem;
   }
 
   .footer-link {
     color: rgba(242, 235, 224, 0.5);
+    font-family: var(--font-ui);
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -131,44 +166,24 @@ const firstName = profile.name.split(' ')[0]
     color: rgba(242, 235, 224, 1);
   }
 
-  .footer-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    border: 1.5px solid var(--color-accent);
-    color: var(--color-accent);
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 0.875rem;
-    letter-spacing: 0.05em;
-    border-radius: 4px;
-    margin-bottom: 1.5rem;
-  }
-
-  .footer-bio {
-    color: rgba(242, 235, 224, 0.4);
-    font-size: 0.8125rem;
-    line-height: 1.7;
-    max-width: 260px;
-    margin-bottom: 1.5rem;
-  }
-
-  @media (min-width: 768px) {
-    .footer-bio {
-      text-align: right;
-    }
+  /* ── Bottom strip ── */
+  .footer-rule {
+    height: 1px;
+    background: rgba(242, 235, 224, 0.07);
+    margin-bottom: 1.25rem;
   }
 
   .footer-copy {
-    color: rgba(242, 235, 224, 0.2);
-    font-size: 0.75rem;
+    color: rgba(242, 235, 224, 0.25);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
   }
 
   .footer-tagline {
-    color: rgba(242, 235, 224, 0.2);
-    font-size: 0.75rem;
-    text-align: center;
+    color: rgba(242, 235, 224, 0.25);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
   }
 </style>
