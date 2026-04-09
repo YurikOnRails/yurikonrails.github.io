@@ -4,7 +4,7 @@
   /* Colors */
   --color-base: #f5efe6;
   --color-surface: #ece5d5;
-  --color-card: #e2dbc8;
+  --color-card: #e4d4c2;
   --color-dark: #111111;
   --color-sage: #8aa1a3;
   --color-terra: #e15735;
@@ -45,25 +45,6 @@ html::before {
   pointer-events: none;
 }
 
-/* Film grain */
-html::after {
-  content: '';
-  position: fixed;
-  inset: -20px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  opacity: 0.15;
-  pointer-events: none;
-  z-index: 9999;
-  animation: grain 0.5s steps(1) infinite;
-}
-
-@keyframes grain {
-  0%   { transform: translate(0,     0)    }
-  25%  { transform: translate(-12px, 7px)  }
-  50%  { transform: translate(6px,  -11px) }
-  75%  { transform: translate(-7px,  12px) }
-}
 
 body {
   position: relative;

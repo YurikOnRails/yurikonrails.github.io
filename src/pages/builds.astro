@@ -5,9 +5,9 @@ import Icon from '../components/Icon.astro'
 import { builds, kindLabel } from '../data/builds'
 
 const sorted = [...builds].sort((a, b) => a.position - b.position)
-const hero = sorted.find((b) => b.status === 'active' && b.cover)
-const active = sorted.filter((b) => b.status === 'active' && b !== hero)
-const upcoming = sorted.filter((b) => b.status === 'soon')
+const hero = sorted.find(b => b.status === 'active')
+const active = sorted.filter(b => b.status === 'active' && b !== hero)
+const upcoming = sorted.filter(b => b.status === 'soon')
 
 const heroSince = hero?.startedOn
   ? new Date(hero.startedOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
@@ -18,91 +18,59 @@ const heroSince = hero?.startedOn
   title="Builds"
   description="Projects, tools, and communities I've built or contributed to."
 >
-  <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
+
+  {/* ─── Page title ─── */}
+  <div class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-10">
     <div class="build-fade" style="animation-delay: 0ms">
       <h1 class="text-4xl md:text-6xl mb-4">Builds</h1>
-      <p class="text-secondary mb-12 max-w-xl">
-        Projects, tools, and things I'm making.
-      </p>
+      <p class="text-secondary max-w-xl">Projects, tools, and things I'm making.</p>
     </div>
+  </div>
 
-    {/* ─── Hero — featured project ─── */}
-    {hero && (
-      <div class="build-fade mb-14" style="animation-delay: 60ms">
+  {/* ─── Hero — full-width dark strip ─── */}
+  {hero && (
+    <div class="hero-strip build-fade" style="animation-delay: 60ms">
+      <div class="mx-auto max-w-[var(--container-grid)] px-5">
+
+        {/* Meta */}
+        <div class="hero-meta">
+          <span class="hero-label">{kindLabel[hero.kind]}</span>
+          <span class="hero-dot">·</span>
+          <span class="hero-status-pill">{hero.status}</span>
+          {heroSince && <span class="hero-since">Since {heroSince}</span>}
+        </div>
+
+        {/* Title */}
         <a
           href={hero.url}
           target="_blank"
           rel="noopener noreferrer"
-          class="group block relative rounded-sm overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_60px_rgba(232,98,44,0.06)]"
+          class="hero-link group"
         >
-          {/* Cover image */}
-          <div class="aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-base">
-            <img
-              src={hero.cover}
-              alt={hero.title}
-              loading="eager"
-              decoding="async"
-              class="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
-            />
-          </div>
-
-          {/* Gradient — fully opaque bottom half, clean fade to transparent */}
-          <div class="absolute inset-0 hero-gradient" />
-
-          {/* Content — positioned at bottom over the opaque part of gradient */}
-          <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10">
-            {/* Kind + Status */}
-            <div class="flex items-center gap-3 mb-3">
-              <span class="font-[family-name:var(--font-mono)] text-[11px] text-[#71717a] tracking-wider uppercase">
-                {kindLabel[hero.kind]}
-              </span>
-              <span class="text-[#3f3f46]">·</span>
-              <span class="font-[family-name:var(--font-mono)] text-[11px] text-[#71717a]">
-                {hero.status}
-              </span>
-            </div>
-
-            {/* Title */}
-            <h2 class="text-3xl md:text-5xl font-[family-name:var(--font-heading)] leading-tight text-primary group-hover:text-accent transition-colors duration-300 mb-3">
-              {hero.title}
-            </h2>
-
-            {/* Description */}
-            <p class="text-sm md:text-base max-w-xl mb-5 leading-relaxed" style="color: #a1a1aa">
-              {hero.description}
-            </p>
-
-            {/* Stack + Since */}
-            <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-              {hero.stack && hero.stack.length > 0 && (
-                <div class="flex flex-wrap gap-1.5">
-                  {hero.stack.map((tech) => (
-                    <span class="font-[family-name:var(--font-mono)] text-[11px] text-[#71717a] bg-white/[0.06] px-2 py-0.5 rounded">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {heroSince && (
-                <>
-                  <span class="text-[#3f3f46] hidden md:inline">·</span>
-                  <span class="font-[family-name:var(--font-mono)] text-[11px] text-[#52525b]">
-                    Since {heroSince}
-                  </span>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Arrow */}
-          <div class="absolute top-5 right-5 md:top-8 md:right-8 text-[#3f3f46] group-hover:text-accent transition-colors duration-300">
-            <Icon name="arrow-up-right" size={20} />
-          </div>
+          <h2 class="hero-title">{hero.title}</h2>
+          <span class="hero-arrow"><Icon name="arrow-up-right" size={30} /></span>
         </a>
-      </div>
-    )}
 
-    {/* ─── Active projects ─── */}
+        {/* Description */}
+        <p class="hero-desc">{hero.description}</p>
+
+        {/* Stack */}
+        {hero.stack && hero.stack.length > 0 && (
+          <div class="hero-stack">
+            {hero.stack.map(tech => (
+              <span class="hero-tech">{tech}</span>
+            ))}
+          </div>
+        )}
+
+      </div>
+      <div class="hero-accent-bar" />
+    </div>
+  )}
+
+  {/* ─── Active projects ─── */}
+  <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
+
     {active.length > 0 && (
       <div class="mb-16">
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -119,7 +87,7 @@ const heroSince = hero?.startedOn
     {upcoming.length > 0 && (
       <div class="build-fade" style={`animation-delay: ${120 + active.length * 80 + 80}ms`}>
         <div class="flex items-center gap-4 mb-6">
-          <h2 class="font-[family-name:var(--font-mono)] text-xs text-[#52525b] tracking-wider uppercase">On the horizon</h2>
+          <h2 class="font-[family-name:var(--font-mono)] text-xs text-[#8aa1a3] tracking-wider uppercase opacity-75">On the horizon</h2>
           <div class="flex-1 h-px bg-subtle" />
         </div>
 
@@ -148,34 +116,130 @@ const heroSince = hero?.startedOn
         </div>
       </div>
     )}
+
   </section>
 
   <style>
     @keyframes build-fade-in {
-      from {
-        opacity: 0;
-        transform: translateY(16px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-
     .build-fade {
       animation: build-fade-in 0.6s ease both;
     }
 
-    .hero-gradient {
-      background: linear-gradient(
-        to top,
-        #09090b 0%,
-        #09090b 25%,
-        rgba(9, 9, 11, 0.95) 35%,
-        rgba(9, 9, 11, 0.7) 50%,
-        rgba(9, 9, 11, 0.3) 65%,
-        transparent 80%
-      );
+    /* ── Hero strip ── */
+    .hero-strip {
+      background: #111111;
+      padding: 3.5rem 0 4.5rem;
+      margin-bottom: 0;
+      position: relative;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #8aa1a3;
+      opacity: 0.75;
+    }
+
+    .hero-dot {
+      color: rgba(245, 239, 230, 0.12);
+    }
+
+    .hero-status-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-accent);
+      background: rgba(225, 87, 53, 0.12);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+
+    .hero-since {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(245, 239, 230, 0.18);
+    }
+
+    .hero-link {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      text-decoration: none;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.0;
+      color: #f5efe6;
+      transition: color 0.25s;
+    }
+
+    .hero-link:hover .hero-title {
+      color: var(--color-accent);
+    }
+
+    .hero-arrow {
+      color: rgba(245, 239, 230, 0.18);
+      margin-top: 0.6rem;
+      flex-shrink: 0;
+      transition: color 0.25s, transform 0.25s;
+    }
+
+    .hero-link:hover .hero-arrow {
+      color: var(--color-accent);
+      transform: translate(4px, -4px);
+    }
+
+    .hero-desc {
+      color: rgba(245, 239, 230, 0.4);
+      font-size: 1rem;
+      max-width: 540px;
+      line-height: 1.75;
+      margin-bottom: 2rem;
+    }
+
+    .hero-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .hero-tech {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(245, 239, 230, 0.28);
+      background: rgba(245, 239, 230, 0.05);
+      border: 1px solid rgba(245, 239, 230, 0.07);
+      padding: 3px 10px;
+      border-radius: 2px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-accent-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--color-terra);
     }
   </style>
 </Base>

@@ -17,6 +17,13 @@ const statusStyle: Record<string, string> = {
   archived: 'text-secondary bg-secondary/20',
 }
 
+const kindStyle: Record<string, string> = {
+  oss: 'text-[#8aa1a3]',
+  business: 'text-[#52525b]',
+  media: 'text-[#52525b]',
+  community: 'text-[#8aa1a3]',
+}
+
 const sinceStr = startedOn
   ? new Date(startedOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
   : null
@@ -41,7 +48,7 @@ const sinceStr = startedOn
 
     {/* Header: kind + status */}
     <div class="flex items-center justify-between gap-3 mb-4">
-      <span class="font-[family-name:var(--font-mono)] text-[11px] text-[#52525b] tracking-wider uppercase">
+      <span class:list={['font-[family-name:var(--font-mono)] text-[11px] tracking-wider uppercase', kindStyle[kind]]}>
         {kindLabel[kind]}
       </span>
       <span class:list={[

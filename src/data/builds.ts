@@ -27,7 +27,6 @@ export const builds: Build[] = [
     description: 'Industrial equipment and professional tooling platform. Full-cycle product catalog, procurement automation, and dealer network management.',
     url: 'https://industrialprofi.com',
     icon: 'arrow-right',
-    cover: '/builds/industrialprofi-cover.png',
     status: 'active',
     kind: 'business',
     stack: ['Ruby on Rails', 'PostgreSQL', 'Redis', 'Docker'],

@@ -138,9 +138,6 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
 {/* ── GSAP entrance choreography ── */}
 <script>
   import { gsap } from 'gsap'
-  import { SplitText } from 'gsap/SplitText'
-
-  gsap.registerPlugin(SplitText)
 
   function initHomeAnimation() {
     const nameEl = document.getElementById('hero-name')
@@ -153,12 +150,6 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
 
     if (!nameEl) return
 
-    // Split name into characters
-    const split = new SplitText(nameEl, {
-      type: 'chars',
-      charsClass: 'char',
-    })
-
     const underlinePath = document.querySelector<SVGPathElement>('#name-underline path')
 
     const navItems = navEl ? navEl.querySelectorAll('[data-nav]') : []
@@ -170,8 +161,7 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
 
     // Set initial states
     gsap.set(avatarEl, { opacity: 0, scale: 0.85 })
-    gsap.set(nameEl, { letterSpacing: '0.06em' })
-    gsap.set(split.chars, { yPercent: 110, opacity: 0 })
+    gsap.set(nameEl, { opacity: 0, y: 14 })
     gsap.set(bioEl, { opacity: 0, y: 12 })
     gsap.set(dividerEl, { scaleX: 0 })
     gsap.set(allNavItems, { opacity: 0, y: 8 })
@@ -201,28 +191,20 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
       duration: 0.5,
     })
 
-    // 2. Name — characters emerge in random order, no theatrics
-    tl.to(split.chars, {
-      yPercent: 0,
+    // 2. Name — whole element fades in
+    tl.to(nameEl, {
       opacity: 1,
-      duration: 0.55,
-      stagger: { each: 0.028, from: 'random' },
+      y: 0,
+      duration: 0.7,
     }, '-=0.3')
 
-    // 2.5. Letter-spacing collapses as name settles — type being set
-    tl.to(nameEl, {
-      letterSpacing: '-0.04em',
-      duration: 0.65,
-      ease: 'power3.out',
-    }, '<')
-
-    // 2.6. Pen-stroke underline — hesitates, then flows
+    // 2.5. Pen-stroke underline
     if (underlinePath) {
       tl.to(underlinePath, {
         strokeDashoffset: 0,
         duration: 0.9,
         ease: 'power2.in',
-      }, '-=0.2')
+      }, '-=0.4')
     }
 
     // 3. Bio
@@ -402,13 +384,8 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
     letter-spacing: -0.04em;
     color: var(--color-primary);
     margin-bottom: 0;
-    overflow: hidden;
   }
 
-  .home-name :global(.char) {
-    display: inline-block;
-    will-change: transform, opacity;
-  }
 
   /* ═══ Bio ═══ */
   .home-bio {
