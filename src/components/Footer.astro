@@ -38,8 +38,8 @@ const barQuote = bioSentences.slice(1).join('. ')
   </div>
 
   {/* ── Footer body ── */}
-  <div class="mx-auto max-w-[var(--container-grid)] px-5 py-14 md:py-16">
-    <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12 md:gap-16">
+  <div class="mx-auto max-w-[var(--container-grid)] px-5 py-12 md:py-14">
+    <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12 md:gap-16 md:items-start">
 
       {/* ── Mission pull-quote ── */}
       <p class="footer-pullquote">
@@ -51,16 +51,14 @@ const barQuote = bioSentences.slice(1).join('. ')
       </p>
 
       {/* ── Navigate column ── */}
-      <div class="flex flex-col justify-between">
-        <div>
-          <p class="footer-col-label">Navigate</p>
-          <nav class="flex flex-col gap-3">
-            {navLinks.map(({ href, label }) => (
-              <a href={href} class="footer-link">{label}</a>
-            ))}
-          </nav>
-        </div>
-        <p class="footer-copy mt-10">&copy; {profile.name} {year}</p>
+      <div class="flex flex-col">
+        <p class="footer-col-label">Navigate</p>
+        <nav class="flex flex-col gap-3">
+          {navLinks.map(({ href, label }) => (
+            <a href={href} class="footer-link">{label}</a>
+          ))}
+        </nav>
+        <p class="footer-copy mt-8">&copy; {profile.name} {year}</p>
       </div>
 
     </div>
@@ -69,7 +67,7 @@ const barQuote = bioSentences.slice(1).join('. ')
   {/* ── Bottom colophon ── */}
   <div class="mx-auto max-w-[var(--container-grid)] px-5 pb-8">
     <div class="footer-rule"></div>
-    <p class="footer-tagline">// built with curiosity and bad wifi</p>
+    <p class="footer-tagline">// built with <span class="heart">♥</span> curiosity and bad wifi</p>
   </div>
 
 </footer>
@@ -160,6 +158,23 @@ const barQuote = bioSentences.slice(1).join('. ')
     color: rgba(242, 235, 224, 0.22);
     letter-spacing: 0.02em;
     text-align: center;
+  }
+
+  .heart {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 0.85rem;
+    color: var(--color-terra);
+    animation: heartbeat 2.4s ease-in-out infinite;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1);    opacity: 0.5; }
+    15%       { transform: scale(1.3); opacity: 1;   }
+    30%       { transform: scale(1);   opacity: 0.5; }
+    45%       { transform: scale(1.2); opacity: 0.85; }
+    60%       { transform: scale(1);   opacity: 0.5; }
   }
 
   .footer-copy {
