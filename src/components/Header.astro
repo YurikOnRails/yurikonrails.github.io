@@ -79,7 +79,7 @@ const year = new Date().getFullYear()
     <p class="menu-kicker">Navigate</p>
     <nav>
       <ul>
-        {navLinks.map(({ href, label }, i) => (
+        {navLinks.map(({ href, label }) => (
           <li>
             <a
               href={href}
@@ -87,7 +87,6 @@ const year = new Date().getFullYear()
                 'menu-link',
                 currentPath.startsWith(href) ? 'menu-link--active' : '',
               ]}
-              style={`transition-delay: ${60 + i * 40}ms`}
             >
               {label}
             </a>
@@ -169,8 +168,6 @@ const year = new Date().getFullYear()
       signal: scrollAbort.signal,
     })
 
-    const links = Array.from(menu.querySelectorAll<HTMLElement>('.menu-link'))
-
     function openMenu() {
       if (isOpen) return
       isOpen = true
@@ -187,17 +184,9 @@ const year = new Date().getFullYear()
       isOpen = false
       toggle.setAttribute('aria-expanded', 'false')
       toggle.classList.remove('is-open')
+      menu.classList.remove('is-open')
       menu.setAttribute('aria-hidden', 'true')
       document.body.style.overflow = ''
-
-      // Quick unified close animation
-      links.forEach((l) => (l.style.transitionDelay = '0ms'))
-      menu.classList.remove('is-open')
-
-      // Restore stagger delays for next open with better timing
-      setTimeout(() => {
-        links.forEach((l, i) => (l.style.transitionDelay = `${60 + i * 40}ms`))
-      }, 450)
     }
 
     toggle.addEventListener('click', () => (isOpen ? closeMenu() : openMenu()))
@@ -312,25 +301,14 @@ const year = new Date().getFullYear()
     display: flex;
     flex-direction: column;
     padding: 0 1.5rem;
-    /* Closed state: hidden above screen with fade + blur */
-    transform: translateY(-100%);
+    /* Closed: invisible, no movement */
     opacity: 0;
-    backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px);
     pointer-events: none;
-    /* Elegant easing for premium feel */
-    transition:
-      transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-      opacity 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-      backdrop-filter 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-      -webkit-backdrop-filter 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .mobile-menu.is-open {
-    transform: translateY(0);
     opacity: 1;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     pointer-events: auto;
   }
 
@@ -342,16 +320,6 @@ const year = new Date().getFullYear()
     padding: 0.75rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     flex-shrink: 0;
-    opacity: 0;
-    transition:
-      opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-      transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    transform: translateY(-8px);
-  }
-
-  .mobile-menu.is-open .menu-topbar {
-    opacity: 1;
-    transform: translateY(0);
   }
 
   /* Nav content — vertically centered */
@@ -370,16 +338,6 @@ const year = new Date().getFullYear()
     letter-spacing: 0.18em;
     color: rgba(242, 235, 224, 0.22);
     margin-bottom: 1.75rem;
-    opacity: 0;
-    transition:
-      opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.08s,
-      transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.08s;
-    transform: translateY(12px);
-  }
-
-  .mobile-menu.is-open .menu-kicker {
-    opacity: 1;
-    transform: translateY(0);
   }
 
   /* Nav links */
@@ -394,18 +352,13 @@ const year = new Date().getFullYear()
     color: rgba(242, 235, 224, 0.28);
     text-decoration: none;
     padding: 0.45rem 0 0.45rem 1.5rem;
-    transition:
-      color      0.3s  cubic-bezier(0.25, 0.46, 0.45, 0.94),
-      opacity    0.5s  cubic-bezier(0.25, 0.46, 0.45, 0.94),
-      transform  0.5s  cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    /* Closed: hidden, shifted down slightly */
-    opacity:   0;
-    transform: translateY(16px);
+    transition: color 0.3s ease;
+    /* Closed: invisible */
+    opacity: 0;
   }
 
   .mobile-menu.is-open .menu-link {
-    opacity:   1;
-    transform: translateY(0);
+    opacity: 1;
   }
 
   .menu-link:hover {
@@ -438,16 +391,6 @@ const year = new Date().getFullYear()
   .menu-footer {
     flex-shrink: 0;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
-    opacity: 0;
-    transition:
-      opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s,
-      transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s;
-    transform: translateY(8px);
-  }
-
-  .mobile-menu.is-open .menu-footer {
-    opacity: 1;
-    transform: translateY(0);
   }
 
   .menu-rule {
