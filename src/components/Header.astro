@@ -60,18 +60,23 @@ const year = new Date().getFullYear()
 
   {/* Top bar — mirrors header */}
   <div class="menu-topbar">
-    <a href="/" class="logo-link">
-      <span class="logo-first">{logoFirst}</span>
-      <span class="logo-sep"> · </span>
-      <span class="logo-last">{logoLast}</span>
-    </a>
-    <button
-      id="menu-close"
-      class="flex items-center justify-center w-11 h-11 -mr-2 text-white/50 hover:text-white transition-colors"
-      aria-label="Close menu"
+    <nav
+      class="mx-auto flex max-w-[var(--container-grid)] items-center justify-between w-full"
+      aria-label="Menu close"
     >
-      <Icon name="x" size={22} />
-    </button>
+      <a href="/" class="logo-link">
+        <span class="logo-first">{logoFirst}</span>
+        <span class="logo-sep"> · </span>
+        <span class="logo-last">{logoLast}</span>
+      </a>
+      <button
+        id="menu-close"
+        class="flex items-center justify-center w-11 h-11 -mr-2 text-white/50 hover:text-white transition-colors"
+        aria-label="Close menu"
+      >
+        <Icon name="x" size={22} />
+      </button>
+    </nav>
   </div>
 
   {/* Nav links */}
@@ -300,7 +305,6 @@ const year = new Date().getFullYear()
     background: #111111;
     display: flex;
     flex-direction: column;
-    padding: 0 1.25rem;
     /* Closed: invisible, no movement */
     opacity: 0;
     pointer-events: none;
@@ -314,12 +318,13 @@ const year = new Date().getFullYear()
 
   /* Top bar */
   .menu-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 0;
+    padding: 0 1.25rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     flex-shrink: 0;
+  }
+
+  .menu-topbar nav {
+    padding: 0.75rem 0;
   }
 
   /* Nav content — vertically centered */
@@ -328,7 +333,7 @@ const year = new Date().getFullYear()
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 2rem 0;
+    padding: 2rem 1.25rem;
   }
 
   .menu-kicker {
@@ -390,7 +395,7 @@ const year = new Date().getFullYear()
   /* Bottom */
   .menu-footer {
     flex-shrink: 0;
-    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    padding: 0 1.25rem max(1.5rem, env(safe-area-inset-bottom));
   }
 
   .menu-rule {
