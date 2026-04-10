@@ -33,16 +33,42 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-gutter: stable;
 }
 
-/* World map */
+/* World map — responsive background optimized for all devices */
 html::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: url('/world.svg') center 40% / 160% auto no-repeat;
-  opacity: 0.06;
   pointer-events: none;
+  image-rendering: crisp-edges;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mobile: up to 767px — higher zoom, parallax effect */
+@media (max-width: 767px) {
+  html::before {
+    background: url('/world.svg') center 20% / 280% auto no-repeat fixed;
+    opacity: 0.055;
+    mix-blend-mode: multiply;
+  }
+}
+
+/* Tablet: 768px to 1023px — medium zoom */
+@media (min-width: 768px) and (max-width: 1023px) {
+  html::before {
+    background: url('/world.svg') center 32% / 190% auto no-repeat;
+    opacity: 0.07;
+  }
+}
+
+/* Desktop: 1024px+ — optimal scale with smooth responsive behavior */
+@media (min-width: 1024px) {
+  html::before {
+    background: url('/world.svg') center 38% / clamp(140%, 200%, 1800px) auto no-repeat;
+    opacity: 0.085;
+  }
 }
 
 
