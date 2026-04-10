@@ -5,8 +5,16 @@ import { profile } from '../data/profile'
 
 const currentPath = Astro.url.pathname
 const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
+
+const socialLinks = [
+  profile.social.github   && { href: profile.social.github,   label: 'GitHub',   icon: 'github'   },
+  profile.social.telegram && { href: profile.social.telegram, label: 'Telegram', icon: 'telegram' },
+].filter(Boolean) as { href: string; label: string; icon: string }[]
+
+const year = new Date().getFullYear()
 ---
 
+{/* ── Fixed header ── */}
 <header id="main-header" class="site-header">
   <nav
     class="mx-auto flex max-w-[var(--container-grid)] items-center justify-between px-5 py-3 md:py-4"
@@ -32,11 +40,11 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
       ))}
     </ul>
 
-    {/* Mobile toggle — burger / close */}
+    {/* Mobile toggle */}
     <button
       id="menu-toggle"
-      class="md:hidden relative flex items-center justify-center w-11 h-11 -mr-2 text-white/50 hover:text-white transition-colors"
-      aria-label="Toggle menu"
+      class="md:hidden flex items-center justify-center w-11 h-11 -mr-2 text-white/50 hover:text-white transition-colors"
+      aria-label="Open menu"
       aria-expanded="false"
     >
       <span class="toggle-icon-menu"><Icon name="menu" size={22} /></span>
@@ -47,27 +55,70 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
   <div class="header-accent" />
 </header>
 
-{/* ── Mobile slide-down panel ── */}
-<div id="mobile-panel" class="mobile-panel" aria-hidden="true">
-  <ul class="px-5 pt-2 pb-5">
-    {navLinks.map(({ href, label }) => (
-      <li class="panel-item">
-        <a
-          href={href}
-          class:list={[
-            'panel-link',
-            currentPath.startsWith(href) ? 'panel-link--active' : '',
-          ]}
-        >
-          {label}
-        </a>
-      </li>
-    ))}
-  </ul>
-</div>
+{/* ── Full-screen mobile menu ── */}
+<div id="mobile-menu" class="mobile-menu" aria-hidden="true">
 
-{/* Backdrop */}
-<div id="panel-backdrop" class="panel-backdrop" />
+  {/* Top bar — mirrors header */}
+  <div class="menu-topbar">
+    <a href="/" class="logo-link">
+      <span class="logo-first">{logoFirst}</span>
+      <span class="logo-sep"> · </span>
+      <span class="logo-last">{logoLast}</span>
+    </a>
+    <button
+      id="menu-close"
+      class="flex items-center justify-center w-11 h-11 -mr-2 text-white/50 hover:text-white transition-colors"
+      aria-label="Close menu"
+    >
+      <Icon name="x" size={22} />
+    </button>
+  </div>
+
+  {/* Nav links */}
+  <div class="menu-content">
+    <p class="menu-kicker">Navigate</p>
+    <nav>
+      <ul>
+        {navLinks.map(({ href, label }, i) => (
+          <li>
+            <a
+              href={href}
+              class:list={[
+                'menu-link',
+                currentPath.startsWith(href) ? 'menu-link--active' : '',
+              ]}
+              style={`transition-delay: ${80 + i * 45}ms`}
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  {/* Bottom — social + copyright */}
+  <div class="menu-footer">
+    <div class="menu-rule" />
+    <div class="menu-footer-inner">
+      <div class="flex items-center gap-5">
+        {socialLinks.map(({ href, label, icon }) => (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="menu-social-link"
+          >
+            <Icon name={icon} size={13} />
+            <span>{label}</span>
+          </a>
+        ))}
+      </div>
+      <p class="menu-copy">&copy; {profile.name} {year}</p>
+    </div>
+  </div>
+
+</div>
 
 {/* Spacer */}
 <div class="h-[52px] md:h-[62px]" />
@@ -76,16 +127,16 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
   let scrollAbort = new AbortController()
 
   function initHeader() {
-    const header   = document.getElementById('main-header')
-    const panel    = document.getElementById('mobile-panel')
-    const backdrop = document.getElementById('panel-backdrop')
-    const toggle   = document.getElementById('menu-toggle')
+    const header = document.getElementById('main-header')
+    const menu   = document.getElementById('mobile-menu')
+    const toggle = document.getElementById('menu-toggle')
+    const close  = document.getElementById('menu-close')
 
-    if (!header || !panel || !backdrop || !toggle) return
+    if (!header || !menu || !toggle || !close) return
 
-    let isOpen    = false
-    let lastY     = window.scrollY
-    let ticking   = false
+    let isOpen  = false
+    let lastY   = window.scrollY
+    let ticking = false
 
     // ── Auto-hide on scroll ──
     scrollAbort.abort()
@@ -94,22 +145,15 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
     function onScroll() {
       if (ticking) return
       ticking = true
-
       requestAnimationFrame(() => {
         const y = window.scrollY
-
         if (!isOpen) {
-          if (y <= 10) {
-            header.classList.remove('header--hidden')
-          } else if (y > lastY + 8) {
-            header.classList.add('header--hidden')
-          } else if (y < lastY - 4) {
-            header.classList.remove('header--hidden')
-          }
+          if (y <= 10)            header.classList.remove('header--hidden')
+          else if (y > lastY + 8) header.classList.add('header--hidden')
+          else if (y < lastY - 4) header.classList.remove('header--hidden')
         }
-
-        lastY    = y
-        ticking  = false
+        lastY   = y
+        ticking = false
       })
     }
 
@@ -118,35 +162,40 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
       signal: scrollAbort.signal,
     })
 
-    // ── Open / close ──
+    const links = Array.from(menu.querySelectorAll<HTMLElement>('.menu-link'))
+
     function openMenu() {
       if (isOpen) return
       isOpen = true
-
       header.classList.remove('header--hidden')
       toggle.setAttribute('aria-expanded', 'true')
       toggle.classList.add('is-open')
-      panel.classList.add('is-open')
-      panel.setAttribute('aria-hidden', 'false')
-      backdrop.classList.add('is-visible')
+      menu.classList.add('is-open')
+      menu.setAttribute('aria-hidden', 'false')
       document.body.style.overflow = 'hidden'
     }
 
     function closeMenu() {
       if (!isOpen) return
       isOpen = false
-
       toggle.setAttribute('aria-expanded', 'false')
       toggle.classList.remove('is-open')
-      panel.classList.remove('is-open')
-      panel.setAttribute('aria-hidden', 'true')
-      backdrop.classList.remove('is-visible')
+      menu.setAttribute('aria-hidden', 'true')
       document.body.style.overflow = ''
+
+      // Fast close — remove stagger
+      links.forEach((l) => (l.style.transitionDelay = '0ms'))
+      menu.classList.remove('is-open')
+
+      // Restore stagger delays for next open
+      setTimeout(() => {
+        links.forEach((l, i) => (l.style.transitionDelay = `${80 + i * 45}ms`))
+      }, 400)
     }
 
     toggle.addEventListener('click', () => (isOpen ? closeMenu() : openMenu()))
-    backdrop.addEventListener('click', closeMenu)
-    panel.querySelectorAll('.panel-link').forEach((l) => l.addEventListener('click', closeMenu))
+    close.addEventListener('click', closeMenu)
+    links.forEach((l) => l.addEventListener('click', closeMenu))
   }
 
   initHeader()
@@ -157,9 +206,7 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
   /* ── Header ── */
   .site-header {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 50;
     background: rgba(17, 17, 17, 0.88);
     backdrop-filter: blur(16px);
@@ -175,17 +222,14 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
 
   .header-accent {
     position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
+    bottom: -2px; left: 0; right: 0;
     height: 2px;
     background: var(--color-terra);
   }
 
   /* ── Toggle icon swap ── */
-  .toggle-icon-close { display: none; }
-  .toggle-icon-menu  { display: flex; }
-
+  .toggle-icon-close              { display: none; }
+  .toggle-icon-menu               { display: flex; }
   #menu-toggle.is-open .toggle-icon-menu  { display: none; }
   #menu-toggle.is-open .toggle-icon-close { display: flex; }
 
@@ -220,7 +264,7 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
     letter-spacing: -0.01em;
   }
 
-  /* ── Desktop nav links ── */
+  /* ── Desktop nav ── */
   .nav-link {
     position: relative;
     color: rgba(242, 235, 224, 0.55);
@@ -236,8 +280,7 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
   .nav-link::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: 0; left: 0;
     width: 100%;
     height: 1.5px;
     background: var(--color-accent);
@@ -251,68 +294,147 @@ const [logoFirst, logoLast] = profile.name.toUpperCase().split(' ')
   .nav-link--active         { color: var(--color-accent); }
   .nav-link--active::after  { transform: scaleX(1); }
 
-  /* ── Slide-down panel ── */
-  .mobile-panel {
+  /* ────────────────────────────────────
+     Full-screen mobile menu
+  ──────────────────────────────────── */
+  .mobile-menu {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 45;
-    background: rgba(14, 14, 14, 0.97);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    padding-top: 52px; /* clears mobile header */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
-    transform: translateY(-100%);
-    transition: transform 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+    inset: 0;
+    z-index: 100;
+    background: #111111;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1.5rem;
+    /* Closed */
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 0.28s ease;
   }
 
-  @media (min-width: 768px) {
-    .mobile-panel { padding-top: 62px; }
-  }
-
-  .mobile-panel.is-open {
-    transform: translateY(0);
+  .mobile-menu.is-open {
+    opacity: 1;
     pointer-events: auto;
   }
 
-  /* ── Panel links ── */
-  .panel-item {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  /* Top bar */
+  .menu-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    flex-shrink: 0;
   }
 
-  .panel-item:last-child { border-bottom: none; }
+  /* Nav content — vertically centered */
+  .menu-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 0;
+  }
 
-  .panel-link {
+  .menu-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgba(242, 235, 224, 0.22);
+    margin-bottom: 1.75rem;
+  }
+
+  /* Nav links */
+  .menu-link {
     display: block;
+    position: relative;
     font-family: var(--font-heading);
-    font-size: 1.125rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: rgba(242, 235, 224, 0.65);
+    font-size: clamp(2rem, 8vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: rgba(242, 235, 224, 0.28);
     text-decoration: none;
-    padding: 0.875rem 0;
+    padding: 0.45rem 0 0.45rem 1.5rem;
+    transition:
+      color      0.2s  ease,
+      opacity    0.38s ease-out,
+      transform  0.38s ease-out;
+    /* Closed: hidden, shifted down */
+    opacity:   0;
+    transform: translateY(20px);
+  }
+
+  .mobile-menu.is-open .menu-link {
+    opacity:   1;
+    transform: translateY(0);
+  }
+
+  .menu-link:hover {
+    color: rgba(242, 235, 224, 0.82);
+  }
+
+  /* Terra left bar indicator */
+  .menu-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 2.5px;
+    height: 48%;
+    background: var(--color-terra);
+    border-radius: 2px;
+    transform: translateY(-50%) scaleY(0);
+    transition: transform 0.22s ease;
+  }
+
+  .menu-link--active {
+    color: rgba(242, 235, 224, 0.95);
+  }
+
+  .menu-link--active::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  /* Bottom */
+  .menu-footer {
+    flex-shrink: 0;
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  .menu-rule {
+    height: 1px;
+    background: rgba(242, 235, 224, 0.07);
+    margin-bottom: 1.25rem;
+  }
+
+  .menu-footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .menu-social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(242, 235, 224, 0.35);
+    text-decoration: none;
     transition: color 0.2s;
   }
 
-  .panel-link:hover       { color: rgba(242, 235, 224, 0.95); }
-  .panel-link--active     { color: var(--color-accent); }
-
-  /* ── Backdrop ── */
-  .panel-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 35;
-    background: rgba(0, 0, 0, 0.38);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+  .menu-social-link:hover {
+    color: rgba(242, 235, 224, 0.8);
   }
 
-  .panel-backdrop.is-visible {
-    opacity: 1;
-    pointer-events: auto;
+  .menu-copy {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    color: rgba(242, 235, 224, 0.18);
   }
 </style>
