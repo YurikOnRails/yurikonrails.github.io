@@ -12,7 +12,7 @@ export interface Profile {
 }
 
 export const profile: Profile = {
-  name: 'Yuri Konrails',
+  name: 'Andrey Yurik',
   bio: 'Building software, writing essays, photographing the world. Interested in systems, craft, and the spaces between.',
   avatar: '/avatar.jpg',
   location: '',
