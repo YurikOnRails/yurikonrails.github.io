@@ -87,7 +87,7 @@ const year = new Date().getFullYear()
                 'menu-link',
                 currentPath.startsWith(href) ? 'menu-link--active' : '',
               ]}
-              style={`transition-delay: ${80 + i * 45}ms`}
+              style={`transition-delay: ${60 + i * 40}ms`}
             >
               {label}
             </a>
@@ -134,6 +134,13 @@ const year = new Date().getFullYear()
 
     if (!header || !menu || !toggle || !close) return
 
+    // ── Reset DOM state on every init (critical for View Transitions) ──
+    menu.classList.remove('is-open')
+    menu.setAttribute('aria-hidden', 'true')
+    toggle.classList.remove('is-open')
+    toggle.setAttribute('aria-expanded', 'false')
+    document.body.style.overflow = ''
+
     let isOpen  = false
     let lastY   = window.scrollY
     let ticking = false
@@ -167,7 +174,7 @@ const year = new Date().getFullYear()
     function openMenu() {
       if (isOpen) return
       isOpen = true
-      header.classList.remove('header--hidden')
+      // Don't force-show header — menu has its own topbar; forcing it causes logo jitter
       toggle.setAttribute('aria-expanded', 'true')
       toggle.classList.add('is-open')
       menu.classList.add('is-open')
@@ -183,14 +190,14 @@ const year = new Date().getFullYear()
       menu.setAttribute('aria-hidden', 'true')
       document.body.style.overflow = ''
 
-      // Fast close — remove stagger
+      // Quick unified close animation
       links.forEach((l) => (l.style.transitionDelay = '0ms'))
       menu.classList.remove('is-open')
 
-      // Restore stagger delays for next open
+      // Restore stagger delays for next open with better timing
       setTimeout(() => {
-        links.forEach((l, i) => (l.style.transitionDelay = `${80 + i * 45}ms`))
-      }, 400)
+        links.forEach((l, i) => (l.style.transitionDelay = `${60 + i * 40}ms`))
+      }, 450)
     }
 
     toggle.addEventListener('click', () => (isOpen ? closeMenu() : openMenu()))
@@ -305,14 +312,25 @@ const year = new Date().getFullYear()
     display: flex;
     flex-direction: column;
     padding: 0 1.5rem;
-    /* Closed */
+    /* Closed state: hidden above screen with fade + blur */
+    transform: translateY(-100%);
     opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
     pointer-events: none;
-    transition: opacity 0.28s ease;
+    /* Elegant easing for premium feel */
+    transition:
+      transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      opacity 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      backdrop-filter 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      -webkit-backdrop-filter 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .mobile-menu.is-open {
+    transform: translateY(0);
     opacity: 1;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     pointer-events: auto;
   }
 
@@ -324,6 +342,16 @@ const year = new Date().getFullYear()
     padding: 0.75rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     flex-shrink: 0;
+    opacity: 0;
+    transition:
+      opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateY(-8px);
+  }
+
+  .mobile-menu.is-open .menu-topbar {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   /* Nav content — vertically centered */
@@ -342,6 +370,16 @@ const year = new Date().getFullYear()
     letter-spacing: 0.18em;
     color: rgba(242, 235, 224, 0.22);
     margin-bottom: 1.75rem;
+    opacity: 0;
+    transition:
+      opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.08s,
+      transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.08s;
+    transform: translateY(12px);
+  }
+
+  .mobile-menu.is-open .menu-kicker {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   /* Nav links */
@@ -357,12 +395,12 @@ const year = new Date().getFullYear()
     text-decoration: none;
     padding: 0.45rem 0 0.45rem 1.5rem;
     transition:
-      color      0.2s  ease,
-      opacity    0.38s ease-out,
-      transform  0.38s ease-out;
-    /* Closed: hidden, shifted down */
+      color      0.3s  cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      opacity    0.5s  cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      transform  0.5s  cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Closed: hidden, shifted down slightly */
     opacity:   0;
-    transform: translateY(20px);
+    transform: translateY(16px);
   }
 
   .mobile-menu.is-open .menu-link {
@@ -400,6 +438,16 @@ const year = new Date().getFullYear()
   .menu-footer {
     flex-shrink: 0;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    opacity: 0;
+    transition:
+      opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s,
+      transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s;
+    transform: translateY(8px);
+  }
+
+  .mobile-menu.is-open .menu-footer {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .menu-rule {
