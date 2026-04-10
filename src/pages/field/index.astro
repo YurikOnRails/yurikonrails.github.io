@@ -23,10 +23,10 @@ const tripsByYear = Object.fromEntries(
 ---
 
 <Base title="Field" description="Travel photography — moments from the road, frame by frame.">
-  <section class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 pb-24">
+  <section class="field-section">
 
     {/* ── Page header ── */}
-    <div class="mb-12">
+    <div class="mx-auto max-w-[var(--container-grid)] px-5 pt-12 mb-12">
       <p class="kicker">Photography</p>
       <h1 class="text-4xl md:text-6xl mb-3">Field</h1>
       <p class="text-secondary max-w-xl">
@@ -35,100 +35,135 @@ const tripsByYear = Object.fromEntries(
     </div>
 
     {/* ── Globe map ── */}
-    <div class="mb-14">
+    <div class="mx-auto max-w-[var(--container-grid)] px-5 mb-14">
       <GlobeMap locations={locations} />
     </div>
 
-    {/* ── Controls: year filter + view toggle ── */}
-    <div class="field-controls">
+    {/* ── Controls ── */}
+    <div class="mx-auto max-w-[var(--container-grid)] px-5 mb-6">
+      <div class="field-controls">
 
-      {years.length > 1 ? (
-        <div class="year-filter" id="year-filter">
-          <button class="year-btn active" data-year="all">All</button>
-          <span class="year-sep">·</span>
-          {years.map((year) => (
-            <button class="year-btn" data-year={year}>
-              {year}<sup>{tripsByYear[year]}</sup>
-            </button>
-          ))}
+        {years.length > 1 ? (
+          <div class="year-filter" id="year-filter">
+            <button class="year-btn active" data-year="all">All</button>
+            <span class="year-sep">·</span>
+            {years.map((year) => (
+              <button class="year-btn" data-year={year}>
+                {year}<sup>{tripsByYear[year]}</sup>
+              </button>
+            ))}
+          </div>
+        ) : <div />}
+
+        {/* View toggle */}
+        <div class="view-toggle" id="view-toggle" role="group" aria-label="View mode">
+          {/* Gallery icon: 3-col grid */}
+          <button class="toggle-btn active" id="btn-gallery" data-view="gallery" aria-label="Gallery view">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="0.5" y="0.5" width="4" height="7" rx="0.5" fill="currentColor"/>
+              <rect x="6" y="0.5" width="4" height="7" rx="0.5" fill="currentColor"/>
+              <rect x="11.5" y="0.5" width="4" height="7" rx="0.5" fill="currentColor"/>
+              <rect x="0.5" y="9" width="4" height="6.5" rx="0.5" fill="currentColor"/>
+              <rect x="6" y="9" width="4" height="6.5" rx="0.5" fill="currentColor"/>
+              <rect x="11.5" y="9" width="4" height="6.5" rx="0.5" fill="currentColor"/>
+            </svg>
+          </button>
+          {/* Editorial icon: horizontal rows with text */}
+          <button class="toggle-btn" id="btn-editorial" data-view="editorial" aria-label="Editorial view">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="0.5" y="0.5" width="6.5" height="6.5" rx="0.5" fill="currentColor"/>
+              <rect x="9" y="1.5" width="6.5" height="1.5" rx="0.5" fill="currentColor"/>
+              <rect x="9" y="5" width="4.5" height="1.5" rx="0.5" fill="currentColor"/>
+              <rect x="0.5" y="9" width="6.5" height="6.5" rx="0.5" fill="currentColor"/>
+              <rect x="9" y="10" width="6.5" height="1.5" rx="0.5" fill="currentColor"/>
+              <rect x="9" y="13.5" width="4.5" height="1.5" rx="0.5" fill="currentColor"/>
+            </svg>
+          </button>
         </div>
-      ) : (
-        <div />
-      )}
 
-      {/* View toggle */}
-      <div class="view-toggle" id="view-toggle" role="group" aria-label="View mode">
-        <button class="toggle-btn active" id="btn-photo" data-view="photo" aria-label="Photo grid">
-          {/* 2×2 grid icon */}
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-            <rect x="0.5" y="0.5" width="6" height="6" rx="0.5" fill="currentColor"/>
-            <rect x="8.5" y="0.5" width="6" height="6" rx="0.5" fill="currentColor"/>
-            <rect x="0.5" y="8.5" width="6" height="6" rx="0.5" fill="currentColor"/>
-            <rect x="8.5" y="8.5" width="6" height="6" rx="0.5" fill="currentColor"/>
-          </svg>
-        </button>
-        <button class="toggle-btn" id="btn-editorial" data-view="editorial" aria-label="Editorial view">
-          {/* Varied layout icon: full-width top + two halves below */}
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-            <rect x="0.5" y="0.5" width="14" height="5.5" rx="0.5" fill="currentColor"/>
-            <rect x="0.5" y="8.5" width="6" height="6" rx="0.5" fill="currentColor"/>
-            <rect x="8.5" y="8.5" width="6" height="6" rx="0.5" fill="currentColor"/>
-          </svg>
-        </button>
       </div>
-
     </div>
 
-    {/* ── Photo grid ── */}
-    {series.length > 0 ? (
-      <div id="field-grid" class="field-grid view-photo">
+    {/* ── Gallery mode: full-bleed grid ── */}
+    {series.length > 0 && (
+      <div id="gallery-grid" class="gallery-grid">
+        {series.map((s, i) => (
+          <a
+            href={`/field/${s.id}`}
+            class="gallery-card group"
+            data-year={s.data.takenOn.getFullYear()}
+            data-featured={i % 3 === 0 ? '' : undefined}
+          >
+            <div class="gallery-inner">
+              <img
+                src={s.data.cover}
+                alt={s.data.title}
+                loading="lazy"
+                decoding="async"
+                class="gallery-img"
+              />
+              <div class="gallery-hover">
+                <p class="gallery-hover-kicker">
+                  {s.data.location}<span class="card-sep"> · </span>{s.data.takenOn.getFullYear()}
+                </p>
+                <p class="gallery-hover-title">{s.data.title}</p>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+
+    {/* ── Editorial mode: informative list ── */}
+    {series.length > 0 && (
+      <div id="editorial-list" class="editorial-list" aria-hidden="true">
         {series.map((s, i) => {
           const photoCount = s.data.photos?.length ?? 0
           const videoCount = s.data.videos?.length ?? 0
-          const badgeLabel =
-            photoCount > 0 && videoCount > 0
-              ? `${photoCount} · ${videoCount}`
-              : photoCount > 0
-                ? `${photoCount} photos`
-                : videoCount > 0
-                  ? `${videoCount} videos`
-                  : null
-          const isFeatured = i % 3 === 0
+          const index = String(i + 1).padStart(2, '0')
 
           return (
             <a
               href={`/field/${s.id}`}
-              class="field-card group"
+              class="entry group"
               data-year={s.data.takenOn.getFullYear()}
-              data-featured={isFeatured ? '' : undefined}
             >
-              <div class="card-inner">
+              <div class="entry-grid">
 
                 {/* Photo */}
-                <img
-                  src={s.data.cover}
-                  alt={s.data.title}
-                  loading="lazy"
-                  decoding="async"
-                  class="card-img"
-                />
-
-                {/* Overlay */}
-                <div class="card-overlay" />
-
-                {/* Badge */}
-                {badgeLabel && (
-                  <div class="card-badge">{badgeLabel}</div>
-                )}
+                <div class="entry-photo-wrap">
+                  <img
+                    src={s.data.cover}
+                    alt={s.data.title}
+                    loading="lazy"
+                    decoding="async"
+                    class="entry-photo"
+                  />
+                  {(photoCount > 0 || videoCount > 0) && (
+                    <div class="entry-badge">
+                      {photoCount > 0 && `${photoCount} photos`}
+                      {photoCount > 0 && videoCount > 0 && ' · '}
+                      {videoCount > 0 && `${videoCount} video`}
+                    </div>
+                  )}
+                </div>
 
                 {/* Text */}
-                <div class="card-text">
-                  <p class="card-kicker">
+                <div class="entry-body">
+                  <span class="entry-index">{index}</span>
+                  <p class="entry-meta">
                     {s.data.location}
-                    <span class="card-sep">·</span>
-                    {s.data.takenOn.getFullYear()}
+                    <span class="entry-sep">·</span>
+                    <time datetime={s.data.takenOn.toISOString()}>
+                      {formatDate(s.data.takenOn, 'month-year')}
+                    </time>
                   </p>
-                  <h2 class="card-title">{s.data.title}</h2>
+                  <h2 class="entry-title">{s.data.title}</h2>
+                  <p class="entry-desc">{s.data.description}</p>
+                  <div class="entry-cta">
+                    <span>View series</span>
+                    <span class="entry-arrow">→</span>
+                  </div>
                 </div>
 
               </div>
@@ -136,65 +171,79 @@ const tripsByYear = Object.fromEntries(
           )
         })}
       </div>
-    ) : (
-      <p class="text-secondary text-center py-20">No field series yet.</p>
     )}
+
+    {series.length === 0 && (
+      <p class="text-secondary text-center py-20 mx-auto max-w-[var(--container-grid)] px-5">
+        No field series yet.
+      </p>
+    )}
+
+    <div class="pb-24" />
 
   </section>
 
   <script>
     function initFieldPage() {
-      const grid = document.getElementById('field-grid') as HTMLElement | null
-      const btnPhoto = document.getElementById('btn-photo')
+      const galleryGrid  = document.getElementById('gallery-grid')  as HTMLElement | null
+      const editorialList = document.getElementById('editorial-list') as HTMLElement | null
+      const btnGallery   = document.getElementById('btn-gallery')
       const btnEditorial = document.getElementById('btn-editorial')
-      const yearBtns = document.querySelectorAll('.year-btn')
-      const cards = document.querySelectorAll('.field-card')
-      const globeContainer = document.getElementById('globe-container')
 
-      if (!grid) return
+      if (!galleryGrid || !editorialList) return
 
       // ── View toggle ──
-      const saved = (localStorage.getItem('field-view') as 'photo' | 'editorial') || 'photo'
+      const saved = (localStorage.getItem('field-view') as 'gallery' | 'editorial') || 'gallery'
       applyView(saved, false)
 
-      btnPhoto?.addEventListener('click', () => applyView('photo'))
+      btnGallery?.addEventListener('click',   () => applyView('gallery'))
       btnEditorial?.addEventListener('click', () => applyView('editorial'))
 
-      function applyView(mode: 'photo' | 'editorial', animate = true) {
+      function applyView(mode: 'gallery' | 'editorial', animate = true) {
+        const show = mode === 'gallery' ? galleryGrid  : editorialList
+        const hide = mode === 'gallery' ? editorialList : galleryGrid
+
+        btnGallery?.classList.toggle('active',   mode === 'gallery')
+        btnEditorial?.classList.toggle('active', mode === 'editorial')
+        localStorage.setItem('field-view', mode)
+
         if (animate) {
-          grid.style.opacity = '0'
-          grid.style.transform = 'translateY(6px)'
-        }
-
-        const apply = () => {
-          grid.className = `field-grid view-${mode}`
-          btnPhoto?.classList.toggle('active', mode === 'photo')
-          btnEditorial?.classList.toggle('active', mode === 'editorial')
-          localStorage.setItem('field-view', mode)
-
-          if (animate) {
+          hide!.style.opacity = '0'
+          hide!.style.transform = 'translateY(6px)'
+          setTimeout(() => {
+            hide!.setAttribute('aria-hidden', 'true')
+            hide!.style.display = 'none'
+            show!.style.display = mode === 'gallery' ? 'grid' : 'flex'
+            show!.removeAttribute('aria-hidden')
             requestAnimationFrame(() => {
-              grid.style.opacity = '1'
-              grid.style.transform = 'translateY(0)'
+              show!.style.opacity = '1'
+              show!.style.transform = 'translateY(0)'
             })
-          }
+          }, 180)
+        } else {
+          hide!.setAttribute('aria-hidden', 'true')
+          hide!.style.display = 'none'
+          show!.style.display = mode === 'gallery' ? 'grid' : 'flex'
+          show!.removeAttribute('aria-hidden')
+          show!.style.opacity = '1'
+          show!.style.transform = 'translateY(0)'
         }
-
-        animate ? setTimeout(apply, 180) : apply()
       }
 
       // ── Year filter ──
+      const yearBtns = document.querySelectorAll('.year-btn')
+      const allCards = document.querySelectorAll('.gallery-card, .entry')
+      const globeContainer = document.getElementById('globe-container')
+
       yearBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
           const year = (btn as HTMLElement).dataset.year
-
           yearBtns.forEach((b) => b.classList.remove('active'))
           btn.classList.add('active')
 
-          cards.forEach((card) => {
+          allCards.forEach((card) => {
             const el = card as HTMLElement
             const show = year === 'all' || el.dataset.year === year
-
             if (show) {
               el.style.display = ''
               requestAnimationFrame(() => el.classList.remove('card--hidden'))
@@ -217,16 +266,14 @@ const tripsByYear = Object.fromEntries(
 
   <style is:global>
 
-    /* ── Controls bar ── */
+    /* ── Controls ── */
     .field-controls {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1.5rem;
       min-height: 44px;
     }
 
-    /* ── Year filter ── */
     .year-filter {
       display: flex;
       align-items: baseline;
@@ -258,12 +305,11 @@ const tripsByYear = Object.fromEntries(
     .year-sep {
       color: var(--color-secondary);
       opacity: 0.2;
-      font-size: 0.75rem;
       font-family: var(--font-mono);
+      font-size: 0.75rem;
       user-select: none;
     }
 
-    /* ── View toggle ── */
     .view-toggle {
       display: flex;
       align-items: center;
@@ -297,10 +343,44 @@ const tripsByYear = Object.fromEntries(
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
     }
 
-    /* ── Grid base ── */
-    .field-grid {
+    /* ──────────────────────────────────────
+       GALLERY MODE — full-bleed grid
+    ────────────────────────────────────── */
+    .gallery-grid {
       display: grid;
+      gap: 3px;
+      /* Break out of container — edge to edge */
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
       transition: opacity 0.2s ease, transform 0.2s ease;
+      /* Mobile: 2-col mixed-size */
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Desktop: 3-col equal grid */
+    @media (min-width: 768px) {
+      .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+      }
+    }
+
+    .gallery-card {
+      display: block;
+      text-decoration: none;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    /* Mobile: featured card spans full width */
+    .gallery-card[data-featured] {
+      grid-column: span 2;
+    }
+
+    /* Desktop: all cards equal, no span */
+    @media (min-width: 768px) {
+      .gallery-card[data-featured] {
+        grid-column: span 1;
+      }
     }
 
     .card--hidden {
@@ -308,119 +388,28 @@ const tripsByYear = Object.fromEntries(
       transform: translateY(8px);
     }
 
-    /* ──────────────────────────────────────
-       MODE: PHOTO
-       2-col grid, text hidden, hover reveal
-    ────────────────────────────────────── */
-    .view-photo {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2px;
-    }
-
-    .view-photo .card-inner {
-      aspect-ratio: 4 / 3;
-    }
-
-    /* Overlay — invisible by default */
-    .view-photo .card-overlay {
-      opacity: 0;
-      background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.82) 0%,
-        rgba(0, 0, 0, 0.35) 45%,
-        transparent 75%
-      );
-      transition: opacity 0.38s ease;
-    }
-
-    .view-photo .field-card:hover .card-overlay {
-      opacity: 1;
-    }
-
-    /* Text — slides up on hover */
-    .view-photo .card-text {
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.32s ease, transform 0.32s ease;
-    }
-
-    .view-photo .field-card:hover .card-text {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ──────────────────────────────────────
-       MODE: EDITORIAL
-       Varied grid, text always on
-    ────────────────────────────────────── */
-    .view-editorial {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 3px;
-    }
-
-    .view-editorial .card-inner {
-      aspect-ratio: 4 / 3;
-    }
-
-    /* Featured card — spans full width, cinematic ratio */
-    @media (min-width: 768px) {
-      .view-editorial .field-card[data-featured] {
-        grid-column: span 2;
-      }
-
-      .view-editorial .field-card[data-featured] .card-inner {
-        aspect-ratio: 21 / 9;
-      }
-
-      .view-editorial .field-card[data-featured] .card-title {
-        font-size: clamp(1.5rem, 3vw, 2.375rem);
-      }
-    }
-
-    /* Overlay — always on */
-    .view-editorial .card-overlay {
-      opacity: 1;
-      background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.82) 0%,
-        rgba(0, 0, 0, 0.3) 45%,
-        rgba(0, 0, 0, 0.0) 72%,
-        transparent 100%
-      );
-      transition: opacity 0.3s ease;
-    }
-
-    .view-editorial .field-card:hover .card-overlay {
-      background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.9) 0%,
-        rgba(0, 0, 0, 0.4) 45%,
-        rgba(0, 0, 0, 0.05) 72%,
-        transparent 100%
-      );
-    }
-
-    /* Text — always visible */
-    .view-editorial .card-text {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-
-    /* ── Card shared styles ── */
-    .field-card {
-      display: block;
-      text-decoration: none;
-      transition: opacity 0.35s ease, transform 0.35s ease;
-    }
-
-    .card-inner {
+    .gallery-inner {
       position: relative;
       overflow: hidden;
       background: #0d0d0d;
+      /* Mobile default: 4:3 */
+      aspect-ratio: 4 / 3;
     }
 
-    .card-img {
+    /* Mobile featured: slightly cinematic */
+    .gallery-card[data-featured] .gallery-inner {
+      aspect-ratio: 3 / 2;
+    }
+
+    /* Desktop: all equal 4:3 */
+    @media (min-width: 768px) {
+      .gallery-inner,
+      .gallery-card[data-featured] .gallery-inner {
+        aspect-ratio: 4 / 3;
+      }
+    }
+
+    .gallery-img {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -429,51 +418,72 @@ const tripsByYear = Object.fromEntries(
       transition: transform 0.75s ease-out;
     }
 
-    .field-card:hover .card-img {
+    .gallery-card:hover .gallery-img {
       transform: scale(1.04);
     }
 
-    .card-overlay {
+    /* Tap feedback on mobile */
+    @media (hover: none) {
+      .gallery-card:active .gallery-inner {
+        transform: scale(0.97);
+        transition: transform 0.15s ease;
+      }
+    }
+
+    /* ── Text overlay ── */
+    .gallery-hover {
       position: absolute;
       inset: 0;
-      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1rem;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.82) 0%,
+        rgba(0, 0, 0, 0.28) 42%,
+        transparent 70%
+      );
+      transition: opacity 0.35s ease;
     }
 
-    .card-badge {
-      position: absolute;
-      top: 0.875rem;
-      right: 0.875rem;
-      font-family: var(--font-mono);
-      font-size: 0.58rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: rgba(255, 255, 255, 0.82);
-      background: rgba(0, 0, 0, 0.42);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      padding: 0.28rem 0.6rem;
-      border-radius: 2px;
+    /* Mobile: text always visible */
+    @media (hover: none) {
+      .gallery-hover { opacity: 1; }
     }
 
-    .card-text {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    /* Desktop: text on hover only */
+    @media (hover: hover) {
+      .gallery-hover { opacity: 0; }
+      .gallery-card:hover .gallery-hover { opacity: 1; }
+    }
+
+    /* Featured card: larger padding */
+    .gallery-card[data-featured] .gallery-hover {
       padding: 1.25rem;
-      pointer-events: none;
     }
 
-    .card-kicker {
+    .gallery-hover-kicker {
       font-family: var(--font-mono);
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       text-transform: uppercase;
       letter-spacing: 0.13em;
       color: rgba(255, 255, 255, 0.55);
-      margin-bottom: 0.4rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .gallery-hover-title {
+      font-family: var(--font-heading);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    /* Featured card: larger title */
+    .gallery-card[data-featured] .gallery-hover-title {
+      font-size: clamp(1rem, 3vw, 1.25rem);
     }
 
     .card-sep {
@@ -481,19 +491,164 @@ const tripsByYear = Object.fromEntries(
       opacity: 0.7;
     }
 
-    .card-title {
-      font-family: var(--font-heading);
-      font-size: 1rem;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.95);
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-      transition: color 0.2s;
+    /* ──────────────────────────────────────
+       EDITORIAL MODE — informative list
+    ────────────────────────────────────── */
+    .editorial-list {
+      display: flex;
+      flex-direction: column;
+      max-width: var(--container-grid);
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      transition: opacity 0.2s ease, transform 0.2s ease;
     }
 
-    .field-card:hover .card-title {
-      color: #ffffff;
+    .entry {
+      display: block;
+      text-decoration: none;
+      border-top: 1px solid var(--color-subtle);
+      transition: background 0.25s ease, opacity 0.35s ease, transform 0.35s ease;
     }
+
+    .entry:last-child {
+      border-bottom: 1px solid var(--color-subtle);
+    }
+
+    .entry:hover {
+      background: rgba(17, 17, 17, 0.028);
+    }
+
+    .entry-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 768px) {
+      .entry-grid {
+        grid-template-columns: 3fr 2fr;
+      }
+    }
+
+    .entry-photo-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+    }
+
+    @media (min-width: 768px) {
+      .entry-photo-wrap {
+        aspect-ratio: auto;
+        min-height: 380px;
+      }
+    }
+
+    .entry-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.75s ease-out;
+    }
+
+    .entry:hover .entry-photo {
+      transform: scale(1.04);
+    }
+
+    .entry-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 0.28rem 0.6rem;
+      border-radius: 2px;
+    }
+
+    .entry-body {
+      display: flex;
+      flex-direction: column;
+      padding: 2.5rem 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .entry-body { padding: 3rem 3.5rem; }
+    }
+
+    .entry-index {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      color: var(--color-secondary);
+      opacity: 0.3;
+      margin-bottom: 1.75rem;
+    }
+
+    .entry-meta {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-accent);
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .entry-sep { opacity: 0.45; }
+
+    .entry-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: var(--color-primary);
+      margin-bottom: 1.25rem;
+      transition: color 0.25s;
+    }
+
+    .entry:hover .entry-title { color: var(--color-accent); }
+
+    .entry-desc {
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      line-height: 1.75;
+      color: var(--color-secondary);
+      flex: 1;
+    }
+
+    .entry-cta {
+      margin-top: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-ui);
+      font-size: 0.68rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      opacity: 0.5;
+      transition: opacity 0.25s;
+    }
+
+    .entry:hover .entry-cta { opacity: 1; }
+
+    .entry-arrow {
+      display: inline-block;
+      transition: transform 0.25s ease;
+    }
+
+    .entry:hover .entry-arrow { transform: translateX(5px); }
 
   </style>
 </Base>
