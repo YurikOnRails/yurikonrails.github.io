@@ -173,6 +173,8 @@ const year = new Date().getFullYear()
       signal: scrollAbort.signal,
     })
 
+    const links = Array.from(menu.querySelectorAll<HTMLElement>('.menu-link'))
+
     function openMenu() {
       if (isOpen) return
       isOpen = true
