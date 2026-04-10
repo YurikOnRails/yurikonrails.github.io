@@ -163,7 +163,7 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
     gsap.set(avatarEl, { opacity: 0, scale: 0.85 })
     gsap.set(nameEl, { opacity: 0, y: 14 })
     gsap.set(bioEl, { opacity: 0, y: 12 })
-    gsap.set(dividerEl, { scaleX: 0 })
+    gsap.set(dividerEl, { opacity: 0 })
     gsap.set(allNavItems, { opacity: 0, y: 8 })
     gsap.set(socialEl, { opacity: 0 })
     if (underlinePath) {
@@ -214,11 +214,11 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
       duration: 0.4,
     }, '-=0.25')
 
-    // 4. Divider — draws from center
+    // 4. Divider — elegant fade in
     tl.to(dividerEl, {
-      scaleX: 1,
-      duration: 0.5,
-      ease: 'power2.inOut',
+      opacity: 1,
+      duration: 0.4,
+      ease: 'power2.out',
     }, '-=0.15')
 
     // 5. Nav items — staggered
@@ -402,14 +402,27 @@ const nowFresh = daysSinceNow != null && daysSinceNow < 14
     }
   }
 
-  /* ═══ Divider ═══ */
+  /* ═══ Divider — elegant dots ═══ */
   .home-divider {
     width: 100%;
     max-width: 320px;
-    height: 1px;
-    background: rgba(17, 17, 17, 0.10);
+    height: auto;
     margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transform-origin: center;
+  }
+
+  .home-divider::after {
+    content: '· · ·';
+    display: block;
+    text-align: center;
+    color: #aca49a;
+    letter-spacing: 0.35em;
+    font-size: 0.9rem;
+    font-family: var(--font-ui);
+    font-weight: 400;
   }
 
   /* ═══ Nav grid ═══ */
